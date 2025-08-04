@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Credicálidda</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <h1>Test de Funcionalidades</h1>
+    
+    <!-- Test de Imágenes -->
+    <section style="padding: 2rem;">
+        <h2>Test de Imágenes</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div>
+                <h3>Promo Apple</h3>
+                <img src="images/promos/ofertaapple.webp" alt="Oferta Apple" style="width: 100%; border: 1px solid #ccc;">
+            </div>
+            <div>
+                <h3>Promo TV</h3>
+                <img src="images/promos/ofertatele.webp" alt="Oferta TV" style="width: 100%; border: 1px solid #ccc;">
+            </div>
+            <div>
+                <h3>Promo Grande</h3>
+                <img src="images/promos/ofertagrande.webp" alt="Oferta Grande" style="width: 100%; border: 1px solid #ccc;">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Test de Hero Simple -->
+    <section style="padding: 2rem;">
+        <h2>Test de Hero Banner</h2>
+        <div style="height: 300px; background-image: url('images/hero/principal.jpg'); background-size: cover; background-position: center; border: 1px solid #ccc;">
+        </div>
+    </section>
+    
+    <script src="js/utils.js"></script>
+    <script>
+        console.log('Test page loaded');
+        console.log('Utils:', typeof Utils !== 'undefined' ? 'Loaded' : 'Not loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+/* Mobile Responsive Styles */
+
+/* Tablet styles (768px and below) */
+@media (max-width: 768px) {
+    /* Header adjustments */
+    .header-content {
+        gap: var(--spacing-3);
+    }
+    
+    .search-container {
+        order: 3;
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-top: var(--spacing-3);
+    }
+    
+    .header-action-link {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .top-bar-content {
+        flex-direction: column;
+        gap: var(--spacing-2);
+        text-align: center;
+    }
+    
+    .top-bar-center {
+        position: static;
+        transform: none;
+    }
+    
+    /* Navigation adjustments */
+    .nav-content {
+        gap: var(--spacing-4);
+        flex-wrap: wrap;
+    }
+    
+    .quick-links {
+        gap: var(--spacing-4);
+        flex-wrap: wrap;
+    }
+    
+    .categories-btn {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-2) var(--spacing-3);
+    }
+    
+    /* Hero adjustments */
+    .hero {
+        height: 400px;
+    }
+    
+    .hero-text h1 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .hero-text p {
+        font-size: var(--font-size-base);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--font-size-base) !important;
+    }
+    
+    .hero-btn {
+        padding: var(--spacing-3) var(--spacing-6);
+        font-size: var(--font-size-base);
+    }
+    
+    .hero-arrow {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .hero-prev {
+        left: var(--spacing-3);
+    }
+    
+    .hero-next {
+        right: var(--spacing-3);
+    }
+    
+    /* Welcome section */
+    .welcome-content h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .welcome-content h3 {
+        font-size: var(--font-size-base);
+    }
+    
+    /* Categories carousel */
+    .categories-container {
+        margin: 0 var(--spacing-6);
+    }
+    
+    .category-card {
+        width: 120px;
+        padding: var(--spacing-4);
+    }
+    
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: var(--spacing-3);
+    }
+    
+    .category-icon img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .category-card h4 {
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Products carousel */
+    .products-container {
+        margin: 0 var(--spacing-6);
+    }
+    
+    .product-card {
+        width: 240px;
+    }
+    
+    .product-image {
+        height: 160px;
+    }
+    
+    .product-content {
+        padding: var(--spacing-4);
+    }
+    
+    .product-title {
+        font-size: var(--font-size-sm);
+    }
+    
+    .price-current {
+        font-size: var(--font-size-lg);
+    }
+    
+    /* Benefits section */
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-6);
+    }
+    
+    .benefit-card {
+        padding: var(--spacing-4);
+    }
+    
+    .benefit-image {
+        width: 150px;
+        height: 100px;
+        margin-bottom: var(--spacing-4);
+    }
+    
+    .benefit-card h3 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .benefit-card p {
+        font-size: var(--font-size-base);
+    }
+    
+    /* Calidda section */
+    .calidda-benefits {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-6);
+    }
+    
+    .app-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-6);
+    }
+    
+    /* CTA section */
+    .cta-content h2 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .cta-content p {
+        font-size: var(--font-size-base);
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-buttons .btn {
+        min-width: 200px;
+    }
+    
+    /* Footer adjustments */
+    .footer-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-6);
+    }
+    
+    .whatsapp-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-3);
+    }
+    
+    .social-links {
+        order: -1;
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        margin: var(--spacing-4);
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Mobile styles (480px and below) */
+@media (max-width: 480px) {
+    /* Container padding */
+    .container {
+        padding: 0 var(--spacing-3);
+    }
+    
+    /* Header */
+    .main-header {
+        padding: var(--spacing-3) 0;
+    }
+    
+    .logo-img {
+        height: 32px;
+    }
+    
+    /* Hero */
+    .hero {
+        height: 300px;
+    }
+    
+    .hero-text {
+        padding: 0 var(--spacing-4);
+    }
+    
+    .hero-text h1 {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-3);
+    }
+    
+    .hero-text p {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-1);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--font-size-sm) !important;
+        margin-bottom: var(--spacing-4) !important;
+    }
+    
+    .hero-btn {
+        padding: var(--spacing-2) var(--spacing-4);
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Sections padding */
+    .welcome-section,
+    .categories-section,
+    .featured-products,
+    .benefits-section,
+    .calidda-section,
+    .cta-section {
+        padding: var(--spacing-8) 0;
+    }
+    
+    /* Welcome section */
+    .welcome-content h2 {
+        font-size: var(--font-size-lg);
+        padding: 0 var(--spacing-2);
+    }
+    
+    /* Categories */
+    .categories-container {
+        margin: 0 var(--spacing-3);
+    }
+    
+    .categories-track {
+        gap: var(--spacing-3);
+    }
+    
+    .category-card {
+        width: 100px;
+        padding: var(--spacing-3);
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: var(--spacing-2);
+    }
+    
+    .category-icon img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    /* Products */
+    .products-container {
+        margin: 0 var(--spacing-3);
+    }
+    
+    .products-track {
+        gap: var(--spacing-3);
+    }
+    
+    .product-card {
+        width: 200px;
+    }
+    
+    .product-image {
+        height: 140px;
+    }
+    
+    .product-content {
+        padding: var(--spacing-3);
+    }
+    
+    .product-title {
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--spacing-2);
+    }
+    
+    .price-current {
+        font-size: var(--font-size-base);
+    }
+    
+    .price-installment {
+        font-size: var(--font-size-xs);
+    }
+    
+    .product-actions {
+        flex-direction: column;
+        gap: var(--spacing-2);
+    }
+    
+    .btn-add-cart,
+    .btn-whatsapp {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-2);
+    }
+    
+    /* Benefits */
+    .benefit-image {
+        width: 120px;
+        height: 80px;
+    }
+    
+    .benefit-card h3 {
+        font-size: var(--font-size-lg);
+    }
+    
+    .benefit-card p {
+        font-size: var(--font-size-sm);
+    }
+    
+    /* CTA */
+    .cta-content h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .cta-content p {
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Footer */
+    .main-footer {
+        padding: var(--spacing-8) 0;
+    }
+    
+    .footer-grid {
+        gap: var(--spacing-4);
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    /* Carousel arrows on mobile */
+    .carousel-arrow {
+        width: 2rem;
+        height: 2rem;
+    }
+    
+    .carousel-arrow .icon {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* Landscape mobile adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero {
+        height: 250px;
+    }
+    
+    .hero-text h1 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .hero-text p {
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .product-image img,
+    .category-icon img,
+    .benefit-image img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here if needed */
+}
+
+/* Print styles */
+@media print {
+    .header,
+    .footer,
+    .hero,
+    .mobile-menu,
+    .modal-overlay,
+    .carousel-arrow,
+    .hero-indicators {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+    
+    .product-card,
+    .category-card,
+    .benefit-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+}
+
+/* Focus styles for accessibility */
+.btn:focus-visible,
+.search-input:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-600);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}

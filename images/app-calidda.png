@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone background -->
+  <rect x="50" y="20" width="100" height="160" rx="15" fill="#1f2937" stroke="#374151" stroke-width="2"/>
+  
+  <!-- Screen -->
+  <rect x="55" y="35" width="90" height="130" rx="5" fill="#3b82f6"/>
+  
+  <!-- Cálidda logo area -->
+  <rect x="65" y="45" width="70" height="20" rx="3" fill="#ffffff"/>
+  <text x="100" y="58" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6" text-anchor="middle">Cálidda</text>
+  
+  <!-- App icons -->
+  <circle cx="75" cy="85" r="8" fill="#ffffff" opacity="0.8"/>
+  <circle cx="100" cy="85" r="8" fill="#ffffff" opacity="0.8"/>
+  <circle cx="125" cy="85" r="8" fill="#ffffff" opacity="0.8"/>
+  
+  <circle cx="75" cy="110" r="8" fill="#ffffff" opacity="0.8"/>
+  <circle cx="100" cy="110" r="8" fill="#ffffff" opacity="0.8"/>
+  <circle cx="125" cy="110" r="8" fill="#ffffff" opacity="0.8"/>
+  
+  <!-- Bottom bar -->
+  <rect x="90" y="150" width="20" height="3" rx="1.5" fill="#ffffff"/>
+</svg>

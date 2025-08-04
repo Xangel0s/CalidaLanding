@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora nuestras categorías de productos en Credicálidda. Encuentra electrodomésticos, tecnología, hogar, deportes y más.">
+    <meta name="keywords" content="categorías, productos, electrodomésticos, tecnología, hogar, deportes, vehículos">
+    <title>Categorías - Credicálidda</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/main.css" as="style">
+    <link rel="preload" href="css/components.css" as="style">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Categorías - Credicálidda">
+    <meta property="og:description" content="Explora nuestras categorías de productos de calidad.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://credicalidda.com/categoria.html">
+    <meta property="og:image" content="images/og-categories.jpg">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="index.html" aria-label="Ir al inicio">
+                        <img src="images/logo.png" alt="Credicálidda" width="150" height="40">
+                    </a>
+                </div>
+                
+                <!-- Main Navigation -->
+                <nav class="main-nav" role="navigation" aria-label="Navegación principal">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Productos</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <form class="search-form" role="search" aria-label="Buscar productos">
+                        <input 
+                            type="search" 
+                            id="searchInput" 
+                            placeholder="Buscar productos..." 
+                            aria-label="Buscar productos"
+                            autocomplete="off"
+                        >
+                        <button type="submit" aria-label="Buscar">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <button class="btn-icon cart-btn" aria-label="Carrito de compras">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span class="cart-count">0</span>
+                    </button>
+                    
+                    <button class="btn btn-primary" onclick="FormManager.openContactModal()">
+                        Contactar
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <div class="mobile-menu-header">
+                    <h3>Menú</h3>
+                    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <nav class="mobile-nav">
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Productos</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Navegación de ruta">
+        <div class="container">
+            <ol class="breadcrumb-list">
+                <li><a href="index.html">Inicio</a></li>
+                <li aria-current="page">Categorías</li>
+            </ol>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="page-header-content" data-animate="fadeIn">
+                    <h1>Explora Nuestras Categorías</h1>
+                    <p>Encuentra productos organizados por categorías para facilitar tu búsqueda</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Categories Grid -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Category cards will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Featured Products by Category -->
+        <section class="featured-by-category" id="featuredByCategory">
+            <!-- Will be populated dynamically based on selected category -->
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="images/logo-white.png" alt="Credicálidda" width="150" height="40">
+                    </div>
+                    <p class="footer-description">
+                        Tu marketplace de confianza para encontrar productos de calidad 
+                        con garantía y entrega rápida en todo el país.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook" class="social-link">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="social-link">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="WhatsApp" class="social-link">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.886 3.488"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="productos.html">Productos</a></li>
+                        <li><a href="categoria.html">Categorías</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Categories -->
+                <div class="footer-section">
+                    <h3>Categorías</h3>
+                    <ul class="footer-links">
+                        <li><a href="categoria.html?cat=electrodomesticos">Electrodomésticos</a></li>
+                        <li><a href="categoria.html?cat=tecnologia">Tecnología</a></li>
+                        <li><a href="categoria.html?cat=hogar">Hogar y Jardín</a></li>
+                        <li><a href="categoria.html?cat=deportes">Deportes</a></li>
+                        <li><a href="categoria.html?cat=vehiculos">Vehículos</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            <span>+51 123 456 789</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>info@credicalidda.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Lima, Perú</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 Credicálidda. Todos los derechos reservados.</p>
+                    <div class="footer-legal">
+                        <a href="politicas.html">Políticas de Privacidad</a>
+                        <a href="terminos.html">Términos y Condiciones</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Contact Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contactar Vendedor</h2>
+                <button class="modal-close" onclick="FormManager.closeContactModal()" aria-label="Cerrar modal">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="contactName">Nombre completo *</label>
+                    <input 
+                        type="text" 
+                        id="contactName" 
+                        name="name" 
+                        required 
+                        aria-describedby="contactNameError"
+                    >
+                    <span class="error-message" id="contactNameError"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactPhone">Teléfono *</label>
+                    <input 
+                        type="tel" 
+                        id="contactPhone" 
+                        name="phone" 
+                        required 
+                        aria-describedby="contactPhoneError"
+                    >
+                    <span class="error-message" id="contactPhoneError"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactProduct">Producto de interés</label>
+                    <input 
+                        type="text" 
+                        id="contactProduct" 
+                        name="product" 
+                        readonly
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactMessage">Mensaje *</label>
+                    <textarea 
+                        id="contactMessage" 
+                        name="message" 
+                        rows="4" 
+                        required 
+                        aria-describedby="contactMessageError"
+                    ></textarea>
+                    <span class="error-message" id="contactMessageError"></span>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="FormManager.closeContactModal()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Enviar por WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/forms.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Category Page Specific Script -->
+    <script>
+        // Category page functionality
+        class CategoryPage {
+            constructor() {
+                this.categories = [];
+                this.selectedCategory = null;
+                this.init();
+            }
+            
+            init() {
+                this.loadCategories();
+                this.handleURLParams();
+                this.setupSearchEvents();
+            }
+            
+            async loadCategories() {
+                try {
+                    // Categories data
+                    this.categories = [
+                        {
+                            id: 'electrodomesticos',
+                            name: 'Electrodomésticos',
+                            description: 'Equipos para el hogar que facilitan tu vida diaria',
+                            image: 'images/categories/electrodomesticos.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>`,
+                            productCount: 45,
+                            featured: true
+                        },
+                        {
+                            id: 'tecnologia',
+                            name: 'Tecnología',
+                            description: 'Lo último en dispositivos y gadgets tecnológicos',
+                            image: 'images/categories/tecnologia.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>`,
+                            productCount: 38,
+                            featured: true
+                        },
+                        {
+                            id: 'hogar',
+                            name: 'Hogar y Jardín',
+                            description: 'Todo para decorar y mejorar tu hogar',
+                            image: 'images/categories/hogar.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9,22 9,12 15,12 15,22"></polyline>
+                            </svg>`,
+                            productCount: 52,
+                            featured: true
+                        },
+                        {
+                            id: 'deportes',
+                            name: 'Deportes',
+                            description: 'Equipamiento deportivo y fitness',
+                            image: 'images/categories/deportes.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                                <path d="M2 12h20"></path>
+                            </svg>`,
+                            productCount: 29,
+                            featured: false
+                        },
+                        {
+                            id: 'vehiculos',
+                            name: 'Vehículos',
+                            description: 'Autos, motos y accesorios automotrices',
+                            image: 'images/categories/vehiculos.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                <path d="M5 17h-2v-4m-1 -8h21l-3 7h-15"></path>
+                            </svg>`,
+                            productCount: 21,
+                            featured: false
+                        },
+                        {
+                            id: 'moda',
+                            name: 'Moda',
+                            description: 'Ropa, zapatos y accesorios de moda',
+                            image: 'images/categories/moda.jpg',
+                            icon: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M6 2l3 6v8a3 3 0 0 0 6 0V8l3-6"></path>
+                                <path d="M12 18h.01"></path>
+                            </svg>`,
+                            productCount: 67,
+                            featured: false
+                        }
+                    ];
+                    
+                    this.renderCategories();
+                    
+                } catch (error) {
+                    Utils.errorHandler.log(error, 'CategoryPage.loadCategories');
+                    this.showError('Error al cargar las categorías');
+                }
+            }
+            
+            renderCategories() {
+                const grid = Utils.$('#categoriesGrid');
+                if (!grid) return;
+                
+                grid.innerHTML = this.categories.map(category => `
+                    <div class="category-card ${category.featured ? 'featured' : ''}" 
+                         data-animate="fadeIn"
+                         onclick="CategoryPage.selectCategory('${category.id}')">
+                        <div class="category-image">
+                            <img src="${category.image}" 
+                                 alt="${category.name}" 
+                                 loading="lazy"
+                                 onerror="this.src='images/placeholder-category.jpg'">
+                            <div class="category-overlay">
+                                <div class="category-icon">
+                                    ${category.icon}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="category-content">
+                            <h3 class="category-name">${category.name}</h3>
+                            <p class="category-description">${category.description}</p>
+                            <div class="category-meta">
+                                <span class="product-count">${category.productCount} productos</span>
+                                ${category.featured ? '<span class="featured-badge">Destacada</span>' : ''}
+                            </div>
+                            
+                            <div class="category-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); CategoryPage.viewCategory('${category.id}')">
+                                    Ver Productos
+                                </button>
+                                <button class="btn btn-outline" onclick="event.stopPropagation(); CategoryPage.exploreCategory('${category.id}')">
+                                    Explorar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Initialize animations
+                Utils.lazyLoad.init();
+            }
+            
+            selectCategory(categoryId) {
+                const category = this.categories.find(cat => cat.id === categoryId);
+                if (!category) return;
+                
+                this.selectedCategory = category;
+                this.highlightCategory(categoryId);
+                this.loadFeaturedProducts(categoryId);
+                
+                // Track selection
+                if (window.CredicaliddaApp) {
+                    window.CredicaliddaApp.trackEvent('category_selected', {
+                        category_id: categoryId,
+                        category_name: category.name
+                    });
+                }
+            }
+            
+            highlightCategory(categoryId) {
+                // Remove previous highlights
+                const cards = Utils.$$('.category-card');
+                cards.forEach(card => card.classList.remove('selected'));
+                
+                // Highlight selected category
+                const selectedCard = Utils.$(`[onclick*="${categoryId}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                    
+                    // Scroll to selected category if not in view
+                    if (!this.isElementInView(selectedCard)) {
+                        selectedCard.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
+                }
+            }
+            
+            isElementInView(element) {
+                const rect = element.getBoundingClientRect();
+                return (
+                    rect.top >= 0 &&
+                    rect.left >= 0 &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            }
+            
+            async loadFeaturedProducts(categoryId) {
+                try {
+                    const section = Utils.$('#featuredByCategory');
+                    if (!section) return;
+                    
+                    // Show loading state
+                    section.innerHTML = `
+                        <div class="container">
+                            <div class="loading-state">
+                                <div class="loading-spinner"></div>
+                                <p>Cargando productos destacados...</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Get products for this category
+                    const allProducts = await ProductManager.getAllProducts();
+                    const categoryProducts = allProducts
+                        .filter(product => product.category === categoryId)
+                        .slice(0, 8); // Show only first 8 products
+                    
+                    if (categoryProducts.length === 0) {
+                        section.innerHTML = `
+                            <div class="container">
+                                <div class="no-products">
+                                    <h3>Próximamente</h3>
+                                    <p>Estamos trabajando en agregar productos para esta categoría.</p>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const category = this.categories.find(cat => cat.id === categoryId);
+                    
+                    section.innerHTML = `
+                        <div class="container">
+                            <div class="section-header">
+                                <h2>Productos Destacados en ${category.name}</h2>
+                                <p>Descubre nuestra selección especial de ${category.name.toLowerCase()}</p>
+                                <a href="productos.html?category=${categoryId}" class="btn btn-outline">
+                                    Ver todos los productos
+                                </a>
+                            </div>
+                            
+                            <div class="products-grid">
+                                ${categoryProducts.map(product => 
+                                    ProductManager.createProductCard(product)
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Setup product events
+                    ProductManager.setupProductEvents();
+                    
+                } catch (error) {
+                    Utils.errorHandler.log(error, 'CategoryPage.loadFeaturedProducts');
+                    
+                    const section = Utils.$('#featuredByCategory');
+                    if (section) {
+                        section.innerHTML = `
+                            <div class="container">
+                                <div class="error-state">
+                                    <p>Error al cargar los productos destacados</p>
+                                    <button class="btn btn-primary" onclick="CategoryPage.loadFeaturedProducts('${categoryId}')">
+                                        Reintentar
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            viewCategory(categoryId) {
+                window.location.href = `productos.html?category=${categoryId}`;
+            }
+            
+            exploreCategory(categoryId) {
+                const category = this.categories.find(cat => cat.id === categoryId);
+                if (!category) return;
+                
+                // Show category details in a modal or expanded view
+                this.showCategoryDetails(category);
+            }
+            
+            showCategoryDetails(category) {
+                // Create a temporary modal for category details
+                const modal = Utils.createElement('div', 'modal category-modal active');
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>${category.name}</h2>
+                            <button class="modal-close" onclick="this.closest('.modal').remove()" aria-label="Cerrar">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="category-details">
+                            <div class="category-hero">
+                                <img src="${category.image}" alt="${category.name}">
+                                <div class="category-hero-content">
+                                    <div class="category-icon">${category.icon}</div>
+                                    <h3>${category.name}</h3>
+                                    <p>${category.description}</p>
+                                    <div class="category-stats">
+                                        <span>${category.productCount} productos disponibles</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="category-actions-expanded">
+                                <button class="btn btn-primary" onclick="CategoryPage.viewCategory('${category.id}')">
+                                    Ver Todos los Productos
+                                </button>
+                                <button class="btn btn-outline" onclick="CategoryPage.selectCategory('${category.id}'); this.closest('.modal').remove()">
+                                    Ver Destacados
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click outside to close
+                Utils.addEvent(modal, 'click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                document.body.appendChild(modal);
+                
+                // Track category exploration
+                if (window.CredicaliddaApp) {
+                    window.CredicaliddaApp.trackEvent('category_explored', {
+                        category_id: category.id,
+                        category_name: category.name
+                    });
+                }
+            }
+            
+            setupSearchEvents() {
+                const searchForm = Utils.$('.search-form');
+                if (searchForm) {
+                    Utils.addEvent(searchForm, 'submit', (e) => {
+                        e.preventDefault();
+                        const searchInput = Utils.$('#searchInput');
+                        const query = searchInput.value.trim();
+                        
+                        if (query) {
+                            window.location.href = `productos.html?search=${encodeURIComponent(query)}`;
+                        }
+                    });
+                }
+            }
+            
+            handleURLParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryId = urlParams.get('cat') || urlParams.get('category');
+                
+                if (categoryId) {
+                    // Wait for categories to load, then select
+                    setTimeout(() => {
+                        this.selectCategory(categoryId);
+                    }, 100);
+                }
+            }
+            
+            showError(message) {
+                const grid = Utils.$('#categoriesGrid');
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="error-state">
+                            <p>${message}</p>
+                            <button class="btn btn-primary" onclick="location.reload()">
+                                Reintentar
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Initialize category page when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.CategoryPage = new CategoryPage();
+        });
+    </script>
+    
+    <!-- Category-specific styles -->
+    <style>
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .category-card {
+            background: var(--color-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-card.featured {
+            border: 2px solid var(--color-primary);
+        }
+        
+        .category-card.selected {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(var(--color-primary-rgb), 0.25);
+            border-color: var(--color-primary);
+        }
+        
+        .category-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover .category-image img {
+            transform: scale(1.1);
+        }
+        
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.8), rgba(var(--color-secondary-rgb), 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .category-card:hover .category-overlay {
+            opacity: 1;
+        }
+        
+        .category-icon {
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .category-icon .icon {
+            width: 3rem;
+            height: 3rem;
+            stroke-width: 1.5;
+        }
+        
+        .category-content {
+            padding: 1.5rem;
+        }
+        
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-description {
+            color: var(--color-gray);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .category-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-count {
+            font-size: 0.875rem;
+            color: var(--color-gray-dark);
+            font-weight: 500;
+        }
+        
+        .featured-badge {
+            background: var(--color-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .category-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .category-actions .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .featured-by-category {
+            margin-top: 4rem;
+            padding: 3rem 0;
+            background: var(--color-light);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--color-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            color: var(--color-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .category-modal .category-details {
+            max-width: 600px;
+        }
+        
+        .category-hero {
+            position: relative;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .category-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .category-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            text-align: center;
+        }
+        
+        .category-hero-content .category-icon {
+            margin-bottom: 1rem;
+        }
+        
+        .category-hero-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-stats {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .category-actions-expanded {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .category-actions {
+                flex-direction: column;
+            }
+            
+            .category-actions-expanded {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>
