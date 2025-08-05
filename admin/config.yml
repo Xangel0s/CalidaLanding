@@ -1,0 +1,60 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/productos"
+public_folder: "/images/productos"
+
+collections:
+  - name: "productos"
+    label: "Productos"
+    folder: "_productos"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nombre", name: "title", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string", hint: "URL amigable (ej: televisor-lg-55-uhd)" }
+      - { label: "Marca", name: "brand", widget: "string" }
+      - { label: "Imagen Principal", name: "image", widget: "image" }
+      - { label: "Galería de Imágenes", name: "gallery", widget: "list", field: { label: "Imagen", name: "image", widget: "image" }, required: false }
+      - { label: "Descripción Corta", name: "description", widget: "text" }
+      - { label: "Descripción Completa", name: "body", widget: "markdown" }
+      - { label: "Precio Regular", name: "price_regular", widget: "number", value_type: "float", required: false }
+      - { label: "Precio Online", name: "price_online", widget: "number", value_type: "float" }
+      - { label: "Cuota Mensual", name: "monthly_payment", widget: "number", value_type: "float" }
+      - { label: "Descuento (%)", name: "discount", widget: "number", value_type: "int", required: false }
+      - { label: "Categoría", name: "category", widget: "select", options: ["tecnologia", "electrodomesticos", "muebles", "motos-scooters", "construccion", "gamer", "celulares", "televisores"] }
+      - { label: "Etiquetas", name: "tags", widget: "select", multiple: true, options: ["destacado", "novedad", "oferta", "combo", "reacondicionado", "mas-vendido"], required: false }
+      - { label: "Estado", name: "status", widget: "select", options: ["activo", "inactivo"], default: "activo" }
+      - { label: "Stock", name: "stock", widget: "number", value_type: "int", default: 1 }
+      - { label: "Especificaciones", name: "specs", widget: "list", fields: [
+          { label: "Nombre", name: "name", widget: "string" },
+          { label: "Valor", name: "value", widget: "string" }
+        ], required: false }
+      - { label: "Fecha de Publicación", name: "date", widget: "datetime" }
+
+  - name: "categorias"
+    label: "Categorías"
+    folder: "_categorias"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nombre", name: "title", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string" }
+      - { label: "Descripción", name: "description", widget: "text" }
+      - { label: "Icono", name: "icon", widget: "image" }
+      - { label: "Orden", name: "order", widget: "number", value_type: "int" }
+
+  - name: "configuracion"
+    label: "Configuración"
+    files:
+      - label: "Configuración General"
+        name: "general"
+        file: "_config/general.yml"
+        fields:
+          - { label: "Nombre del Sitio", name: "site_name", widget: "string" }
+          - { label: "Descripción", name: "site_description", widget: "text" }
+          - { label: "Logo", name: "logo", widget: "image" }
+          - { label: "Teléfono", name: "phone", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "WhatsApp", name: "whatsapp", widget: "string" }

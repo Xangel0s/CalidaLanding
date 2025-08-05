@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Credicálidda</title>
+    <meta name="description" content="Encuentra los mejores productos con financiamiento en Credicálidda">
+    <meta name="keywords" content="productos, crédito, cuotas, Credicálidda">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Producto - Credicálidda">
+    <meta property="og:description" content="Encuentra los mejores productos con financiamiento en Credicálidda">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://credicalidda.com/">
+    <meta property="og:image" content="/images/placeholder-product.jpg">
+    <meta property="product:price:amount" content="0.00">
+    <meta property="product:price:currency" content="PEN">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/product-page.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Netlify Identity -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Producto Credicálidda",
+        "description": "Producto con financiamiento disponible",
+        "brand": {
+            "@type": "Brand",
+            "name": "Credicálidda"
+        },
+        "image": "/images/placeholder-product.jpg",
+        "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "PEN",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Credicálidda"
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Header (mismo que index.html) -->
+    <header class="header">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="container">
+                <div class="top-bar-content">
+                    <div class="top-bar-left">
+                        <span class="top-bar-item">📞 Consulta tu crédito</span>
+                    </div>
+                    <div class="top-bar-center">
+                        <span class="top-bar-item">🚚 Envío gratis por compras mayores a S/ 5000</span>
+                    </div>
+                    <div class="top-bar-right">
+                        <a href="#" class="top-bar-link">Calculadora de cuotas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="container">
+                <div class="header-content">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <a href="../index.html">
+                            <img src="../images/logo-credicalidda.svg" alt="Credicálidda" class="logo-img">
+                        </a>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <form class="search-form" id="searchForm">
+                            <input 
+                                type="text" 
+                                placeholder="Buscar productos, marcas..." 
+                                class="search-input"
+                                id="searchInput"
+                            >
+                            <button type="submit" class="search-btn">Buscar</button>
+                        </form>
+                    </div>
+
+                    <!-- Header Actions -->
+                    <div class="header-actions">
+                        <a href="#" class="header-action-link">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span>Mi cuenta</span>
+                        </a>
+                        
+                        <a href="#" class="cart-link" id="cartLink">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span class="cart-count" id="cartCount">0</span>
+                        </a>
+
+                        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="container">
+                <div class="nav-content">
+                    <!-- Categories Dropdown -->
+                    <div class="categories-dropdown">
+                        <button class="categories-btn" id="categoriesBtn">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                            <span>Todas las categorías</span>
+                            <svg class="icon dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </button>
+                        
+                        <div class="categories-menu" id="categoriesMenu">
+                            <a href="../novedades.html?categoria=tecnologia" class="category-item">
+                                <span>📱 Tecnología</span>
+                            </a>
+                            <a href="../novedades.html?categoria=electrodomesticos" class="category-item">
+                                <span>🏠 Electrodomésticos</span>
+                            </a>
+                            <a href="../novedades.html?categoria=muebles" class="category-item">
+                                <span>🪑 Muebles</span>
+                            </a>
+                            <a href="../novedades.html?categoria=motos-scooters" class="category-item">
+                                <span>🏍️ Motos y Scooters</span>
+                            </a>
+                            <a href="../novedades.html?categoria=construccion" class="category-item">
+                                <span>🔨 Construcción y acabados</span>
+                            </a>
+                            <a href="../novedades.html?categoria=gamer" class="category-item">
+                                <span>🎮 Gamer</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="quick-links">
+                        <a href="../novedades.html?filtro=ofertas" class="quick-link ofertas">🔥 Ofertas</a>
+                        <a href="../novedades.html?filtro=combos" class="quick-link combos">📦 Combos</a>
+                        <a href="../novedades.html?filtro=novedades" class="quick-link novedades">✨ Novedades</a>
+                        <a href="../novedades.html?filtro=reacondicionados" class="quick-link reacondicionados">♻️ Reacondicionados</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <ol class="breadcrumb-list">
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../novedades.html">Productos</a></li>
+                <li class="current" id="breadcrumb-product">Producto</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="product-page">
+        <div class="container">
+            <!-- Product Main Section -->
+            <section class="product-main">
+                <div class="product-gallery">
+                    <div class="product-main-image">
+                        <img src="/images/placeholder-product.jpg" alt="Producto" id="main-product-image">
+                        <div class="product-badge discount" id="discount-badge" style="display: none;">-0%</div>
+                    </div>
+                    
+                    <div class="product-thumbnails" id="product-thumbnails">
+                        <!-- Thumbnails will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <div class="product-header">
+                        <span class="product-brand" id="product-brand">Marca</span>
+                        <h1 class="product-title" id="product-title">Título del Producto</h1>
+                        <p class="product-description" id="product-description">Descripción del producto</p>
+                    </div>
+
+                    <div class="product-pricing">
+                        <div class="price-row" id="price-regular-row" style="display: none;">
+                            <span class="price-label">Precio regular:</span>
+                            <span class="price-regular" id="price-regular">S/ 0.00</span>
+                        </div>
+                        
+                        <div class="price-row main">
+                            <span class="price-label">Precio online:</span>
+                            <span class="price-online" id="price-online">S/ 0.00</span>
+                        </div>
+                        
+                        <div class="price-installments">
+                            <span class="installment-text">Desde: <strong id="monthly-payment">S/ 0.00</strong> al mes</span>
+                            <button class="calculate-btn" id="calculate-financing">Calcular cuotas</button>
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <label for="quantity">Cantidad:</label>
+                            <div class="quantity-controls">
+                                <button type="button" class="qty-btn" id="qty-minus">-</button>
+                                <input type="number" id="quantity-input" value="1" min="1">
+                                <button type="button" class="qty-btn" id="qty-plus">+</button>
+                            </div>
+                            <div class="stock-status" id="stock-status">Stock disponible</div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-whatsapp btn-large" id="whatsapp-btn">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Consultar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="product-benefits" id="benefits-list">
+                        <!-- Benefits will be populated by JavaScript -->
+                        <div class="benefit-item">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                            <span>Cargando beneficios...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Details Tabs -->
+            <section class="product-details">
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="description">Descripción</button>
+                        <button class="tab-btn" data-tab="specs">Especificaciones</button>
+                        <button class="tab-btn" data-tab="payment">Formas de Pago</button>
+                        <button class="tab-btn" data-tab="shipping">Envío</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <div class="tab-panel active" id="description">
+                            <div class="tab-content">
+                                <h3>Descripción del Producto</h3>
+                                <div id="detailed-description">
+                                    <p>Cargando descripción detallada del producto...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" id="specs">
+                            <div class="tab-content">
+                                <h3>Especificaciones Técnicas</h3>
+                                <table class="specs-table">
+                                    <tbody id="specifications-list">
+                                        <!-- Specifications will be populated by JavaScript -->
+                                        <tr>
+                                            <td class="spec-name">Cargando...</td>
+                                            <td class="spec-value">Especificaciones</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" id="payment">
+                            <div class="tab-content">
+                                <h3>Formas de Pago Disponibles</h3>
+                                <div class="payment-methods">
+                                    <div class="payment-method">
+                                        <h4>💳 Con Credicálidda</h4>
+                                        <p>Paga en cuotas cómodas desde S/ 0.00 al mes</p>
+                                        <ul>
+                                            <li>Sin trámites complicados</li>
+                                            <li>Solo necesitas tu DNI</li>
+                                            <li>Cuotas más bajas del mercado</li>
+                                            <li>Aprobación en minutos</li>
+                                        </ul>
+                                    </div>
+                                    <div class="payment-method">
+                                        <h4>💰 Pago al Contado</h4>
+                                        <p>Precio especial online</p>
+                                        <ul>
+                                            <li>Transferencia bancaria</li>
+                                            <li>Pago en efectivo</li>
+                                            <li>Tarjeta de débito</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-panel" id="shipping">
+                            <div class="tab-content">
+                                <h3>Información de Envío</h3>
+                                <div class="shipping-info">
+                                    <div class="shipping-option">
+                                        <h4>🚚 Envío a Domicilio</h4>
+                                        <p>Gratuito para compras mayores a S/ 5,000</p>
+                                        <p>Tiempo de entrega: 3-5 días hábiles</p>
+                                    </div>
+                                    <div class="shipping-option">
+                                        <h4>🏪 Recojo en Tienda</h4>
+                                        <p>Disponible en nuestras sucursales</p>
+                                        <p>Sin costo adicional</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Related Products -->
+            <section class="related-products">
+                <div class="section-header">
+                    <h2>Productos Relacionados</h2>
+                </div>
+                
+                <div class="products-grid" id="relatedProducts">
+                    <!-- Se cargarán dinámicamente productos de la misma categoría -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer (igual que index.html) -->
+    <footer class="footer">
+        <!-- WhatsApp CTA Banner -->
+        <div class="whatsapp-banner">
+            <div class="container">
+                <div class="whatsapp-content">
+                    <div class="whatsapp-text">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <div>
+                            <p><strong>¿Tienes dudas? ¡Hablamos!</strong></p>
+                            <p>Obtén asesoría gratuita por WhatsApp</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-white" onclick="contactWhatsApp()">Contactar Ahora</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Footer -->
+        <div class="main-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-section">
+                        <h3>CrediCallidda</h3>
+                        <p>Tu marketplace financiero de confianza.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2024 CrediCallidda. Todos los derechos reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/forms.js"></script>
+    <script src="../js/product-page.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        // Netlify Identity
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/admin/";
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

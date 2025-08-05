@@ -139,11 +139,10 @@ class CredicaliddaApp {
         // Initialize animations on scroll
         this.initScrollAnimations();
         
-        // Initialize carousels
-        this.initializeCarousels();
-        
         // Initialize performance monitoring
         Utils.performance.mark('app-initialized');
+        
+        // Note: Carousels are initialized in carousel.js to avoid conflicts
     }
     
     initScrollAnimations() {
@@ -413,51 +412,6 @@ class CredicaliddaApp {
                 `Slow page load: ${metrics.pageLoadTime}ms`,
                 'performance'
             );
-        }
-    }
-    
-    initializeCarousels() {
-        // Initialize Hero Carousel with auto-play
-        const heroContainer = Utils.$('#heroSlider');
-        if (heroContainer) {
-            this.heroCarousel = new Carousel(heroContainer.parentElement, {
-                autoPlay: true,
-                autoPlayInterval: 5000,
-                loop: true,
-                itemsToShow: 1
-            });
-        }
-        
-        // Initialize Categories Carousel
-        const categoriesContainer = Utils.$('#categoriesCarousel');
-        if (categoriesContainer) {
-            this.categoriesCarousel = new Carousel(categoriesContainer, {
-                autoPlay: false,
-                loop: true,
-                itemsToShow: 3,
-                breakpoints: {
-                    480: { itemsToShow: 2 },
-                    768: { itemsToShow: 4 },
-                    1024: { itemsToShow: 6 },
-                    1200: { itemsToShow: 8 }
-                }
-            });
-        }
-        
-        // Initialize Products Carousel
-        const productsContainer = Utils.$('#productsCarousel');
-        if (productsContainer) {
-            this.productsCarousel = new Carousel(productsContainer, {
-                autoPlay: false,
-                loop: true,
-                itemsToShow: 1,
-                breakpoints: {
-                    480: { itemsToShow: 2 },
-                    768: { itemsToShow: 3 },
-                    1024: { itemsToShow: 4 },
-                    1200: { itemsToShow: 5 }
-                }
-            });
         }
     }
 }

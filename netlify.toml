@@ -1,0 +1,57 @@
+[build]
+  publish = "."
+  command = "echo 'Build complete'"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirects for product pages
+[[redirects]]
+  from = "/:slug/p"
+  to = "/_layouts/product.html?slug=:slug"
+  status = 200
+
+# Redirects for CMS admin
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+
+# Redirect rules for SPA-like behavior
+[[redirects]]
+  from = "/categoria/*"
+  to = "/productos.html"
+  status = 200
+  
+[[redirects]]
+  from = "/ofertas"
+  to = "/productos.html"
+  status = 200
+  
+[[redirects]]
+  from = "/combos"
+  to = "/productos.html"
+  status = 200
+  
+[[redirects]]
+  from = "/novedades"
+  to = "/productos.html"
+  status = 200
+  
+[[redirects]]
+  from = "/reacondicionados"
+  to = "/productos.html"
+  status = 200

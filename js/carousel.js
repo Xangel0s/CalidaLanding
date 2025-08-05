@@ -9,6 +9,7 @@ class Carousel {
             autoPlay: false,
             autoPlayInterval: 5000,
             loop: true,
+            infiniteScroll: false,
             itemsToShow: 1,
             itemsToScroll: 1,
             gap: 24,
@@ -24,12 +25,19 @@ class Carousel {
         this.itemsToShow = this.options.itemsToShow;
         this.isTransitioning = false;
         this.autoPlayTimer = null;
+        this.originalItems = [];
         
         this.init();
     }
     
     init() {
         this.setupElements();
+        
+        // For infinite scroll carousels, setup clones first
+        if (this.options.infiniteScroll) {
+            this.setupInfiniteScroll();
+        }
+        
         this.setupEventListeners();
         this.updateItemsToShow();
         this.updateView();
@@ -42,6 +50,7 @@ class Carousel {
     setupElements() {
         this.track = this.container.querySelector('.categories-track, .products-track, .hero-slider, .best-sellers-track');
         this.items = [...this.track.children];
+        this.originalItems = [...this.items]; // Store original items for infinite scroll
         this.prevBtn = this.container.querySelector('.carousel-prev, .hero-prev');
         this.nextBtn = this.container.querySelector('.carousel-next, .hero-next');
         this.indicators = this.container.querySelector('.hero-indicators');
@@ -51,6 +60,38 @@ class Carousel {
         // Set up track styles
         this.track.style.display = 'flex';
         this.track.style.transition = 'transform 0.5s ease-in-out';
+    }
+    
+    setupInfiniteScroll() {
+        if (!this.options.infiniteScroll || this.originalItems.length === 0) return;
+        
+        // Clear existing items
+        this.track.innerHTML = '';
+        
+        // Create multiple clones for seamless infinite scrolling
+        const clonesNeeded = Math.max(4, Math.ceil(this.originalItems.length / 2));
+        
+        // Add clones at the beginning (reverse order)
+        for (let i = 0; i < clonesNeeded; i++) {
+            const cloneIndex = (this.originalItems.length - 1 - i) % this.originalItems.length;
+            const clone = this.originalItems[cloneIndex].cloneNode(true);
+            this.track.appendChild(clone);
+        }
+        
+        // Add all original items
+        this.originalItems.forEach(item => {
+            this.track.appendChild(item.cloneNode(true));
+        });
+        
+        // Add clones at the end
+        for (let i = 0; i < clonesNeeded; i++) {
+            const clone = this.originalItems[i % this.originalItems.length].cloneNode(true);
+            this.track.appendChild(clone);
+        }
+        
+        // Update items array and set initial position
+        this.items = [...this.track.children];
+        this.currentIndex = clonesNeeded; // Start at first real item
     }
     
     setupEventListeners() {
@@ -164,15 +205,10 @@ class Carousel {
         const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
         
         // Set item widths and styles
-        this.items.forEach(item => {
+        this.items.forEach((item, index) => {
             item.style.flex = `0 0 ${itemWidth}px`;
-            item.style.marginRight = `${this.options.gap}px`;
+            item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
         });
-        
-        // Remove margin from last visible item
-        if (this.items[this.items.length - 1]) {
-            this.items[this.items.length - 1].style.marginRight = '0';
-        }
         
         // Update transform
         const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
@@ -180,6 +216,52 @@ class Carousel {
         
         // Update button states
         this.updateButtons();
+    }
+    
+    updateViewNoTransition() {
+        if (!this.track || this.items.length === 0) return;
+        
+        const containerWidth = this.track.parentElement.offsetWidth;
+        const totalGap = (this.itemsToShow - 1) * this.options.gap;
+        const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
+        
+        // Temporarily disable transition
+        this.track.style.transition = 'none';
+        
+        // Set item widths
+        this.items.forEach((item, index) => {
+            item.style.flex = `0 0 ${itemWidth}px`;
+            item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
+        });
+        
+        // Update transform
+        const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
+        this.track.style.transform = `translateX(${translateX}px)`;
+        
+        // Force reflow and re-enable transition
+        this.track.offsetHeight;
+        this.track.style.transition = 'transform 0.5s ease-in-out';
+        
+        this.updateButtons();
+    }
+    
+    handleInfiniteReset() {
+        if (!this.options.infiniteScroll) return;
+        
+        const clonesNeeded = Math.max(4, Math.ceil(this.originalItems.length / 2));
+        const totalWithClones = this.items.length;
+        const endCloneSection = totalWithClones - clonesNeeded;
+        
+        // Reset position if we're in clone territory
+        if (this.currentIndex <= 1) {
+            // We're too far left, jump to equivalent position on the right
+            this.currentIndex = this.currentIndex + this.originalItems.length;
+            this.updateViewNoTransition();
+        } else if (this.currentIndex >= endCloneSection - 1) {
+            // We're too far right, jump to equivalent position on the left
+            this.currentIndex = this.currentIndex - this.originalItems.length;
+            this.updateViewNoTransition();
+        }
     }
     
     updateHeroView() {
@@ -202,47 +284,78 @@ class Carousel {
         const maxIndex = this.getMaxIndex();
         
         if (this.prevBtn) {
-            this.prevBtn.disabled = !this.options.loop && this.currentIndex === 0;
+            // For infinite scroll, buttons are always enabled
+            this.prevBtn.disabled = this.options.infiniteScroll ? false : (!this.options.loop && this.currentIndex === 0);
         }
         
         if (this.nextBtn) {
-            this.nextBtn.disabled = !this.options.loop && this.currentIndex >= maxIndex;
+            this.nextBtn.disabled = this.options.infiniteScroll ? false : (!this.options.loop && this.currentIndex >= maxIndex);
         }
     }
     
     getMaxIndex() {
         if (this.track.classList.contains('hero-slider')) {
-            return this.items.length - 1;
+            return this.originalItems.length > 0 ? this.originalItems.length - 1 : this.items.length - 1;
         }
-        return Math.max(0, this.items.length - this.itemsToShow);
+        
+        const totalItems = this.originalItems.length > 0 ? this.originalItems.length : this.items.length;
+        return Math.max(0, totalItems - this.itemsToShow);
     }
     
     prev() {
         if (this.isTransitioning) return;
         
-        if (this.currentIndex > 0) {
-            this.currentIndex -= this.options.itemsToScroll;
-        } else if (this.options.loop) {
-            this.currentIndex = this.getMaxIndex();
-        }
+        this.isTransitioning = true;
         
-        this.currentIndex = Math.max(0, this.currentIndex);
-        this.updateView();
+        if (this.options.infiniteScroll) {
+            this.currentIndex--;
+            this.updateView();
+            
+            // Check for reset after transition
+            setTimeout(() => {
+                this.handleInfiniteReset();
+                this.isTransitioning = false;
+            }, 500);
+        } else {
+            if (this.currentIndex > 0) {
+                this.currentIndex -= this.options.itemsToScroll;
+            } else if (this.options.loop) {
+                this.currentIndex = this.getMaxIndex();
+            }
+            
+            this.currentIndex = Math.max(0, this.currentIndex);
+            this.updateView();
+            this.isTransitioning = false;
+        }
     }
     
     next() {
         if (this.isTransitioning) return;
         
-        const maxIndex = this.getMaxIndex();
+        this.isTransitioning = true;
         
-        if (this.currentIndex < maxIndex) {
-            this.currentIndex += this.options.itemsToScroll;
-        } else if (this.options.loop) {
-            this.currentIndex = 0;
+        if (this.options.infiniteScroll) {
+            this.currentIndex++;
+            this.updateView();
+            
+            // Check for reset after transition
+            setTimeout(() => {
+                this.handleInfiniteReset();
+                this.isTransitioning = false;
+            }, 500);
+        } else {
+            const maxIndex = this.getMaxIndex();
+            
+            if (this.currentIndex < maxIndex) {
+                this.currentIndex += this.options.itemsToScroll;
+            } else if (this.options.loop) {
+                this.currentIndex = 0;
+            }
+            
+            this.currentIndex = Math.min(maxIndex, this.currentIndex);
+            this.updateView();
+            this.isTransitioning = false;
         }
-        
-        this.currentIndex = Math.min(maxIndex, this.currentIndex);
-        this.updateView();
     }
     
     goToSlide(index) {
@@ -314,8 +427,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Products carousel
-    const productsCarousel = new Carousel('#productsCarousel', {
+    // Featured Products Carousel (Lo más destacado) - WITH INFINITE SCROLL
+    const featuredProductsCarousel = new Carousel('#featuredProductsCarousel', {
+        autoPlay: false,
+        infiniteScroll: true, // Enable infinite scroll for this carousel
         itemsToShow: 1,
         itemsToScroll: 1,
         gap: 24,
@@ -339,11 +454,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Products carousel (if exists)
+    const productsCarousel = Utils.$('#productsCarousel');
+    if (productsCarousel) {
+        new Carousel('#productsCarousel', {
+            itemsToShow: 1,
+            itemsToScroll: 1,
+            gap: 24,
+            breakpoints: {
+                480: { itemsToShow: 2 },
+                768: { itemsToShow: 3 },
+                1024: { itemsToShow: 4 }
+            }
+        });
+    }
+    
     // Store carousel instances globally for access
     window.Carousels = {
         hero: heroCarousel,
         categories: categoriesCarousel,
-        products: productsCarousel,
+        featuredProducts: featuredProductsCarousel,
         bestSellers: bestSellersCarousel
     };
 });

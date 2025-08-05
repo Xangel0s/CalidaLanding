@@ -101,10 +101,10 @@
                         </div>
                     </div>
                     <div class="quick-links">
-                        <a href="/novedades.html?filtro=ofertas" class="quick-link ofertas">🔥 Ofertas</a>
-                        <a href="/novedades.html?filtro=combos" class="quick-link combos">📦 Combos</a>
-                        <a href="/novedades.html?filtro=novedades" class="quick-link novedades">✨ Novedades</a>
-                        <a href="/novedades.html?filtro=reacondicionados" class="quick-link reacondicionados">♻️ Reacondicionados</a>
+                        <a href="#" class="quick-link ofertas" onclick="redirectFiltro('ofertas')">🔥 Ofertas</a>
+                        <a href="#" class="quick-link combos" onclick="redirectFiltro('combos')">📦 Combos</a>
+                        <a href="#" class="quick-link novedades" onclick="redirectFiltro('novedades')">✨ Novedades</a>
+                        <a href="#" class="quick-link reacondicionados" onclick="redirectFiltro('reacondicionados')">♻️ Reacondicionados</a>
                     </div>
                 </div>
             </div>
@@ -130,10 +130,10 @@
                     <a href="/novedades.html?categoria=construccion" class="mobile-menu-link">🔨 Construcción y acabados</a>
                     <a href="/novedades.html?categoria=gamer" class="mobile-menu-link">🎮 Gamer</a>
                     <hr>
-                    <a href="/novedades.html?filtro=ofertas" class="mobile-menu-link">🔥 Ofertas</a>
-                    <a href="/novedades.html?filtro=combos" class="mobile-menu-link">📦 Combos</a>
-                    <a href="/novedades.html?filtro=novedades" class="mobile-menu-link">✨ Novedades</a>
-                    <a href="/novedades.html?filtro=reacondicionados" class="mobile-menu-link">♻️ Reacondicionados</a>
+                    <a href="#" class="mobile-menu-link" onclick="redirectFiltro('ofertas')">🔥 Ofertas</a>
+                    <a href="#" class="mobile-menu-link" onclick="redirectFiltro('combos')">📦 Combos</a>
+                    <a href="#" class="mobile-menu-link" onclick="redirectFiltro('novedades')">✨ Novedades</a>
+                    <a href="#" class="mobile-menu-link" onclick="redirectFiltro('reacondicionados')">♻️ Reacondicionados</a>
                 </div>
             </div>
         </div>
@@ -149,11 +149,22 @@
                         <h2>Filtros</h2>
                         <button class="clear-filters-btn" onclick="clearAllFilters()">Limpiar todo</button>
                     </div>
+                    <hr>
                     
                     <!-- Categorías Filter -->
                     <div class="filter-section">
                         <h3 class="filter-title">Categorías</h3>
                         <div class="filter-content">
+                            <label class="filter-item">
+                                <input type="checkbox" name="categoria" value="celulares">
+                                <span class="filter-text">Celulares</span>
+                                <span class="filter-count">(15)</span>
+                            </label>
+                            <label class="filter-item">
+                                <input type="checkbox" name="categoria" value="televisores">
+                                <span class="filter-text">Televisores</span>
+                                <span class="filter-count">(10)</span>
+                            </label>
                             <label class="filter-item">
                                 <input type="checkbox" name="categoria" value="tecnologia">
                                 <span class="filter-text">Tecnología</span>
@@ -170,6 +181,11 @@
                                 <span class="filter-count">(12)</span>
                             </label>
                             <label class="filter-item">
+                                <input type="checkbox" name="categoria" value="motos-scooters">
+                                <span class="filter-text">Motos y Scooters</span>
+                                <span class="filter-count">(8)</span>
+                            </label>
+                            <label class="filter-item">
                                 <input type="checkbox" name="categoria" value="gamer">
                                 <span class="filter-text">Gaming</span>
                                 <span class="filter-count">(6)</span>
@@ -178,6 +194,28 @@
                                 <input type="checkbox" name="categoria" value="construccion">
                                 <span class="filter-text">Construcción</span>
                                 <span class="filter-count">(10)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Tipo de Promoción -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">Tipo de Promoción</h3>
+                        <div class="filter-content">
+                            <label class="filter-item">
+                                <input type="checkbox" name="promocion" value="ofertas">
+                                <span class="filter-text" style="color:#e53935">🔥 Ofertas</span>
+                            </label>
+                            <label class="filter-item">
+                                <input type="checkbox" name="promocion" value="combos">
+                                <span class="filter-text" style="color:#1976d2">📦 Combos</span>
+                            </label>
+                            <label class="filter-item">
+                                <input type="checkbox" name="promocion" value="novedades">
+                                <span class="filter-text" style="color:#388e3c">✨ Novedades</span>
+                            </label>
+                            <label class="filter-item">
+                                <input type="checkbox" name="promocion" value="reacondicionados">
+                                <span class="filter-text" style="color:#8e24aa">♻️ Reacondicionados</span>
                             </label>
                         </div>
                     </div>
@@ -475,25 +513,163 @@
     <script src="js/utils.js"></script>
     <script src="js/components.js"></script>
     <script src="js/novedades.js"></script>
-    
-    <!-- Netlify Identity -->
+
     <script>
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                    window.netlifyIdentity.on("login", () => {
-                        document.location.href = "/admin/";
-                    });
+    // Utilidad para obtener todos los valores de un parámetro de la URL
+    function getQueryParams() {
+        const params = {};
+        const search = window.location.search.substring(1);
+        if (!search) return params;
+        search.split('&').forEach(pair => {
+            const [key, value] = pair.split('=');
+            if (!params[key]) params[key] = [];
+            params[key].push(decodeURIComponent(value));
+        });
+        return params;
+    }
+
+    // Selecciona los checkboxes según los parámetros de la URL
+    function preselectFilters() {
+        const params = getQueryParams();
+        // Si estamos en novedades.html, selecciona Novedades y Reacondicionados por defecto
+        if (window.location.pathname.includes('novedades.html')) {
+            document.querySelectorAll('input[name="promocion"]').forEach(input => {
+                if (input.value === 'novedades' || input.value === 'reacondicionados') {
+                    input.checked = true;
                 }
             });
         }
+        // Selecciona categorías
+        if (params['categoria']) {
+            document.querySelectorAll('input[name="categoria"]').forEach(input => {
+                input.checked = params['categoria'].includes(input.value);
+            });
+        }
+        // Selecciona tipo de promoción por parámetro
+        if (params['tipo-promocion'] || params['promocion']) {
+            const promoParams = params['tipo-promocion'] || params['promocion'];
+            document.querySelectorAll('input[name="promocion"]').forEach(input => {
+                if (promoParams.includes(input.value)) {
+                    input.checked = true;
+                }
+            });
+        }
+    }
+
+    // Actualiza la URL según los filtros seleccionados
+    function updateURLFromFilters() {
+        const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
+        const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
+        const params = [];
+        categorias.forEach(cat => params.push('categoria=' + encodeURIComponent(cat)));
+        promociones.forEach(promo => params.push('tipo-promocion=' + encodeURIComponent(promo)));
+        const newUrl = window.location.pathname + (params.length ? '?' + params.join('&') : '');
+        window.history.replaceState({}, '', newUrl);
+        renderProducts();
+    }
+
+    // Asigna eventos a los checkboxes
+    function setupFilterEvents() {
+        document.querySelectorAll('input[name="categoria"], input[name="promocion"]').forEach(input => {
+            input.addEventListener('change', updateURLFromFilters);
+        });
+    }
+
+    // Simula el renderizado de productos según los filtros activos
+    // Simulación: productos cargados desde Decap CMS
+    const productos = [
+        {
+            nombre: 'Apple Aspiradora Robot',
+            precio: 3287,
+            categoria: 'muebles',
+            promociones: ['ofertas'],
+            etiquetas: ['ofertas', 'muebles'],
+            imagen: 'images/producto1.jpg',
+            descuento: 18
+        },
+        {
+            nombre: 'Sofá Modular 3 Cuerpos Gris',
+            precio: 1299,
+            categoria: 'muebles',
+            promociones: ['novedades'],
+            etiquetas: ['novedades', 'muebles'],
+            imagen: 'images/producto2.jpg',
+            descuento: 19
+        },
+        {
+            nombre: 'Samsung TV 55"',
+            precio: 2499,
+            categoria: 'televisores',
+            promociones: ['reacondicionados'],
+            etiquetas: ['reacondicionados', 'televisores'],
+            imagen: 'images/producto3.jpg',
+            descuento: 10
+        },
+        {
+            nombre: 'iPhone 14 Pro',
+            precio: 4899,
+            categoria: 'celulares',
+            promociones: ['ofertas'],
+            etiquetas: ['ofertas', 'celulares'],
+            imagen: 'images/producto4.jpg',
+            descuento: 12
+        },
+        {
+            nombre: 'Moto Honda CB125',
+            precio: 5990,
+            categoria: 'motos-scooters',
+            promociones: ['novedades'],
+            etiquetas: ['novedades', 'motos-scooters'],
+            imagen: 'images/producto5.jpg',
+            descuento: 8
+        },
+        // ...más productos
+    ];
+
+    function renderProducts() {
+        const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
+        const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
+        // Filtrado por categoría y promoción
+        let filtrados = productos.filter(p => {
+            let catOk = categorias.length === 0 || categorias.includes(p.categoria);
+            let promoOk = promociones.length === 0 || p.promociones.some(pr => promociones.includes(pr));
+            return catOk && promoOk;
+        });
+        // Renderizado en el grid
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        if (filtrados.length === 0) {
+            grid.innerHTML = '<p>No hay productos que coincidan con los filtros seleccionados.</p>';
+            return;
+        }
+        filtrados.forEach(p => {
+            grid.innerHTML += `
+                <div class="product-card">
+                    <img src="${p.imagen}" alt="${p.nombre}" class="product-img">
+                    <div class="product-info">
+                        <h4>${p.nombre}</h4>
+                        <p class="product-price">S/ ${p.precio.toLocaleString()}</p>
+                        ${p.descuento ? `<span class="product-discount">-${p.descuento}%</span>` : ''}
+                        <button class="btn btn-primary">Agregar al carrito</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        preselectFilters();
+        setupFilterEvents();
+        renderProducts();
+    });
     </script>
-</body>
-</html>
-    <!-- Scripts -->
-    <script src="js/utils.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/novedades.js"></script>
+
+    <script>
+    function redirectFiltro(valor) {
+        window.location.href = '/productos?filtro=' + encodeURIComponent(valor);
+    }
+    </script>
     
     <!-- Netlify Identity -->
     <script>
