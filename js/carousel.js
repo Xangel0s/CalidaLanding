@@ -31,11 +31,11 @@ class Carousel {
     }
     
     init() {
-        this.setupElements();
+        const setupSuccess = this.setupElements();
         
-        if (!this.track || !this.items.length) {
-            console.warn('Carousel initialization failed: track or items not found in:', this.container.id || this.container.className);
-            return;
+        if (!setupSuccess) {
+            console.warn('Carousel initialization failed: setup unsuccessful for:', this.container.id || this.container.className);
+            return false;
         }
         
         // For infinite scroll carousels, setup clones first
@@ -50,33 +50,152 @@ class Carousel {
         if (this.options.autoPlay) {
             this.startAutoPlay();
         }
+        
+        return true;
     }
     
     setupElements() {
-        // Buscar el track con selectores más específicos incluyendo IDs
-        this.track = this.container.querySelector('.categories-track, .hero-slider, .best-sellers-track, #categoriesTrack, #featuredProductsTrack, #bestSellersTrack');
+        // Detect carousel type and setup track accordingly
+        const carouselType = this.detectCarouselType();
         
-        if (!this.track) {
-            console.warn('Track not found in carousel:', this.container.id || this.container.className);
-            return;
+        switch (carouselType) {
+            case 'hero':
+                this.setupHeroCarousel();
+                break;
+            case 'categories':
+                this.setupStandardCarousel('.categories-track, #categoriesTrack');
+                break;
+            case 'products':
+                this.setupStandardCarousel('.best-sellers-track, #featuredProductsTrack, #bestSellersTrack');
+                break;
+            default:
+                this.setupFallbackCarousel();
         }
         
+        if (!this.track || this.items.length === 0) {
+            console.warn('Carousel setup failed for:', this.container.id || this.container.className);
+            return false;
+        }
+        
+        this.setupCarouselControls();
+        this.applyTrackStyles();
+        
+        console.log(`Carousel [${carouselType}] initialized:`, this.container.id || this.container.className, 'with', this.items.length, 'items');
+        return true;
+    }
+    
+    detectCarouselType() {
+        const containerId = this.container.id;
+        const containerClass = this.container.className;
+        
+        if (containerId === 'heroSlider' || containerClass.includes('hero')) {
+            return 'hero';
+        } else if (containerId.includes('categories') || containerClass.includes('categories')) {
+            return 'categories';
+        } else if (containerId.includes('Products') || containerId.includes('Sellers') || containerClass.includes('products') || containerClass.includes('sellers')) {
+            return 'products';
+        }
+        return 'unknown';
+    }
+    
+    setupHeroCarousel() {
+        console.log('Setting up hero carousel with specialized handling');
+        
+        // Para hero slider, el container es el track
+        this.track = this.container;
+        
+        // Obtener todos los slides del hero
         this.items = [...this.track.children];
-        this.originalItems = [...this.items]; // Store original items for infinite scroll
+        this.originalItems = [...this.items];
+        
+        if (this.items.length === 0) {
+            console.warn('No hero slides found');
+            return false;
+        }
+        
+        console.log(`Found ${this.items.length} hero slides`);
+        
+        // Aplicar estilos de posicionamiento al container
+        this.container.style.cssText = `
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        `;
+        
+        // Configurar cada slide para animación fade
+        this.items.forEach((slide, index) => {
+            slide.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: ${index === 0 ? '1' : '0'};
+                transition: opacity 0.5s ease-in-out;
+                z-index: ${index === 0 ? '2' : '1'};
+            `;
+            
+            // Asegurar que todas las imágenes cubran el área
+            const images = slide.querySelectorAll('img');
+            images.forEach(img => {
+                img.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                `;
+            });
+        });
+        
+        console.log('Hero carousel setup completed successfully');
+        return true;
+    }
+    
+    setupStandardCarousel(trackSelector) {
+        // For standard carousels, find track within container
+        this.track = this.container.querySelector(trackSelector);
+        if (this.track) {
+            this.items = [...this.track.children];
+            this.originalItems = [...this.items];
+        }
+    }
+    
+    setupFallbackCarousel() {
+        // Fallback: try common selectors
+        const selectors = [
+            '.categories-track', '.best-sellers-track', '.products-track', '.hero-slider',
+            '#categoriesTrack', '#featuredProductsTrack', '#bestSellersTrack'
+        ];
+        
+        for (const selector of selectors) {
+            this.track = this.container.querySelector(selector);
+            if (this.track) {
+                this.items = [...this.track.children];
+                this.originalItems = [...this.items];
+                break;
+            }
+        }
+        
+        // Last resort: use container as track
+        if (!this.track) {
+            this.track = this.container;
+            this.items = [...this.track.children];
+            this.originalItems = [...this.items];
+        }
+    }
+    
+    setupCarouselControls() {
         this.prevBtn = this.container.querySelector('.carousel-prev, .hero-prev');
         this.nextBtn = this.container.querySelector('.carousel-next, .hero-next');
         this.indicators = this.container.querySelector('.hero-indicators');
-        
-        if (this.items.length === 0) {
-            console.warn('No items found in track:', this.track);
-            return;
+    }
+    
+    applyTrackStyles() {
+        if (this.track) {
+            this.track.style.display = 'flex';
+            this.track.style.transition = 'transform 0.5s ease-in-out';
         }
-        
-        // Set up track styles
-        this.track.style.display = 'flex';
-        this.track.style.transition = 'transform 0.5s ease-in-out';
-        
-        console.log('Carousel initialized:', this.container.id || this.container.className, 'with', this.items.length, 'items');
     }
     
     setupInfiniteScroll() {
@@ -357,7 +476,14 @@ class Carousel {
         
         this.isTransitioning = true;
         
-        if (this.options.infiniteScroll) {
+        if (this.carouselType === 'hero') {
+            // Hero carousel usa fade effect
+            const nextIndex = this.options.loop 
+                ? (this.currentIndex + 1) % this.items.length
+                : Math.min(this.currentIndex + 1, this.items.length - 1);
+            this.moveToSlideHero(nextIndex);
+            setTimeout(() => { this.isTransitioning = false; }, 500);
+        } else if (this.options.infiniteScroll) {
             this.currentIndex++;
             this.updateView();
             
@@ -381,11 +507,41 @@ class Carousel {
         }
     }
     
+    // Movimiento específico para hero carousel (fade effect)
+    moveToSlideHero(index) {
+        if (!this.items || this.items.length === 0) return;
+        
+        // Asegurar que el índice esté en rango
+        if (index < 0) index = this.items.length - 1;
+        if (index >= this.items.length) index = 0;
+        
+        console.log(`Hero carousel moving to slide ${index}`);
+        
+        // Fade out all slides
+        this.items.forEach((slide, i) => {
+            slide.style.opacity = '0';
+            slide.style.zIndex = '1';
+        });
+        
+        // Fade in current slide
+        if (this.items[index]) {
+            this.items[index].style.opacity = '1';
+            this.items[index].style.zIndex = '2';
+        }
+        
+        this.currentIndex = index;
+        this.updateIndicators();
+    }
+    
     goToSlide(index) {
         if (this.isTransitioning || index === this.currentIndex) return;
         
-        this.currentIndex = Math.max(0, Math.min(index, this.getMaxIndex()));
-        this.updateView();
+        if (this.carouselType === 'hero') {
+            this.moveToSlideHero(index);
+        } else {
+            this.currentIndex = Math.max(0, Math.min(index, this.getMaxIndex()));
+            this.updateView();
+        }
     }
     
     startAutoPlay() {
@@ -438,75 +594,94 @@ function initializeCarousels() {
         return;
     }
     
-    // Hero carousel
-    if (Utils.$('#heroSlider')) {
-        const heroCarousel = new Carousel('#heroSlider', {
-            autoPlay: true,
-            autoPlayInterval: 5000,
-            loop: true,
-            itemsToShow: 1
-        });
-        console.log('Hero carousel created');
-    }
-    
-    // Categories carousel
-    if (Utils.$('#categoriesCarousel')) {
-        const categoriesCarousel = new Carousel('#categoriesCarousel', {
-            itemsToShow: 2,
-            itemsToScroll: 1,
-            gap: 24,
-            breakpoints: {
-                480: { itemsToShow: 3 },
-                768: { itemsToShow: 4 },
-                1024: { itemsToShow: 5 },
-                1200: { itemsToShow: 6 }
+    const carouselConfigs = [
+        {
+            selector: '#heroSlider',
+            name: 'hero',
+            options: {
+                autoPlay: true,
+                autoPlayInterval: 5000,
+                loop: true,
+                itemsToShow: 1
             }
-        });
-        console.log('Categories carousel created');
-    }
-    
-    // Featured Products Carousel (Lo más destacado)
-    if (Utils.$('#featuredProductsCarousel')) {
-        const featuredProductsCarousel = new Carousel('#featuredProductsCarousel', {
-            autoPlay: false,
-            infiniteScroll: true,
-            itemsToShow: 1,
-            itemsToScroll: 1,
-            gap: 24,
-            breakpoints: {
-                480: { itemsToShow: 2 },
-                768: { itemsToShow: 3 },
-                1024: { itemsToShow: 4 }
+        },
+        {
+            selector: '#categoriesCarousel',
+            name: 'categories',
+            options: {
+                itemsToShow: 2,
+                itemsToScroll: 1,
+                gap: 24,
+                breakpoints: {
+                    480: { itemsToShow: 3 },
+                    768: { itemsToShow: 4 },
+                    1024: { itemsToShow: 5 },
+                    1200: { itemsToShow: 6 }
+                }
             }
-        });
-        console.log('Featured products carousel created');
-    }
-    
-    // Best Sellers Carousel
-    if (Utils.$('#bestSellersCarousel')) {
-        const bestSellersCarousel = new Carousel('#bestSellersCarousel', {
-            autoPlay: false,
-            itemsToShow: 1,
-            itemsToScroll: 1,
-            gap: 24,
-            breakpoints: {
-                480: { itemsToShow: 2 },
-                768: { itemsToShow: 3 },
-                1024: { itemsToShow: 4 }
+        },
+        {
+            selector: '#featuredProductsCarousel',
+            name: 'featuredProducts',
+            options: {
+                autoPlay: false,
+                infiniteScroll: true,
+                itemsToShow: 1,
+                itemsToScroll: 1,
+                gap: 24,
+                breakpoints: {
+                    480: { itemsToShow: 2 },
+                    768: { itemsToShow: 3 },
+                    1024: { itemsToShow: 4 }
+                }
             }
-        });
-        console.log('Best sellers carousel created');
-    }
+        },
+        {
+            selector: '#bestSellersCarousel',
+            name: 'bestSellers',
+            options: {
+                autoPlay: false,
+                itemsToShow: 1,
+                itemsToScroll: 1,
+                gap: 24,
+                breakpoints: {
+                    480: { itemsToShow: 2 },
+                    768: { itemsToShow: 3 },
+                    1024: { itemsToShow: 4 }
+                }
+            }
+        }
+    ];
+    
+    const carouselInstances = {};
+    let successCount = 0;
+    
+    carouselConfigs.forEach(config => {
+        const element = Utils.$(config.selector);
+        if (element) {
+            try {
+                const carousel = new Carousel(config.selector, config.options);
+                if (carousel && carousel.init !== false) {
+                    carouselInstances[config.name] = carousel;
+                    console.log(`✓ ${config.name} carousel created successfully`);
+                    successCount++;
+                } else {
+                    console.warn(`✗ ${config.name} carousel initialization failed`);
+                }
+            } catch (error) {
+                console.error(`✗ Error creating ${config.name} carousel:`, error);
+            }
+        } else {
+            console.warn(`✗ Element not found for ${config.name} carousel: ${config.selector}`);
+        }
+    });
     
     // Store carousel instances globally for access
-    window.Carousels = {
-        hero: heroCarousel,
-        categories: categoriesCarousel,
-        featuredProducts: featuredProductsCarousel,
-        bestSellers: bestSellersCarousel
-    };
+    window.Carousels = carouselInstances;
     
-    console.log('All carousels initialized successfully');
+    console.log(`Carousel initialization complete: ${successCount}/${carouselConfigs.length} carousels initialized successfully`);
+    
+    return successCount > 0;
 }
 
 // Inicializar cuando DOM y Utils estén listos
