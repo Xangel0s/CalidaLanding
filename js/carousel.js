@@ -33,6 +33,11 @@ class Carousel {
     init() {
         this.setupElements();
         
+        if (!this.track || !this.items.length) {
+            console.warn('Carousel initialization failed: track or items not found in:', this.container.id || this.container.className);
+            return;
+        }
+        
         // For infinite scroll carousels, setup clones first
         if (this.options.infiniteScroll) {
             this.setupInfiniteScroll();
@@ -48,18 +53,30 @@ class Carousel {
     }
     
     setupElements() {
-        this.track = this.container.querySelector('.categories-track, .products-track, .hero-slider, .best-sellers-track');
+        // Buscar el track con selectores más específicos incluyendo IDs
+        this.track = this.container.querySelector('.categories-track, .hero-slider, .best-sellers-track, #categoriesTrack, #featuredProductsTrack, #bestSellersTrack');
+        
+        if (!this.track) {
+            console.warn('Track not found in carousel:', this.container.id || this.container.className);
+            return;
+        }
+        
         this.items = [...this.track.children];
         this.originalItems = [...this.items]; // Store original items for infinite scroll
         this.prevBtn = this.container.querySelector('.carousel-prev, .hero-prev');
         this.nextBtn = this.container.querySelector('.carousel-next, .hero-next');
         this.indicators = this.container.querySelector('.hero-indicators');
         
-        if (!this.track || this.items.length === 0) return;
+        if (this.items.length === 0) {
+            console.warn('No items found in track:', this.track);
+            return;
+        }
         
         // Set up track styles
         this.track.style.display = 'flex';
         this.track.style.transition = 'transform 0.5s ease-in-out';
+        
+        console.log('Carousel initialized:', this.container.id || this.container.className, 'with', this.items.length, 'items');
     }
     
     setupInfiniteScroll() {
@@ -96,11 +113,17 @@ class Carousel {
     
     setupEventListeners() {
         if (this.prevBtn) {
-            Utils.addEvent(this.prevBtn, 'click', () => this.prev());
+            Utils.addEvent(this.prevBtn, 'click', () => {
+                console.log('Previous button clicked for:', this.container.id || this.container.className);
+                this.prev();
+            });
         }
         
         if (this.nextBtn) {
-            Utils.addEvent(this.nextBtn, 'click', () => this.next());
+            Utils.addEvent(this.nextBtn, 'click', () => {
+                console.log('Next button clicked for:', this.container.id || this.container.className);
+                this.next();
+            });
         }
         
         if (this.indicators) {
@@ -404,60 +427,49 @@ class Carousel {
     }
 }
 
-// Initialize carousels when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Función para inicializar carruseles de manera segura
+function initializeCarousels() {
+    console.log('Initializing carousels...');
+    
+    // Verificar que Utils esté disponible
+    if (typeof Utils === 'undefined' || !Utils.$) {
+        console.error('Utils not available, retrying in 100ms...');
+        setTimeout(initializeCarousels, 100);
+        return;
+    }
+    
     // Hero carousel
-    const heroCarousel = new Carousel('#heroSlider', {
-        autoPlay: true,
-        autoPlayInterval: 5000,
-        loop: true,
-        itemsToShow: 1
-    });
+    if (Utils.$('#heroSlider')) {
+        const heroCarousel = new Carousel('#heroSlider', {
+            autoPlay: true,
+            autoPlayInterval: 5000,
+            loop: true,
+            itemsToShow: 1
+        });
+        console.log('Hero carousel created');
+    }
     
     // Categories carousel
-    const categoriesCarousel = new Carousel('#categoriesCarousel', {
-        itemsToShow: 2,
-        itemsToScroll: 1,
-        gap: 24,
-        breakpoints: {
-            480: { itemsToShow: 3 },
-            768: { itemsToShow: 4 },
-            1024: { itemsToShow: 5 },
-            1200: { itemsToShow: 6 }
-        }
-    });
+    if (Utils.$('#categoriesCarousel')) {
+        const categoriesCarousel = new Carousel('#categoriesCarousel', {
+            itemsToShow: 2,
+            itemsToScroll: 1,
+            gap: 24,
+            breakpoints: {
+                480: { itemsToShow: 3 },
+                768: { itemsToShow: 4 },
+                1024: { itemsToShow: 5 },
+                1200: { itemsToShow: 6 }
+            }
+        });
+        console.log('Categories carousel created');
+    }
     
-    // Featured Products Carousel (Lo más destacado) - WITH INFINITE SCROLL
-    const featuredProductsCarousel = new Carousel('#featuredProductsCarousel', {
-        autoPlay: false,
-        infiniteScroll: true, // Enable infinite scroll for this carousel
-        itemsToShow: 1,
-        itemsToScroll: 1,
-        gap: 24,
-        breakpoints: {
-            480: { itemsToShow: 2 },
-            768: { itemsToShow: 3 },
-            1024: { itemsToShow: 4 }
-        }
-    });
-    
-    // Best Sellers Carousel
-    const bestSellersCarousel = new Carousel('#bestSellersCarousel', {
-        autoPlay: false,
-        itemsToShow: 1,
-        itemsToScroll: 1,
-        gap: 24,
-        breakpoints: {
-            480: { itemsToShow: 2 },
-            768: { itemsToShow: 3 },
-            1024: { itemsToShow: 4 }
-        }
-    });
-    
-    // Products carousel (if exists)
-    const productsCarousel = Utils.$('#productsCarousel');
-    if (productsCarousel) {
-        new Carousel('#productsCarousel', {
+    // Featured Products Carousel (Lo más destacado)
+    if (Utils.$('#featuredProductsCarousel')) {
+        const featuredProductsCarousel = new Carousel('#featuredProductsCarousel', {
+            autoPlay: false,
+            infiniteScroll: true,
             itemsToShow: 1,
             itemsToScroll: 1,
             gap: 24,
@@ -467,6 +479,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 1024: { itemsToShow: 4 }
             }
         });
+        console.log('Featured products carousel created');
+    }
+    
+    // Best Sellers Carousel
+    if (Utils.$('#bestSellersCarousel')) {
+        const bestSellersCarousel = new Carousel('#bestSellersCarousel', {
+            autoPlay: false,
+            itemsToShow: 1,
+            itemsToScroll: 1,
+            gap: 24,
+            breakpoints: {
+                480: { itemsToShow: 2 },
+                768: { itemsToShow: 3 },
+                1024: { itemsToShow: 4 }
+            }
+        });
+        console.log('Best sellers carousel created');
     }
     
     // Store carousel instances globally for access
@@ -476,7 +505,20 @@ document.addEventListener('DOMContentLoaded', () => {
         featuredProducts: featuredProductsCarousel,
         bestSellers: bestSellersCarousel
     };
-});
+    
+    console.log('All carousels initialized successfully');
+}
+
+// Inicializar cuando DOM y Utils estén listos
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Pequeño delay para asegurar que Utils esté disponible
+        setTimeout(initializeCarousels, 100);
+    });
+} else {
+    // DOM ya está listo
+    setTimeout(initializeCarousels, 100);
+}
 
 // Export Carousel class
 window.Carousel = Carousel;
