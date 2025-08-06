@@ -1,26 +1,61 @@
-/* Variables CSS */
+/* Variables CSS - Calidda Inspired Colors */
 :root {
-    --primary-50: #eff6ff;
-    --primary-100: #dbeafe;
-    --primary-200: #bfdbfe;
-    --primary-300: #93c5fd;
-    --primary-400: #60a5fa;
-    --primary-500: #3b82f6;
-    --primary-600: #2563eb;
-    --primary-700: #1d4ed8;
-    --primary-800: #1e40af;
-    --primary-900: #1e3a8a;
+    /* Calidda Primary Colors (Turquesa - Teal) */
+    --calidda-teal-50: #f0fdfa;
+    --calidda-teal-100: #ccfbf1;
+    --calidda-teal-200: #99f6e4;
+    --calidda-teal-300: #5eead4;
+    --calidda-teal-400: #2dd4bf;
+    --calidda-teal-500: #00BCD4;
+    --calidda-teal-600: #0891b2;
+    --calidda-teal-700: #0e7490;
+    --calidda-teal-800: #155e75;
+    --calidda-teal-900: #164e63;
     
-    --secondary-50: #f0fdf4;
-    --secondary-100: #dcfce7;
-    --secondary-200: #bbf7d0;
-    --secondary-300: #86efac;
-    --secondary-400: #4ade80;
-    --secondary-500: #22c55e;
-    --secondary-600: #16a34a;
-    --secondary-700: #15803d;
-    --secondary-800: #166534;
-    --secondary-900: #14532d;
+    /* Calidda Secondary Colors (Verde Esmeralda) */
+    --calidda-green-50: #f0fdf4;
+    --calidda-green-100: #dcfce7;
+    --calidda-green-200: #bbf7d0;
+    --calidda-green-300: #86efac;
+    --calidda-green-400: #4ade80;
+    --calidda-green-500: #00C853;
+    --calidda-green-600: #16a34a;
+    --calidda-green-700: #15803d;
+    --calidda-green-800: #166534;
+    --calidda-green-900: #14532d;
+    
+    /* Primary vars mapped to Calidda teal colors */
+    --primary-50: var(--calidda-teal-50);
+    --primary-100: var(--calidda-teal-100);
+    --primary-200: var(--calidda-teal-200);
+    --primary-300: var(--calidda-teal-300);
+    --primary-400: var(--calidda-teal-400);
+    --primary-500: var(--calidda-teal-500);
+    --primary-600: var(--calidda-teal-600);
+    --primary-700: var(--calidda-teal-700);
+    --primary-800: var(--calidda-teal-800);
+    --primary-900: var(--calidda-teal-900);
+    
+    /* Secondary vars mapped to Calidda green */
+    --secondary-50: var(--calidda-green-50);
+    --secondary-100: var(--calidda-green-100);
+    --secondary-200: var(--calidda-green-200);
+    --secondary-300: var(--calidda-green-300);
+    --secondary-400: var(--calidda-green-400);
+    --secondary-500: var(--calidda-green-500);
+    --secondary-600: var(--calidda-green-600);
+    --secondary-700: var(--calidda-green-700);
+    --secondary-800: var(--calidda-green-800);
+    --secondary-900: var(--calidda-green-900);
+    
+    /* Calidda Gradients - Turquesa to Verde */
+    --calidda-gradient-primary: linear-gradient(135deg, #00BCD4 0%, #00C853 100%);
+    --calidda-gradient-secondary: linear-gradient(135deg, var(--calidda-green-500) 0%, var(--calidda-green-700) 100%);
+    --calidda-gradient-hero: linear-gradient(135deg, #00BCD4 0%, #00C853 100%);
+    --calidda-gradient-card: linear-gradient(135deg, var(--calidda-teal-50) 0%, var(--calidda-green-50) 100%);
+    
+    /* Linear gradient revert variable */
+    --linear-gradiend-revert: linear-gradient(135deg, #00BCD4 0%, #00C853 100%);
     
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
@@ -33,8 +68,8 @@
     --gray-800: #1f2937;
     --gray-900: #111827;
     
-    --orange-500: #f97316;
-    --orange-600: #ea580c;
+    --orange-500: var(--calidda-orange-500);
+    --orange-600: var(--calidda-orange-600);
     
     --red-500: #ef4444;
     --red-600: #dc2626;
@@ -45,8 +80,8 @@
     --purple-500: #8b5cf6;
     --purple-600: #7c3aed;
     
-    --blue-500: #3b82f6;
-    --blue-600: #2563eb;
+    --blue-500: var(--calidda-blue-500);
+    --blue-600: var(--calidda-blue-600);
     
     /* Typography */
     --font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -171,25 +206,27 @@ select {
 }
 
 .btn-primary {
-    background-color: var(--primary-500);
-    color: white;
-    border-color: var(--primary-500);
+background: var(--linear-gradiend-revert);
+color: white;
+border-color: var(--primary-500);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: var(--primary-600);
-    border-color: var(--primary-600);
+background: var(--linear-gradiend-revert);
+filter: brightness(0.95);
+border-color: var(--primary-600);
 }
 
 .btn-secondary {
-    background-color: var(--secondary-500);
-    color: white;
-    border-color: var(--secondary-500);
+background: var(--linear-gradiend-revert);
+color: white;
+border-color: var(--secondary-500);
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background-color: var(--secondary-600);
-    border-color: var(--secondary-600);
+background: var(--linear-gradiend-revert);
+filter: brightness(0.95);
+border-color: var(--secondary-600);
 }
 
 .btn-outline {
@@ -204,13 +241,14 @@ select {
 }
 
 .btn-white {
-    background-color: white;
-    color: var(--primary-600);
-    border-color: white;
+background: var(--linear-gradiend-revert);
+color: white;
+border-color: var(--primary-500);
 }
 
 .btn-white:hover:not(:disabled) {
-    background-color: var(--gray-50);
+background: var(--linear-gradiend-revert);
+filter: brightness(0.95);
 }
 
 /* Header Styles */

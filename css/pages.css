@@ -2,7 +2,7 @@
 
 /* Page Hero Section */
 .page-hero {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    background: linear-gradient(135deg, #00BCD4 0%, #00C853 100%);
     color: white;
     padding: 80px 0 60px;
     text-align: center;

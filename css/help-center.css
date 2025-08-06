@@ -2,7 +2,7 @@
 
 /* Hero Section for Help Center */
 .help-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--linear-gradiend-revert);
     color: white;
     padding: 80px 0;
     text-align: center;
