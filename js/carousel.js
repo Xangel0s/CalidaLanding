@@ -1012,16 +1012,6 @@ function initializeCarousels() {
     
     const carouselConfigs = [
         {
-            selector: '#heroSlider',
-            name: 'hero',
-            options: {
-                autoPlay: true,
-                autoPlayInterval: 5000,
-                loop: true,
-                itemsToShow: 1
-            }
-        },
-        {
             selector: '#categoriesCarousel',
             name: 'categories',
             options: {

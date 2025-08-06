@@ -11,7 +11,8 @@ class NovedadesManager {
             categoria: [],
             precio: [],
             descuento: [],
-            marca: []
+            marca: [],
+            promocion: []
         };
         this.sortBy = 'relevancia';
         this.viewMode = 'grid';
@@ -427,7 +428,8 @@ class NovedadesManager {
             categoria: [],
             precio: [],
             descuento: [],
-            marca: []
+            marca: [],
+            promocion: []
         };
         
         // Collect active filters
@@ -483,6 +485,20 @@ class NovedadesManager {
                 if (!this.activeFilters.marca.includes(product.brand)) {
                     return false;
                 }
+            }
+            
+            // Promocion filter
+            if (this.activeFilters.promocion.length > 0) {
+                const hasPromotion = this.activeFilters.promocion.some(promo => {
+                    switch (promo) {
+                        case 'ofertas': return product.badge === 'oferta' || product.discount > 0;
+                        case 'combos': return product.badge === 'combo';
+                        case 'novedades': return product.badge === 'nuevo';
+                        case 'reacondicionados': return product.badge === 'reacondicionado';
+                        default: return false;
+                    }
+                });
+                if (!hasPromotion) return false;
             }
             
             return true;
@@ -738,7 +754,8 @@ class NovedadesManager {
             categoria: [],
             precio: [],
             descuento: [],
-            marca: []
+            marca: [],
+            promocion: []
         };
         
         this.filteredProducts = [...this.products];

@@ -104,10 +104,10 @@
                         </div>
                     </div>
                     <div class="quick-links">
-                        <a href="#" class="quick-link ofertas" onclick="redirectFiltro('ofertas')">🔥 Ofertas</a>
-                        <a href="#" class="quick-link combos" onclick="redirectFiltro('combos')">📦 Combos</a>
-                        <a href="#" class="quick-link novedades" onclick="redirectFiltro('novedades')">✨ Novedades</a>
-                        <a href="#" class="quick-link reacondicionados" onclick="redirectFiltro('reacondicionados')">♻️ Reacondicionados</a>
+                        <a href="novedades.html?promocion=ofertas" class="quick-link ofertas">🔥 Ofertas</a>
+                        <a href="novedades.html?promocion=combos" class="quick-link combos">📦 Combos</a>
+                        <a href="novedades.html?promocion=novedades" class="quick-link novedades">✨ Novedades</a>
+                        <a href="novedades.html?promocion=reacondicionados" class="quick-link reacondicionados">♻️ Reacondicionados</a>
                     </div>
                 </div>
             </div>
@@ -517,7 +517,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </footer>
     
     <!-- Scripts -->
@@ -525,18 +524,20 @@
     <script src="js/components.js"></script>
     <script src="js/novedades.js"></script>
 
+    <!-- Netlify Identity -->
     <script>
-    // Utilidad para obtener todos los valores de un parámetro de la URL
-    function getQueryParams() {
-        const params = {};
-        const search = window.location.search.substring(1);
-        if (!search) return params;
-        search.split('&').forEach(pair => {
-            const [key, value] = pair.split('=');
-            if (!params[key]) params[key] = [];
-            params[key].push(decodeURIComponent(value));
-        });
-        return params;
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/admin/";
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
     }
 
     // Selecciona los checkboxes según los parámetros de la URL
