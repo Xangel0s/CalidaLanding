@@ -108,6 +108,233 @@ class NovedadesManager {
                 rating: 4.4,
                 reviews: 78,
                 badge: "oferta"
+            },
+            // Tablets
+            {
+                id: 7,
+                title: "iPad Air 10.9\" 64GB WiFi",
+                price: 2299,
+                originalPrice: 2699,
+                discount: 15,
+                image: "images/productos/ipad-air.jpg",
+                category: "tablets",
+                brand: "apple",
+                rating: 4.7,
+                reviews: 156,
+                badge: "oferta"
+            },
+            {
+                id: 8,
+                title: "Samsung Galaxy Tab S8 128GB",
+                price: 1899,
+                originalPrice: 2299,
+                discount: 17,
+                image: "images/productos/galaxy-tab-s8.jpg",
+                category: "tablets",
+                brand: "samsung",
+                rating: 4.5,
+                reviews: 89,
+                badge: "nuevo"
+            },
+            {
+                id: 9,
+                title: "Huawei MatePad 11\" 128GB",
+                price: 1199,
+                originalPrice: 1499,
+                discount: 20,
+                image: "images/productos/huawei-matepad.jpg",
+                category: "tablets",
+                brand: "huawei",
+                rating: 4.3,
+                reviews: 67,
+                badge: "oferta"
+            },
+            // Celulares
+            {
+                id: 10,
+                title: "iPhone 14 Pro 128GB Morado",
+                price: 4299,
+                originalPrice: 4899,
+                discount: 12,
+                image: "images/productos/iphone-14-pro.jpg",
+                category: "celulares",
+                brand: "apple",
+                rating: 4.8,
+                reviews: 234,
+                badge: "nuevo"
+            },
+            {
+                id: 11,
+                title: "Samsung Galaxy S23 256GB",
+                price: 3199,
+                originalPrice: 3699,
+                discount: 14,
+                image: "images/productos/galaxy-s23.jpg",
+                category: "celulares",
+                brand: "samsung",
+                rating: 4.6,
+                reviews: 178,
+                badge: "oferta"
+            },
+            {
+                id: 12,
+                title: "Xiaomi Redmi Note 12 Pro 128GB",
+                price: 899,
+                originalPrice: 1199,
+                discount: 25,
+                image: "images/productos/redmi-note-12.jpg",
+                category: "celulares",
+                brand: "xiaomi",
+                rating: 4.4,
+                reviews: 145,
+                badge: "oferta"
+            },
+            // Televisores
+            {
+                id: 13,
+                title: "LG OLED 55\" 4K Smart TV WebOS",
+                price: 3999,
+                originalPrice: 4799,
+                discount: 17,
+                image: "images/productos/lg-oled-55.jpg",
+                category: "televisores",
+                brand: "lg",
+                rating: 4.7,
+                reviews: 201,
+                badge: "nuevo"
+            },
+            {
+                id: 14,
+                title: "Sony Bravia 65\" 4K Android TV",
+                price: 2899,
+                originalPrice: 3499,
+                discount: 17,
+                image: "images/productos/sony-bravia-65.jpg",
+                category: "televisores",
+                brand: "sony",
+                rating: 4.6,
+                reviews: 167,
+                badge: "oferta"
+            },
+            {
+                id: 15,
+                title: "TCL 50\" 4K UHD Smart TV",
+                price: 1299,
+                originalPrice: 1599,
+                discount: 19,
+                image: "images/productos/tcl-50-4k.jpg",
+                category: "televisores",
+                brand: "tcl",
+                rating: 4.2,
+                reviews: 89,
+                badge: "oferta"
+            },
+            // Gaming
+            {
+                id: 16,
+                title: "PlayStation 5 Digital Edition",
+                price: 2299,
+                originalPrice: 2599,
+                discount: 12,
+                image: "images/productos/ps5-digital.jpg",
+                category: "gamer",
+                brand: "sony",
+                rating: 4.9,
+                reviews: 312,
+                badge: "nuevo"
+            },
+            {
+                id: 17,
+                title: "Xbox Series X 1TB",
+                price: 2199,
+                originalPrice: 2499,
+                discount: 12,
+                image: "images/productos/xbox-series-x.jpg",
+                category: "gamer",
+                brand: "microsoft",
+                rating: 4.8,
+                reviews: 278,
+                badge: "nuevo"
+            },
+            {
+                id: 18,
+                title: "PC Gamer Ryzen 5 RTX 4060",
+                price: 3299,
+                originalPrice: 3899,
+                discount: 15,
+                image: "images/productos/pc-gamer-ryzen5.jpg",
+                category: "gamer",
+                brand: "asus",
+                rating: 4.7,
+                reviews: 134,
+                badge: "oferta"
+            },
+            // Construcción
+            {
+                id: 19,
+                title: "Taladro Percutor Dewalt 20V",
+                price: 599,
+                originalPrice: 799,
+                discount: 25,
+                image: "images/productos/taladro-dewalt.jpg",
+                category: "construccion",
+                brand: "dewalt",
+                rating: 4.6,
+                reviews: 156,
+                badge: "oferta"
+            },
+            {
+                id: 20,
+                title: "Soldadora Inverter 200A",
+                price: 899,
+                originalPrice: 1199,
+                discount: 25,
+                image: "images/productos/soldadora-inverter.jpg",
+                category: "construccion",
+                brand: "lincoln",
+                rating: 4.5,
+                reviews: 89,
+                badge: "oferta"
+            },
+            {
+                id: 21,
+                title: "Amoladora Angular 4.5\" Bosch",
+                price: 299,
+                originalPrice: 399,
+                discount: 25,
+                image: "images/productos/amoladora-bosch.jpg",
+                category: "construccion",
+                brand: "bosch",
+                rating: 4.4,
+                reviews: 123,
+                badge: "oferta"
+            },
+            // Motos y Scooters
+            {
+                id: 22,
+                title: "Scooter Eléctrico Xiaomi Pro 2",
+                price: 1899,
+                originalPrice: 2299,
+                discount: 17,
+                image: "images/productos/scooter-xiaomi-pro2.jpg",
+                category: "motos-scooters",
+                brand: "xiaomi",
+                rating: 4.5,
+                reviews: 167,
+                badge: "nuevo"
+            },
+            {
+                id: 23,
+                title: "Motocicleta Honda CG 150 Titan",
+                price: 8999,
+                originalPrice: 9999,
+                discount: 10,
+                image: "images/productos/honda-cg-150.jpg",
+                category: "motos-scooters",
+                brand: "honda",
+                rating: 4.7,
+                reviews: 234,
+                badge: "oferta"
             }
         ];
         
@@ -118,17 +345,19 @@ class NovedadesManager {
     }
     
     generateMoreProducts() {
-        const categories = ["tecnologia", "electrodomesticos", "hogar", "muebles", "construccion", "vehiculos", "gamer", "deportes"];
-        const brands = ["samsung", "lg", "sony", "philips", "xiaomi", "apple", "whirlpool", "asus"];
+        const categories = ["tecnologia", "electrodomesticos", "muebles", "construccion", "gamer", "celulares", "televisores", "tablets", "motos-scooters"];
+        const brands = ["samsung", "lg", "sony", "philips", "xiaomi", "apple", "whirlpool", "asus", "bosch", "dewalt", "honda", "yamaha"];
         const productNames = [
             "Smart TV 65\"", "Microondas Digital", "Aspiradora Robot", "Mesa de Centro",
-            "Taladro Inalámbrico", "Bicicleta Eléctrica", "Auriculares Gaming", "Cinta de Correr",
+            "Taladro Inalámbrico", "Scooter Eléctrico", "Auriculares Gaming", "Tablet 10\"",
             "Air Fryer 5L", "Escritorio Ergonómico", "Parlante Bluetooth", "Plancha Vapor",
             "Silla Gaming", "Ventilador Torre", "Licuadora Pro", "Lámpara LED",
-            "Cafetera Espresso", "Monitor 27\"", "Teclado Mecánico", "Mouse Gaming"
+            "Cafetera Espresso", "Monitor 27\"", "Teclado Mecánico", "Mouse Gaming",
+            "Smartphone 128GB", "Televisor 43\"", "iPad Pro", "Moto 150cc",
+            "PC Gamer", "Consola Gaming", "Soldadora", "Amoladora"
         ];
         
-        for (let i = 7; i <= 99; i++) {
+        for (let i = 24; i <= 99; i++) {
             const category = categories[Math.floor(Math.random() * categories.length)];
             const brand = brands[Math.floor(Math.random() * brands.length)];
             const name = productNames[Math.floor(Math.random() * productNames.length)];
@@ -591,6 +820,8 @@ class NovedadesManager {
     loadFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
         
+        console.log('🔍 Loading filters from URL:', window.location.search);
+        
         // Load page
         const page = parseInt(params.get('page')) || 1;
         this.currentPage = page;
@@ -609,15 +840,22 @@ class NovedadesManager {
             if (filterValue) {
                 this.activeFilters[filterType] = filterValue.split(',');
                 
+                console.log(`📋 Aplicando filtro ${filterType}:`, this.activeFilters[filterType]);
+                
                 // Check corresponding checkboxes
                 this.activeFilters[filterType].forEach(value => {
                     const checkbox = document.querySelector(`input[name="${filterType}"][value="${value}"]`);
                     if (checkbox) {
                         checkbox.checked = true;
+                        console.log(`✅ Checkbox activado: ${filterType} = ${value}`);
                     }
                 });
             }
         });
+        
+        // Apply filters and update display
+        this.applyFilters();
+        this.updateActiveFiltersDisplay();
         
         this.applyFilters();
     }

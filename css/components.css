@@ -32,12 +32,28 @@
     border: 1px solid var(--gray-200);
     transition: all var(--transition-fast);
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .category-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary-300);
+    text-decoration: none;
+    color: inherit;
+}
+
+.category-card:focus {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.category-card:visited {
+    color: inherit;
 }
 
 .category-icon {
