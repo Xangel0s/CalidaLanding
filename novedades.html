@@ -520,40 +520,38 @@
                     <div class="footer-section">
                         <h4>Productos</h4>
                         <ul class="footer-links">
-                            <li><a href="#">Créditos Personales</a></li>
-                            <li><a href="#">Créditos Empresariales</a></li>
-                            <li><a href="#">Préstamos Hipotecarios</a></li>
-                            <li><a href="#">Créditos Vehiculares</a></li>
+                            <li><a href="creditos-personales.html">Créditos Personales</a></li>
+                            <li><a href="creditos-empresariales.html">Créditos Empresariales</a></li>
                         </ul>
                     </div>
                     
                     <div class="footer-section">
                         <h4>Servicios</h4>
                         <ul class="footer-links">
-                            <li><a href="#">Asesoría Financiera</a></li>
-                            <li><a href="#">Evaluación Crediticia</a></li>
-                            <li><a href="#">Refinanciamiento</a></li>
-                            <li><a href="#">Seguros</a></li>
+                            <li><a href="asesoria-financiera.html">Asesoría Financiera</a></li>
+                            <li><a href="evaluacion-crediticia.html">Evaluación Crediticia</a></li>
+                            <li><a href="refinanciamiento.html">Refinanciamiento</a></li>
+                            <li><a href="seguros.html">Seguros</a></li>
                         </ul>
                     </div>
                     
                     <div class="footer-section">
                         <h4>Empresa</h4>
                         <ul class="footer-links">
-                            <li><a href="/nosotros.html">Nosotros</a></li>
-                            <li><a href="#">Equipo</a></li>
-                            <li><a href="#">Trabaja con Nosotros</a></li>
-                            <li><a href="#">Testimonios</a></li>
+                            <li><a href="nosotros.html">Nosotros</a></li>
+                            <li><a href="equipo.html">Equipo</a></li>
+                            <li><a href="trabaja-con-nosotros.html">Trabaja con Nosotros</a></li>
+                            <li><a href="testimonios.html">Testimonios</a></li>
                         </ul>
                     </div>
                     
                     <div class="footer-section">
                         <h4>Soporte</h4>
                         <ul class="footer-links">
-                            <li><a href="/contacto.html">Centro de Ayuda</a></li>
-                            <li><a href="#">Preguntas Frecuentes</a></li>
-                            <li><a href="#">Políticas de Privacidad</a></li>
-                            <li><a href="#">Términos y Condiciones</a></li>
+                            <li><a href="centro-ayuda.html">Centro de Ayuda</a></li>
+                            <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                            <li><a href="politicas-privacidad.html">Políticas de Privacidad</a></li>
+                            <li><a href="terminos-condiciones.html">Términos y Condiciones</a></li>
                         </ul>
                     </div>
                 </div>
@@ -586,139 +584,108 @@
     <script src="js/novedades.js"></script>
     <script src="js/smart-search.js"></script>
 
-    <!-- Netlify Identity -->
     <script>
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                    window.netlifyIdentity.on("login", () => {
-                        document.location.href = "/admin/";
-                    });
+    // Módulo de filtros de productos - Novedades
+    (function() {
+        'use strict';
+
+        // Función para obtener parámetros de la URL
+        function getQueryParams() {
+            const params = {};
+            const urlParams = new URLSearchParams(window.location.search);
+            for (const [key, value] of urlParams) {
+                if (params[key]) {
+                    if (Array.isArray(params[key])) {
+                        params[key].push(value);
+                    } else {
+                        params[key] = [params[key], value];
+                    }
+                } else {
+                    params[key] = [value];
                 }
+            }
+            return params;
+        }
+
+        // Datos de productos simulados
+        const productos = [
+            {
+                nombre: 'Apple Aspiradora Robot',
+                precio: 3287,
+                categoria: 'muebles',
+                promociones: ['ofertas'],
+                etiquetas: ['ofertas', 'muebles'],
+                imagen: 'images/producto1.jpg',
+                descuento: 18
+            },
+            {
+                nombre: 'Sofá Modular 3 Cuerpos Gris',
+                precio: 1299,
+                categoria: 'muebles',
+                promociones: ['novedades'],
+                etiquetas: ['novedades', 'muebles'],
+                imagen: 'images/producto2.jpg',
+                descuento: 19
+            },
+            {
+                nombre: 'Samsung TV 55"',
+                precio: 2499,
+                categoria: 'televisores',
+                promociones: ['reacondicionados'],
+                etiquetas: ['reacondicionados', 'televisores'],
+                imagen: 'images/producto3.jpg',
+                descuento: 10
+            },
+            {
+                nombre: 'iPhone 14 Pro',
+                precio: 4899,
+                categoria: 'celulares',
+                promociones: ['ofertas'],
+                etiquetas: ['ofertas', 'celulares'],
+                imagen: 'images/producto4.jpg',
+                descuento: 12
+            },
+            {
+                nombre: 'Moto Honda CB125',
+                precio: 5990,
+                categoria: 'motos-scooters',
+                promociones: ['novedades'],
+                etiquetas: ['novedades', 'motos-scooters'],
+                imagen: 'images/producto5.jpg',
+                descuento: 8
+            }
+        ];
+
+        // Renderiza los productos filtrados
+        function renderProducts() {
+            const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
+            const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
+            
+            // Filtrado por categoría y promoción
+            let filtrados = productos.filter(p => {
+                let catOk = categorias.length === 0 || categorias.includes(p.categoria);
+                let promoOk = promociones.length === 0 || p.promociones.some(pr => promociones.includes(pr));
+                return catOk && promoOk;
             });
-        }
-    </script>
-</body>
-</html>
-    }
-
-    // Selecciona los checkboxes según los parámetros de la URL
-    function preselectFilters() {
-        const params = getQueryParams();
-        // Si estamos en novedades.html, selecciona Novedades y Reacondicionados por defecto
-        if (window.location.pathname.includes('novedades.html')) {
-            document.querySelectorAll('input[name="promocion"]').forEach(input => {
-                if (input.value === 'novedades' || input.value === 'reacondicionados') {
-                    input.checked = true;
-                }
-            });
-        }
-        // Selecciona categorías
-        if (params['categoria']) {
-            document.querySelectorAll('input[name="categoria"]').forEach(input => {
-                input.checked = params['categoria'].includes(input.value);
-            });
-        }
-        // Selecciona tipo de promoción por parámetro
-        if (params['tipo-promocion'] || params['promocion']) {
-            const promoParams = params['tipo-promocion'] || params['promocion'];
-            document.querySelectorAll('input[name="promocion"]').forEach(input => {
-                if (promoParams.includes(input.value)) {
-                    input.checked = true;
-                }
-            });
-        }
-    }
-
-    // Actualiza la URL según los filtros seleccionados
-    function updateURLFromFilters() {
-        const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
-        const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
-        const params = [];
-        categorias.forEach(cat => params.push('categoria=' + encodeURIComponent(cat)));
-        promociones.forEach(promo => params.push('tipo-promocion=' + encodeURIComponent(promo)));
-        const newUrl = window.location.pathname + (params.length ? '?' + params.join('&') : '');
-        window.history.replaceState({}, '', newUrl);
-        renderProducts();
-    }
-
-    // Asigna eventos a los checkboxes
-    function setupFilterEvents() {
-        document.querySelectorAll('input[name="categoria"], input[name="promocion"]').forEach(input => {
-            input.addEventListener('change', updateURLFromFilters);
-        });
-    }
-
-    // Simula el renderizado de productos según los filtros activos
-    // Simulación: productos cargados desde Decap CMS
-    const productos = [
-        {
-            nombre: 'Apple Aspiradora Robot',
-            precio: 3287,
-            categoria: 'muebles',
-            promociones: ['ofertas'],
-            etiquetas: ['ofertas', 'muebles'],
-            imagen: 'images/producto1.jpg',
-            descuento: 18
-        },
-        {
-            nombre: 'Sofá Modular 3 Cuerpos Gris',
-            precio: 1299,
-            categoria: 'muebles',
-            promociones: ['novedades'],
-            etiquetas: ['novedades', 'muebles'],
-            imagen: 'images/producto2.jpg',
-            descuento: 19
-        },
-        {
-            nombre: 'Samsung TV 55"',
-            precio: 2499,
-            categoria: 'televisores',
-            promociones: ['reacondicionados'],
-            etiquetas: ['reacondicionados', 'televisores'],
-            imagen: 'images/producto3.jpg',
-            descuento: 10
-        },
-        {
-            nombre: 'iPhone 14 Pro',
-            precio: 4899,
-            categoria: 'celulares',
-            promociones: ['ofertas'],
-            etiquetas: ['ofertas', 'celulares'],
-            imagen: 'images/producto4.jpg',
-            descuento: 12
-        },
-        {
-            nombre: 'Moto Honda CB125',
-            precio: 5990,
-            categoria: 'motos-scooters',
-            promociones: ['novedades'],
-            etiquetas: ['novedades', 'motos-scooters'],
-            imagen: 'images/producto5.jpg',
-            descuento: 8
-        },
-        // ...más productos
-    ];
-
-    function renderProducts() {
-        const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
-        const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
-        // Filtrado por categoría y promoción
-        let filtrados = productos.filter(p => {
-            let catOk = categorias.length === 0 || categorias.includes(p.categoria);
-            let promoOk = promociones.length === 0 || p.promociones.some(pr => promociones.includes(pr));
-            return catOk && promoOk;
-        });
-        // Renderizado en el grid
-        const grid = document.getElementById('productsGrid');
-        grid.innerHTML = '';
-        if (filtrados.length === 0) {
-            grid.innerHTML = '<p>No hay productos que coincidan con los filtros seleccionados.</p>';
-            return;
-        }
-        filtrados.forEach(p => {
-            grid.innerHTML += `
-                <div class="product-card">
+            
+            // Renderizado en el grid
+            const grid = document.getElementById('productsGrid');
+            if (!grid) {
+                console.warn('Elemento productsGrid no encontrado');
+                return;
+            }
+            
+            grid.innerHTML = '';
+            
+            if (filtrados.length === 0) {
+                grid.innerHTML = '<p>No hay productos que coincidan con los filtros seleccionados.</p>';
+                return;
+            }
+            
+            filtrados.forEach(p => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
                     <img src="${p.imagen}" alt="${p.nombre}" class="product-img">
                     <div class="product-info">
                         <h4>${p.nombre}</h4>
@@ -726,25 +693,82 @@
                         ${p.descuento ? `<span class="product-discount">-${p.descuento}%</span>` : ''}
                         <button class="btn btn-primary">Agregar al carrito</button>
                     </div>
-                </div>
-            `;
+                `;
+                grid.appendChild(productCard);
+            });
+        }
+
+        // Preselecciona filtros según URL o página actual
+        function preselectFilters() {
+            const params = getQueryParams();
+            
+            // Si estamos en novedades.html, selecciona Novedades y Reacondicionados por defecto
+            if (window.location.pathname.includes('novedades.html')) {
+                document.querySelectorAll('input[name="promocion"]').forEach(input => {
+                    if (input.value === 'novedades' || input.value === 'reacondicionados') {
+                        input.checked = true;
+                    }
+                });
+            }
+            
+            // Selecciona categorías según parámetros URL
+            if (params['categoria']) {
+                document.querySelectorAll('input[name="categoria"]').forEach(input => {
+                    input.checked = params['categoria'].includes(input.value);
+                });
+            }
+            
+            // Selecciona promociones según parámetros URL
+            if (params['tipo-promocion'] || params['promocion']) {
+                const promoParams = params['tipo-promocion'] || params['promocion'];
+                document.querySelectorAll('input[name="promocion"]').forEach(input => {
+                    if (promoParams.includes(input.value)) {
+                        input.checked = true;
+                    }
+                });
+            }
+        }
+
+        // Actualiza la URL según filtros seleccionados
+        function updateURLFromFilters() {
+            const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
+            const promociones = Array.from(document.querySelectorAll('input[name="promocion"]:checked')).map(i => i.value);
+            
+            const params = [];
+            categorias.forEach(cat => params.push('categoria=' + encodeURIComponent(cat)));
+            promociones.forEach(promo => params.push('tipo-promocion=' + encodeURIComponent(promo)));
+            
+            const newUrl = window.location.pathname + (params.length ? '?' + params.join('&') : '');
+            window.history.replaceState({}, '', newUrl);
+            renderProducts();
+        }
+
+        // Configura eventos de filtros
+        function setupFilterEvents() {
+            document.querySelectorAll('input[name="categoria"], input[name="promocion"]').forEach(input => {
+                input.addEventListener('change', updateURLFromFilters);
+            });
+        }
+
+        // Función de redirección para filtros externos
+        window.redirectFiltro = function(valor) {
+            window.location.href = '/productos?filtro=' + encodeURIComponent(valor);
+        };
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                preselectFilters();
+                setupFilterEvents();
+                renderProducts();
+            } catch (error) {
+                console.error('Error al inicializar filtros:', error);
+            }
         });
-    }
 
-    // Inicialización al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-        preselectFilters();
-        setupFilterEvents();
-        renderProducts();
-    });
+    })();
     </script>
 
-    <script>
-    function redirectFiltro(valor) {
-        window.location.href = '/productos?filtro=' + encodeURIComponent(valor);
-    }
-    </script>
-    
     <!-- Netlify Identity -->
     <script>
         if (window.netlifyIdentity) {

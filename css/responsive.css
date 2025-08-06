@@ -222,6 +222,13 @@
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: var(--spacing-6);
     }
+
+    /* Oculta secciones específicas del footer: Productos, Servicios, Empresa */
+    .footer-grid .footer-section:nth-child(2),
+    .footer-grid .footer-section:nth-child(3),
+    .footer-grid .footer-section:nth-child(4) {
+        display: none !important;
+    }
     
     .whatsapp-content {
         flex-direction: column;
