@@ -554,6 +554,18 @@
     color: #d1d5db;
 }
 
+.contact-item:empty {
+    display: none;
+}
+
+.contact-item span:empty {
+    display: none;
+}
+
+.contact-item:has(span:empty) {
+    display: none;
+}
+
 .contact-item .icon {
     color: #60a5fa;
 }

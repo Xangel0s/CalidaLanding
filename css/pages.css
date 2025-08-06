@@ -765,8 +765,7 @@
 .service-item,
 .security-item,
 .cookie-type,
-.right-item,
-.contact-item {
+.right-item {
     background: white;
     padding: 1.5rem;
     border-radius: 8px;
