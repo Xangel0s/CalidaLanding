@@ -697,17 +697,10 @@
         }
 
         // Preselecciona filtros según URL o página actual
+        // DESHABILITADO - Conflicto con novedades.js
+        /*
         function preselectFilters() {
             const params = getQueryParams();
-            
-            // Si estamos en novedades.html, selecciona Novedades y Reacondicionados por defecto
-            if (window.location.pathname.includes('novedades.html')) {
-                document.querySelectorAll('input[name="promocion"]').forEach(input => {
-                    if (input.value === 'novedades' || input.value === 'reacondicionados') {
-                        input.checked = true;
-                    }
-                });
-            }
             
             // Selecciona categorías según parámetros URL
             if (params['categoria']) {
@@ -726,7 +719,10 @@
                 });
             }
         }
+        */
 
+        // DESHABILITADO - Conflicto con novedades.js
+        /*
         // Actualiza la URL según filtros seleccionados
         function updateURLFromFilters() {
             const categorias = Array.from(document.querySelectorAll('input[name="categoria"]:checked')).map(i => i.value);
@@ -747,12 +743,16 @@
                 input.addEventListener('change', updateURLFromFilters);
             });
         }
+        */
 
         // Función de redirección para filtros externos
         window.redirectFiltro = function(valor) {
             window.location.href = '/productos?filtro=' + encodeURIComponent(valor);
         };
 
+        // Sistema de filtros deshabilitado temporalmente para evitar conflictos
+        // con el sistema principal en novedades.js
+        /*
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             try {
@@ -763,6 +763,7 @@
                 console.error('Error al inicializar filtros:', error);
             }
         });
+        */
 
     })();
     </script>

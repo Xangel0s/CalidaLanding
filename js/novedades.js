@@ -957,6 +957,13 @@ class NovedadesManager {
         const params = new URLSearchParams(window.location.search);
         
         console.log('🔍 Loading filters from URL:', window.location.search);
+        console.log('🔍 Parsed params:', Object.fromEntries(params));
+        
+        // Reset all checkboxes first
+        document.querySelectorAll('.filter-section input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        console.log('🔄 All checkboxes reset');
         
         // Check for search query parameter
         const searchQuery = params.get('busqueda');
@@ -999,8 +1006,6 @@ class NovedadesManager {
         // Apply filters and update display
         this.applyFilters();
         this.updateActiveFiltersDisplay();
-        
-        this.applyFilters();
     }
     
     handleSearchQuery(query) {
