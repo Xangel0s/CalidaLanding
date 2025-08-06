@@ -944,6 +944,13 @@ class NovedadesManager {
         
         console.log('🔍 Loading filters from URL:', window.location.search);
         
+        // Check for search query parameter
+        const searchQuery = params.get('busqueda');
+        if (searchQuery) {
+            console.log('🔍 Búsqueda detectada:', searchQuery);
+            this.handleSearchQuery(searchQuery);
+        }
+        
         // Load page
         const page = parseInt(params.get('page')) || 1;
         this.currentPage = page;
@@ -980,6 +987,99 @@ class NovedadesManager {
         this.updateActiveFiltersDisplay();
         
         this.applyFilters();
+    }
+    
+    handleSearchQuery(query) {
+        // Define category mappings for search terms
+        const categoryMappings = {
+            'celular': 'celulares',
+            'celulares': 'celulares',
+            'movil': 'celulares',
+            'móvil': 'celulares',
+            'smartphone': 'celulares',
+            'telefono': 'celulares',
+            'teléfono': 'celulares',
+            'iphone': 'celulares',
+            'android': 'celulares',
+            
+            'tv': 'televisores',
+            'televisor': 'televisores',
+            'televisores': 'televisores',
+            'smart tv': 'televisores',
+            'pantalla': 'televisores',
+            
+            'electrodomestico': 'electrodomesticos',
+            'electrodoméstico': 'electrodomesticos',
+            'electrodomesticos': 'electrodomesticos',
+            'electrodomésticos': 'electrodomesticos',
+            'lavadora': 'electrodomesticos',
+            'refrigeradora': 'electrodomesticos',
+            'cocina': 'electrodomesticos',
+            'horno': 'electrodomesticos',
+            'microondas': 'electrodomesticos',
+            'licuadora': 'electrodomesticos',
+            
+            'laptop': 'tecnologia',
+            'computadora': 'tecnologia',
+            'tablet': 'tecnologia',
+            'auriculares': 'tecnologia',
+            'camara': 'tecnologia',
+            'cámara': 'tecnologia',
+            'tecnologia': 'tecnologia',
+            'tecnología': 'tecnologia',
+            
+            'mueble': 'muebles',
+            'muebles': 'muebles',
+            'sala': 'muebles',
+            'cama': 'muebles',
+            'mesa': 'muebles',
+            'silla': 'muebles',
+            'sofa': 'muebles',
+            'sofá': 'muebles',
+            'closet': 'muebles',
+            
+            'moto': 'motos-scooters',
+            'scooter': 'motos-scooters',
+            'motocicleta': 'motos-scooters',
+            'bicicleta': 'motos-scooters',
+            
+            'gaming': 'gamer',
+            'gamer': 'gamer',
+            'videojuego': 'gamer',
+            'consola': 'gamer',
+            'playstation': 'gamer',
+            'xbox': 'gamer',
+            'nintendo': 'gamer',
+            
+            'construccion': 'construccion',
+            'construcción': 'construccion',
+            'herramienta': 'construccion',
+            'cemento': 'construccion',
+            'ladrillo': 'construccion',
+            'pintura': 'construccion'
+        };
+        
+        const lowerQuery = query.toLowerCase();
+        
+        // Try to find exact match
+        if (categoryMappings[lowerQuery]) {
+            this.activeFilters.categoria = [categoryMappings[lowerQuery]];
+            console.log(`🎯 Búsqueda mapeada a categoría: ${categoryMappings[lowerQuery]}`);
+            return;
+        }
+        
+        // Try to find partial matches
+        for (const [keyword, category] of Object.entries(categoryMappings)) {
+            if (lowerQuery.includes(keyword) || keyword.includes(lowerQuery)) {
+                this.activeFilters.categoria = [category];
+                console.log(`🎯 Búsqueda parcial mapeada a categoría: ${category}`);
+                return;
+            }
+        }
+        
+        // If no category match found, search in tecnologia as fallback
+        console.log(`🔍 Sin coincidencia exacta, mostrando todos los productos para: ${query}`);
+        // Don't apply any category filter, show all products
     }
 }
 
