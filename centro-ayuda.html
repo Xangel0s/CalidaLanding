@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/smart-search.css">
+    <link rel="stylesheet" href="css/help-center.css">
     <link rel="stylesheet" href="css/responsive.css">
     
     <!-- Fonts -->
@@ -127,44 +128,48 @@
     <!-- Main Content -->
     <main>
         <!-- Hero Section -->
-        <section class="page-hero">
+        <section class="help-hero">
             <div class="container">
-                <div class="page-hero-content">
-                    <h1>Centro de Ayuda</h1>
-                    <p>Encuentra respuestas rápidas a tus preguntas y obtén el soporte que necesitas para aprovechar al máximo nuestros servicios.</p>
-                </div>
+                <h1>Centro de Ayuda</h1>
+                <p>Encuentra respuestas rápidas a tus preguntas y obtén el soporte que necesitas para aprovechar al máximo nuestros servicios.</p>
             </div>
         </section>
 
         <!-- Search Help -->
-        <section class="about-section">
+        <section class="help-search-section">
             <div class="container">
-                <div class="help-search-container" style="text-align: center; margin-bottom: var(--spacing-16);">
+                <div class="help-search-container">
                     <h2>¿En qué podemos ayudarte?</h2>
-                    <div class="search-container" style="max-width: 600px; margin: 0 auto;">
-                        <form class="search-form">
-                            <div class="search-input-container">
-                                <input 
-                                    type="text" 
-                                    placeholder="Buscar en el centro de ayuda..." 
-                                    class="search-input"
-                                    style="border-radius: 25px;"
-                                >
-                                <button type="submit" class="search-btn" style="border-radius: 0 25px 25px 0;">Buscar</button>
-                            </div>
-                        </form>
+                    <form class="help-search-form">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar en el centro de ayuda..." 
+                            class="help-search-input"
+                        >
+                        <button type="submit" class="help-search-btn">Buscar</button>
+                    </form>
+                    
+                    <div class="popular-searches">
+                        <h3>Búsquedas populares:</h3>
+                        <div class="popular-tags">
+                            <a href="#" class="popular-tag">Solicitar crédito</a>
+                            <a href="#" class="popular-tag">Documentos requeridos</a>
+                            <a href="#" class="popular-tag">Tiempo de aprobación</a>
+                            <a href="#" class="popular-tag">Tasas de interés</a>
+                            <a href="#" class="popular-tag">Mi cuenta</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Help Categories -->
-        <section class="benefits-section">
+        <section class="help-categories-section">
             <div class="container">
                 <h2>Categorías de Ayuda</h2>
-                <div class="benefits-grid">
-                    <div class="benefit-card">
-                        <div class="benefit-icon">
+                <div class="help-categories-grid">
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
@@ -175,8 +180,8 @@
                         <a href="#primeros-pasos" class="help-link">Ver guías →</a>
                     </div>
                     
-                    <div class="benefit-card">
-                        <div class="benefit-icon">
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <line x1="12" y1="1" x2="12" y2="23"></line>
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -187,8 +192,8 @@
                         <a href="#productos" class="help-link">Explorar productos →</a>
                     </div>
                     
-                    <div class="benefit-card">
-                        <div class="benefit-icon">
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M9 12l2 2 4-4"></path>
                                 <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.39 0 4.58.94 6.24 2.47"></path>
@@ -199,8 +204,8 @@
                         <a href="#aprobacion" class="help-link">Ver proceso →</a>
                     </div>
                     
-                    <div class="benefit-card">
-                        <div class="benefit-icon">
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                             </svg>
@@ -209,72 +214,109 @@
                         <p>Conoce cómo protegemos tu información y las medidas de seguridad que implementamos.</p>
                         <a href="#seguridad" class="help-link">Leer más →</a>
                     </div>
+                    
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h3>Mi Cuenta</h3>
+                        <p>Gestiona tu perfil, revisa tus solicitudes y actualiza tu información personal.</p>
+                        <a href="#cuenta" class="help-link">Administrar →</a>
+                    </div>
+                    
+                    <div class="help-category-card">
+                        <div class="help-category-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10,9 9,9 8,9"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Documentación</h3>
+                        <p>Descarga formularios, revisa términos y condiciones, y conoce nuestras políticas.</p>
+                        <a href="#documentacion" class="help-link">Descargar →</a>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- FAQ Section -->
-        <section class="features-section">
+        <section class="help-faq-section">
             <div class="container">
                 <h2>Preguntas Frecuentes</h2>
                 <div class="faq-container">
-                    <div class="accordion-item">
-                        <button class="accordion-header">
+                    <div class="faq-item">
+                        <button class="faq-question">
                             <span>¿Cómo solicito un crédito en CrediCallidda?</span>
-                            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polyline points="6,9 12,15 18,9"></polyline>
                             </svg>
                         </button>
-                        <div class="accordion-content">
-                            <p>Para solicitar un crédito, primero regístrate en nuestra plataforma con tus datos básicos. Luego, completa el formulario de solicitud indicando el monto que necesitas y el plazo de pago. Nuestro sistema comparará automáticamente ofertas de múltiples entidades financieras y te mostrará las mejores opciones disponibles para tu perfil.</p>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Para solicitar un crédito, primero regístrate en nuestra plataforma con tus datos básicos. Luego, completa el formulario de solicitud indicando el monto que necesitas y el plazo de pago. Nuestro sistema comparará automáticamente ofertas de múltiples entidades financieras y te mostrará las mejores opciones disponibles para tu perfil.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <button class="accordion-header">
+                    <div class="faq-item">
+                        <button class="faq-question">
                             <span>¿Qué documentos necesito para aplicar?</span>
-                            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polyline points="6,9 12,15 18,9"></polyline>
                             </svg>
                         </button>
-                        <div class="accordion-content">
-                            <p>Los documentos básicos incluyen: DNI vigente, últimas 3 boletas de pago o declaración de renta (independientes), estados de cuenta bancarios de los últimos 3 meses, y comprobante de domicilio no mayor a 3 meses. Dependiendo del tipo de crédito, podrían solicitarse documentos adicionales.</p>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Los documentos básicos incluyen: DNI vigente, últimas 3 boletas de pago o declaración de renta (independientes), estados de cuenta bancarios de los últimos 3 meses, y comprobante de domicilio no mayor a 3 meses. Dependiendo del tipo de crédito, podrían solicitarse documentos adicionales.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <button class="accordion-header">
+                    <div class="faq-item">
+                        <button class="faq-question">
                             <span>¿Cuánto tiempo toma la aprobación?</span>
-                            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polyline points="6,9 12,15 18,9"></polyline>
                             </svg>
                         </button>
-                        <div class="accordion-content">
-                            <p>La pre-aprobación es inmediata a través de nuestro sistema automático. Una vez seleccionada la entidad financiera, el proceso de aprobación final toma entre 24 a 72 horas hábiles. El desembolso se realiza dentro de las 24 horas posteriores a la aprobación final.</p>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>La pre-aprobación es inmediata a través de nuestro sistema automático. Una vez seleccionada la entidad financiera, el proceso de aprobación final toma entre 24 a 72 horas hábiles. El desembolso se realiza dentro de las 24 horas posteriores a la aprobación final.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <button class="accordion-header">
+                    <div class="faq-item">
+                        <button class="faq-question">
                             <span>¿Hay algún costo por usar CrediCallidda?</span>
-                            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polyline points="6,9 12,15 18,9"></polyline>
                             </svg>
                         </button>
-                        <div class="accordion-content">
-                            <p>No, nuestro servicio de comparación y asesoría es completamente gratuito para los usuarios. Solo pagas las tasas y comisiones establecidas por la entidad financiera que elijas. No cobramos comisiones ocultas ni costos adicionales por nuestros servicios.</p>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>No, nuestro servicio de comparación y asesoría es completamente gratuito para los usuarios. Solo pagas las tasas y comisiones establecidas por la entidad financiera que elijas. No cobramos comisiones ocultas ni costos adicionales por nuestros servicios.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item">
-                        <button class="accordion-header">
+                    <div class="faq-item">
+                        <button class="faq-question">
                             <span>¿Qué pasa si mi solicitud es rechazada?</span>
-                            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <polyline points="6,9 12,15 18,9"></polyline>
                             </svg>
                         </button>
-                        <div class="accordion-content">
-                            <p>Si una entidad financiera rechaza tu solicitud, nuestro sistema automáticamente la envía a otras instituciones que podrían aprobarla. Además, nuestros asesores te contactarán para brindarte recomendaciones personalizadas para mejorar tu perfil crediticio y aumentar las posibilidades de aprobación en futuras solicitudes.</p>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Si una entidad financiera rechaza tu solicitud, nuestro sistema automáticamente la envía a otras instituciones que podrían aprobarla. Además, nuestros asesores te contactarán para brindarte recomendaciones personalizadas para mejorar tu perfil crediticio y aumentar las posibilidades de aprobación en futuras solicitudes.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -282,36 +324,61 @@
         </section>
 
         <!-- Contact Support -->
-        <section class="process-section">
+        <section class="help-contact-section">
             <div class="container">
                 <h2>¿Necesitas Más Ayuda?</h2>
-                <div class="process-steps">
-                    <div class="process-step">
-                        <div class="step-number">📞</div>
+                <div class="contact-methods-grid">
+                    <div class="contact-method-card">
+                        <div class="contact-icon">📞</div>
                         <h3>Llámanos</h3>
                         <p>Atención telefónica de lunes a viernes de 8:00 AM a 8:00 PM</p>
-                        <strong>+51 999 999 999</strong>
+                        <div class="contact-info">+51 999 999 999</div>
                     </div>
                     
-                    <div class="process-step">
-                        <div class="step-number">💬</div>
+                    <div class="contact-method-card">
+                        <div class="contact-icon">💬</div>
                         <h3>Chat en Vivo</h3>
                         <p>Chatea con nuestros asesores especialistas en tiempo real</p>
                         <button class="btn btn-primary">Iniciar Chat</button>
                     </div>
                     
-                    <div class="process-step">
-                        <div class="step-number">📧</div>
+                    <div class="contact-method-card">
+                        <div class="contact-icon">📧</div>
                         <h3>Email</h3>
                         <p>Envíanos tu consulta y te responderemos en menos de 24 horas</p>
-                        <strong>ayuda@credicalidda.com</strong>
+                        <div class="contact-info">ayuda@credicalidda.com</div>
+                    </div>
+
+                    <div class="contact-method-card">
+                        <div class="contact-icon">🗨️</div>
+                        <h3>WhatsApp</h3>
+                        <p>Obtén ayuda instantánea a través de WhatsApp</p>
+                        <button class="btn btn-primary" onclick="openWhatsApp()">Contactar por WhatsApp</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-section">
+            <div class="container">
+                <div class="quick-actions-grid">
+                    <div class="quick-action-card">
+                        <h4>📋 Solicitar Crédito</h4>
+                        <p>Inicia tu solicitud ahora</p>
+                        <button class="btn btn-secondary">Comenzar</button>
                     </div>
                     
-                    <div class="process-step">
-                        <div class="step-number">📱</div>
-                        <h3>WhatsApp</h3>
-                        <p>Contacto directo por WhatsApp para soporte rápido</p>
-                        <button class="btn btn-secondary">Escribir WhatsApp</button>
+                    <div class="quick-action-card">
+                        <h4>📊 Consultar Estado</h4>
+                        <p>Revisa tu solicitud</p>
+                        <button class="btn btn-secondary">Ver Estado</button>
+                    </div>
+                    
+                    <div class="quick-action-card">
+                        <h4>📄 Descargar Documentos</h4>
+                        <p>Formularios y guías</p>
+                        <button class="btn btn-secondary">Descargar</button>
                     </div>
                 </div>
             </div>
@@ -465,5 +532,99 @@
 
     <!-- Scripts -->
     <script src="js/main.js"></script>
+    <script>
+        // FAQ Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all other FAQ items
+                    faqItems.forEach(otherItem => {
+                        otherItem.classList.remove('active');
+                    });
+                    
+                    // Toggle current item
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchForm = document.querySelector('.help-search-form');
+            const searchInput = document.querySelector('.help-search-input');
+            
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const searchTerm = searchInput.value.trim();
+                    
+                    if (searchTerm) {
+                        // Filter FAQ items based on search term
+                        faqItems.forEach(item => {
+                            const questionText = item.querySelector('.faq-question span').textContent.toLowerCase();
+                            const answerText = item.querySelector('.faq-answer-content p').textContent.toLowerCase();
+                            
+                            if (questionText.includes(searchTerm.toLowerCase()) || 
+                                answerText.includes(searchTerm.toLowerCase())) {
+                                item.style.display = 'block';
+                                item.classList.add('active'); // Show matching answers
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+                    } else {
+                        // Show all items if search is empty
+                        faqItems.forEach(item => {
+                            item.style.display = 'block';
+                            item.classList.remove('active');
+                        });
+                    }
+                });
+            }
+
+            // Popular tag functionality
+            const popularTags = document.querySelectorAll('.popular-tag');
+            
+            popularTags.forEach(tag => {
+                tag.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const searchTerm = this.textContent.trim();
+                    searchInput.value = searchTerm;
+                    
+                    // Trigger search
+                    const event = new Event('submit');
+                    searchForm.dispatchEvent(event);
+                });
+            });
+
+            // Smooth scrolling for help links
+            const helpLinks = document.querySelectorAll('.help-link[href^="#"]');
+            
+            helpLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const headerOffset = 100;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
