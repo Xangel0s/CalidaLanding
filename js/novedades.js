@@ -59,13 +59,13 @@ class NovedadesManager {
             },
             {
                 id: 3,
-                title: "Laptop Gaming ASUS ROG 16GB RAM",
+                title: "Laptop Gaming Samsung Galaxy Book2 Pro 16GB RAM",
                 price: 3999,
                 originalPrice: 4499,
                 discount: 11,
-                image: "images/productos/laptop-asus.jpg",
+                image: "images/productos/laptop-samsung.jpg",
                 category: "tecnologia",
-                brand: "asus",
+                brand: "samsung",
                 rating: 4.8,
                 reviews: 67,
                 badge: "gamer",
@@ -139,13 +139,13 @@ class NovedadesManager {
             },
             {
                 id: 9,
-                title: "Huawei MatePad 11\" 128GB",
+                title: "Xiaomi Pad 5 11\" 128GB",
                 price: 1199,
                 originalPrice: 1499,
                 discount: 20,
-                image: "images/productos/huawei-matepad.jpg",
+                image: "images/productos/xiaomi-pad5.jpg",
                 category: "tablets",
-                brand: "huawei",
+                brand: "xiaomi",
                 rating: 4.3,
                 reviews: 67,
                 badge: "oferta"
@@ -206,26 +206,26 @@ class NovedadesManager {
             },
             {
                 id: 14,
-                title: "Sony Bravia 65\" 4K Android TV",
+                title: "LG NanoCell 65\" 4K Smart TV",
                 price: 2899,
                 originalPrice: 3499,
                 discount: 17,
-                image: "images/productos/sony-bravia-65.jpg",
+                image: "images/productos/lg-nanocell-65.jpg",
                 category: "televisores",
-                brand: "sony",
+                brand: "lg",
                 rating: 4.6,
                 reviews: 167,
                 badge: "oferta"
             },
             {
                 id: 15,
-                title: "TCL 50\" 4K UHD Smart TV",
+                title: "Samsung Crystal UHD 50\" 4K Smart TV",
                 price: 1299,
                 originalPrice: 1599,
                 discount: 19,
-                image: "images/productos/tcl-50-4k.jpg",
+                image: "images/productos/samsung-crystal-50.jpg",
                 category: "televisores",
-                brand: "tcl",
+                brand: "samsung",
                 rating: 4.2,
                 reviews: 89,
                 badge: "oferta"
@@ -239,7 +239,7 @@ class NovedadesManager {
                 discount: 12,
                 image: "images/productos/ps5-digital.jpg",
                 category: "gamer",
-                brand: "sony",
+                brand: "apple",
                 rating: 4.9,
                 reviews: 312,
                 badge: "nuevo"
@@ -259,15 +259,15 @@ class NovedadesManager {
             },
             {
                 id: 18,
-                title: "PC Gamer Ryzen 5 RTX 4060",
-                price: 3299,
-                originalPrice: 3899,
+                title: "Galaxy S24 Ultra 256GB",
+                price: 3999,
+                originalPrice: 4699,
                 discount: 15,
-                image: "images/productos/pc-gamer-ryzen5.jpg",
-                category: "gamer",
-                brand: "asus",
-                rating: 4.7,
-                reviews: 134,
+                image: "images/productos/samsung-s24-ultra.jpg",
+                category: "celulares",
+                brand: "samsung",
+                rating: 4.8,
+                reviews: 245,
                 badge: "oferta"
             },
             // Construcción
@@ -336,6 +336,111 @@ class NovedadesManager {
                 rating: 4.7,
                 reviews: 234,
                 badge: "oferta"
+            },
+            // Productos adicionales por marca
+            {
+                id: 24,
+                title: "MacBook Air M2 13\" 256GB",
+                price: 4299,
+                originalPrice: 4899,
+                discount: 12,
+                image: "images/productos/macbook-air-m2.jpg",
+                category: "tecnologia",
+                brand: "apple",
+                rating: 4.8,
+                reviews: 189,
+                badge: "nuevo"
+            },
+            {
+                id: 25,
+                title: "Samsung Galaxy Watch 6 Classic",
+                price: 999,
+                originalPrice: 1299,
+                discount: 23,
+                image: "images/productos/galaxy-watch-6.jpg",
+                category: "tecnologia",
+                brand: "samsung",
+                rating: 4.6,
+                reviews: 156,
+                badge: "oferta"
+            },
+            {
+                id: 26,
+                title: "LG Refrigeradora InstaView 570L",
+                price: 2799,
+                originalPrice: 3299,
+                discount: 15,
+                image: "images/productos/lg-instaview.jpg",
+                category: "electrodomesticos",
+                brand: "lg",
+                rating: 4.7,
+                reviews: 98,
+                badge: "nuevo"
+            },
+            {
+                id: 27,
+                title: "Xiaomi Redmi Buds 4 Pro",
+                price: 299,
+                originalPrice: 399,
+                discount: 25,
+                image: "images/productos/redmi-buds-4.jpg",
+                category: "tecnologia",
+                brand: "xiaomi",
+                rating: 4.4,
+                reviews: 234,
+                badge: "oferta"
+            },
+            {
+                id: 28,
+                title: "LG OLED 65\" C3 4K Smart TV",
+                price: 3499,
+                originalPrice: 4299,
+                discount: 19,
+                image: "images/productos/lg-oled-c3.jpg",
+                category: "televisores",
+                brand: "lg",
+                rating: 4.8,
+                reviews: 156,
+                badge: "oferta"
+            },
+            {
+                id: 29,
+                title: "Xiaomi Redmi Note 13 Pro 256GB",
+                price: 899,
+                originalPrice: 1099,
+                discount: 18,
+                image: "images/productos/xiaomi-note13-pro.jpg",
+                category: "celulares",
+                brand: "xiaomi",
+                rating: 4.6,
+                reviews: 189,
+                badge: "oferta"
+            },
+            {
+                id: 30,
+                title: "Apple AirPods Pro 2da Gen",
+                price: 999,
+                originalPrice: 1199,
+                discount: 17,
+                image: "images/productos/airpods-pro-2.jpg",
+                category: "tecnologia",
+                brand: "apple",
+                rating: 4.9,
+                reviews: 312,
+                badge: "nuevo"
+            },
+            {
+                id: 31,
+                title: "Samsung The Frame 55\" Art TV",
+                price: 3499,
+                originalPrice: 3999,
+                discount: 13,
+                image: "images/productos/samsung-frame-55.jpg",
+                category: "televisores",
+                brand: "samsung",
+                rating: 4.6,
+                reviews: 76,
+                badge: "nuevo"
             }
         ];
         
@@ -347,7 +452,7 @@ class NovedadesManager {
     
     generateMoreProducts() {
         const categories = ["tecnologia", "electrodomesticos", "muebles", "construccion", "gamer", "celulares", "televisores", "tablets", "motos-scooters"];
-        const brands = ["samsung", "lg", "sony", "philips", "xiaomi", "apple", "whirlpool", "asus", "bosch", "dewalt", "honda", "yamaha"];
+        const brands = ["samsung", "lg", "xiaomi", "apple", "whirlpool", "bosch", "dewalt", "honda", "yamaha", "microsoft", "lincoln"];
         const productNames = [
             "Smart TV 65\"", "Microondas Digital", "Aspiradora Robot", "Mesa de Centro",
             "Taladro Inalámbrico", "Scooter Eléctrico", "Auriculares Gaming", "Tablet 10\"",

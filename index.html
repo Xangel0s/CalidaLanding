@@ -797,24 +797,40 @@
                 
                 <div class="brands-grid">
                     <!-- Samsung -->
-                    <div class="brand-card">
+                    <a href="novedades.html?marca=samsung" class="brand-card">
                         <img src="images/marcas/samsung.webp" alt="Samsung">
-                    </div>
+                        <div class="brand-overlay">
+                            <span class="brand-name">Samsung</span>
+                            <span class="brand-products">Ver productos</span>
+                        </div>
+                    </a>
 
                     <!-- Apple -->
-                    <div class="brand-card">
+                    <a href="novedades.html?marca=apple" class="brand-card">
                         <img src="images/marcas/apple.webp" alt="Apple">
-                    </div>
+                        <div class="brand-overlay">
+                            <span class="brand-name">Apple</span>
+                            <span class="brand-products">Ver productos</span>
+                        </div>
+                    </a>
 
                     <!-- Xiaomi -->
-                    <div class="brand-card">
+                    <a href="novedades.html?marca=xiaomi" class="brand-card">
                         <img src="images/marcas/xioami.png" alt="Xiaomi Store">
-                    </div>
+                        <div class="brand-overlay">
+                            <span class="brand-name">Xiaomi</span>
+                            <span class="brand-products">Ver productos</span>
+                        </div>
+                    </a>
 
                     <!-- LG -->
-                    <div class="brand-card">
+                    <a href="novedades.html?marca=lg" class="brand-card">
                         <img src="images/marcas/lg.webp" alt="LG">
-                    </div>
+                        <div class="brand-overlay">
+                            <span class="brand-name">LG</span>
+                            <span class="brand-products">Ver productos</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </section>
@@ -1231,7 +1247,6 @@
 
                     <div class="additional-links">
                         <a href="https://www.calidda.com.pe/atencion-al-cliente/registrar-reclamos#seccion?reg=1" target="_blank">Libro de reclamaciones</a>
-                        <span>|</span>
                         <span>Síguenos</span>
                     </div>
                 </div>
@@ -1239,65 +1254,6 @@
         </div>
     </footer>
 
-    <!-- Contact Modal -->
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Contactar Asesor</h3>
-                <button class="modal-close" id="closeModal">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            
-            <form class="contact-form" id="contactForm">
-                <div class="form-group">
-                    <label for="firstName">Nombres *</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="lastName">Apellidos *</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dni">DNI *</label>
-                    <input type="text" id="dni" name="dni" pattern="[0-9]{8}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">Teléfono</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="acceptMarketing" name="acceptMarketing">
-                        <span class="checkmark"></span>
-                        Acepto recibir información comercial
-                    </label>
-                </div>
-                
-                <div class="form-buttons">
-                    <button type="button" class="btn btn-outline" id="cancelBtn">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        Continuar a WhatsApp
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- JavaScript -->
     <script src="js/utils.js"></script>
