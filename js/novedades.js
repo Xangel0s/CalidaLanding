@@ -489,8 +489,12 @@ class NovedadesManager {
     }
     
     bindEvents() {
-        // Filter checkboxes
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        // Filter checkboxes - Only select checkboxes within filter sections
+        const filterCheckboxes = document.querySelectorAll('.filter-section input[type="checkbox"]');
+        console.log('🔗 Binding events to', filterCheckboxes.length, 'filter checkboxes');
+        
+        filterCheckboxes.forEach((checkbox, index) => {
+            console.log(`🔗 Binding event to checkbox ${index + 1}: ${checkbox.name} = ${checkbox.value}`);
             checkbox.addEventListener('change', () => this.handleFilterChange());
         });
         
@@ -528,6 +532,8 @@ class NovedadesManager {
     }
     
     handleFilterChange() {
+        console.log('🔧 handleFilterChange called');
+        
         // Reset active filters
         this.activeFilters = {
             categoria: [],
@@ -537,15 +543,23 @@ class NovedadesManager {
             promocion: []
         };
         
-        // Collect active filters
-        document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+        // Collect active filters - Only from filter sections
+        const checkedBoxes = document.querySelectorAll('.filter-section input[type="checkbox"]:checked');
+        console.log('📋 Found checked boxes:', checkedBoxes.length);
+        
+        checkedBoxes.forEach(checkbox => {
             const filterType = checkbox.name;
             const filterValue = checkbox.value;
             
+            console.log(`🔍 Processing checkbox: ${filterType} = ${filterValue}`);
+            
             if (filterValue !== 'todos' && this.activeFilters[filterType]) {
                 this.activeFilters[filterType].push(filterValue);
+                console.log(`✅ Added to activeFilters: ${filterType} = ${filterValue}`);
             }
         });
+        
+        console.log('📊 Final activeFilters:', this.activeFilters);
         
         this.applyFilters();
         this.currentPage = 1;
@@ -971,9 +985,9 @@ class NovedadesManager {
                 
                 console.log(`📋 Aplicando filtro ${filterType}:`, this.activeFilters[filterType]);
                 
-                // Check corresponding checkboxes
+                // Check corresponding checkboxes - Only within filter sections
                 this.activeFilters[filterType].forEach(value => {
-                    const checkbox = document.querySelector(`input[name="${filterType}"][value="${value}"]`);
+                    const checkbox = document.querySelector(`.filter-section input[name="${filterType}"][value="${value}"]`);
                     if (checkbox) {
                         checkbox.checked = true;
                         console.log(`✅ Checkbox activado: ${filterType} = ${value}`);
