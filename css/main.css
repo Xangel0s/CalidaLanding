@@ -137,7 +137,7 @@ select {
 
 /* Container */
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 var(--spacing-4);
 }
@@ -257,6 +257,7 @@ select {
 }
 
 .header-content {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--spacing-6);
@@ -270,6 +271,7 @@ select {
 .search-container {
     flex: 1;
     max-width: 500px;
+    margin: 0 var(--spacing-4);
 }
 
 .search-form {
@@ -307,6 +309,10 @@ select {
 }
 
 .header-actions {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: var(--spacing-4);
@@ -319,12 +325,15 @@ select {
     color: var(--gray-600);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    padding: var(--spacing-2);
-    transition: color var(--transition-fast);
+    padding: var(--spacing-3) var(--spacing-5);
+    border-radius: 0.5rem;
+    transition: all var(--transition-fast);
+    margin-right: var(--spacing-2);
 }
 
 .header-action-link:hover {
     color: var(--primary-600);
+    background-color: var(--primary-50);
 }
 
 .cart-link {
@@ -332,13 +341,16 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
     color: var(--gray-600);
-    transition: color var(--transition-fast);
+    border-radius: 0.5rem;
+    transition: all var(--transition-fast);
+    margin-right: var(--spacing-2);
 }
 
 .cart-link:hover {
     color: var(--primary-600);
+    background-color: var(--primary-50);
 }
 
 .cart-count {
