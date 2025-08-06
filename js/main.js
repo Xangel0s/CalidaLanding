@@ -1,5 +1,54 @@
 // Main JavaScript file for Credicálidda website
 
+// Utils object for common functions
+const Utils = {
+    // DOM utilities
+    $: (selector) => document.querySelector(selector),
+    $$: (selector) => document.querySelectorAll(selector),
+    
+    // Event utilities
+    addEvent: (element, event, handler) => {
+        if (element) {
+            element.addEventListener(event, handler);
+        }
+    },
+    
+    removeEvent: (element, event, handler) => {
+        if (element) {
+            element.removeEventListener(event, handler);
+        }
+    },
+    
+    // Error handler
+    errorHandler: {
+        log: (error, type = 'error') => {
+            console.error(`[${type.toUpperCase()}]:`, error);
+            // Here you could send errors to a logging service
+        }
+    },
+    
+    // Storage utilities
+    storage: {
+        set: (key, value) => {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                Utils.errorHandler.log(e, 'storage_set');
+            }
+        },
+        
+        get: (key) => {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : null;
+            } catch (e) {
+                Utils.errorHandler.log(e, 'storage_get');
+                return null;
+            }
+        }
+    }
+};
+
 // Main application class
 class CredicaliddaApp {
     constructor() {
@@ -10,6 +59,34 @@ class CredicaliddaApp {
         this.setupEventListeners();
         this.initializeComponents();
         this.handlePageLoad();
+    }
+    
+    // Add missing methods
+    reportPerformance() {
+        try {
+            if (window.performance) {
+                const timing = window.performance.timing;
+                const loadTime = timing.loadEventEnd - timing.navigationStart;
+                console.log(`Page load time: ${loadTime}ms`);
+                // Here you could send performance data to analytics
+            }
+        } catch (e) {
+            Utils.errorHandler.log(e, 'performance_report');
+        }
+    }
+    
+    trackEvent(eventName, data = {}) {
+        try {
+            console.log(`Event: ${eventName}`, data);
+            // Here you could send event data to analytics
+            
+            // Example: Google Analytics integration
+            if (typeof gtag !== 'undefined') {
+                gtag('event', eventName, data);
+            }
+        } catch (e) {
+            Utils.errorHandler.log(e, 'event_tracking');
+        }
     }
     
     setupEventListeners() {
@@ -416,21 +493,10 @@ class CredicaliddaApp {
     }
 }
 
-// Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.CredicaliddaApp = new CredicaliddaApp();
-    
-    // Track page view
-    window.CredicaliddaApp.trackEvent('page_view', {
-        page_title: document.title,
-        page_path: window.location.pathname
-    });
-});
-
 // Report performance when page is fully loaded
 window.addEventListener('load', () => {
     setTimeout(() => {
-        if (window.CredicaliddaApp) {
+        if (window.CredicaliddaApp && typeof window.CredicaliddaApp.reportPerformance === 'function') {
             window.CredicaliddaApp.reportPerformance();
         }
     }, 100);
@@ -438,7 +504,7 @@ window.addEventListener('load', () => {
 
 // Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
-    if (window.CredicaliddaApp) {
+    if (window.CredicaliddaApp && typeof window.CredicaliddaApp.trackEvent === 'function') {
         window.CredicaliddaApp.trackEvent('page_visibility_change', {
             visibility_state: document.visibilityState
         });
@@ -447,23 +513,24 @@ document.addEventListener('visibilitychange', () => {
 
 // Handle unload events
 window.addEventListener('beforeunload', () => {
-    if (window.CredicaliddaApp) {
+    if (window.CredicaliddaApp && typeof window.CredicaliddaApp.trackEvent === 'function') {
         window.CredicaliddaApp.trackEvent('page_unload');
     }
 });
 
 // Global error handler
 window.addEventListener('error', (event) => {
-    Utils.errorHandler.log(event.error, 'global_error');
+    if (Utils && Utils.errorHandler) {
+        Utils.errorHandler.log(event.error, 'global_error');
+    }
 });
 
 // Unhandled promise rejection handler
 window.addEventListener('unhandledrejection', (event) => {
-    Utils.errorHandler.log(event.reason, 'unhandled_promise_rejection');
+    if (Utils && Utils.errorHandler) {
+        Utils.errorHandler.log(event.reason, 'unhandled_promise_rejection');
+    }
 });
-
-// Export for global access
-window.CredicaliddaApp = CredicaliddaApp;
 
 // Promotional Cards Functionality
 document.addEventListener('DOMContentLoaded', () => {
@@ -694,10 +761,32 @@ function learnMoreCrediChat() {
     window.location.href = '/credichat';
     
     // Track event
-    if (window.CredicaliddaApp) {
+    if (window.CredicaliddaApp && typeof window.CredicaliddaApp.trackEvent === 'function') {
         window.CredicaliddaApp.trackEvent('credichat_learn_more', {
             source: 'promo_modal',
             timestamp: new Date().toISOString()
         });
     }
 }
+
+// Initialize the application when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        // Export for global access
+        window.CredicaliddaApp = new CredicaliddaApp();
+        
+        // Track page view
+        if (window.CredicaliddaApp && typeof window.CredicaliddaApp.trackEvent === 'function') {
+            window.CredicaliddaApp.trackEvent('page_view', {
+                page_title: document.title,
+                page_path: window.location.pathname
+            });
+        }
+    } catch (error) {
+        if (Utils && Utils.errorHandler) {
+            Utils.errorHandler.log(error, 'app_initialization');
+        } else {
+            console.error('Failed to initialize CredicaliddaApp:', error);
+        }
+    }
+});

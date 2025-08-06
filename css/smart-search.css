@@ -1,10 +1,10 @@
 /* Smart Search Styles */
-.search-input-container {
+.search-container .search-input-container {
     position: relative;
     width: 100%;
 }
 
-.search-suggestions {
+.search-container .search-suggestions {
     position: absolute;
     top: 100%;
     left: 0;
@@ -20,7 +20,7 @@
     display: none;
 }
 
-.search-suggestions.show {
+.search-container .search-suggestions.show {
     display: block;
 }
 
@@ -98,13 +98,24 @@
 }
 
 /* Search input focus styles */
-.search-input:focus + .search-btn + .search-suggestions {
+.search-container .search-input:focus ~ .search-suggestions {
+    display: block;
+}
+
+/* Alternative: Show suggestions when input container is focused */
+.search-container .search-input-container:focus-within .search-suggestions {
     display: block;
 }
 
 /* Animation for dropdown */
-.search-suggestions {
+.search-container .search-suggestions {
     animation: slideDown 0.2s ease-out;
+}
+
+/* Force display when JavaScript adds show class */
+.search-container .search-suggestions.show,
+.search-suggestions.show {
+    display: block !important;
 }
 
 @keyframes slideDown {
@@ -120,7 +131,7 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    .search-suggestions {
+    .search-container .search-suggestions {
         position: fixed;
         top: auto;
         left: 0;
@@ -132,18 +143,18 @@
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     }
     
-    .suggestion-item {
+    .search-container .suggestion-item {
         padding: 16px 20px;
         font-size: 16px;
     }
     
-    .suggestion-icon {
+    .search-container .suggestion-icon {
         width: 20px;
         height: 20px;
         margin-right: 16px;
     }
     
-    .suggestions-header {
+    .search-container .suggestions-header {
         padding: 16px 20px 12px;
         font-size: 16px;
         position: sticky;
@@ -154,19 +165,19 @@
 }
 
 /* Search input enhanced styles */
-.search-input {
+.search-container .search-input {
     border-radius: 8px 0 0 8px;
     border-right: none;
 }
 
-.search-input:focus {
+.search-container .search-input:focus {
     border-radius: 8px 0 0 0;
 }
 
-.search-btn {
+.search-container .search-btn {
     border-radius: 0 8px 8px 0;
 }
 
-.search-form {
+.search-container .search-form {
     position: relative;
 }
