@@ -663,6 +663,18 @@ class Carousel {
             // For categories, use fixed width from CSS (150px + gap)
             const categoryWidth = 150; // Fixed width from CSS
             const gap = 24; // var(--spacing-6) = 24px
+            
+            // Only limit bounds if NOT using infinite scroll
+            if (!this.options.infiniteScroll) {
+                // Calculate the safe bounds for categories
+                const totalItems = this.items.length;
+                const maxSafeIndex = Math.max(0, totalItems - this.itemsToShow);
+                
+                // Ensure currentIndex doesn't go beyond safe bounds
+                this.currentIndex = Math.min(this.currentIndex, maxSafeIndex);
+                this.currentIndex = Math.max(0, this.currentIndex);
+            }
+            
             const translateX = -(this.currentIndex * (categoryWidth + gap));
             this.track.style.transform = `translateX(${translateX}px)`;
         } else {
@@ -701,6 +713,18 @@ class Carousel {
             // For categories, use fixed width from CSS (150px + gap)
             const categoryWidth = 150; // Fixed width from CSS
             const gap = 24; // var(--spacing-6) = 24px
+            
+            // Only limit bounds if NOT using infinite scroll
+            if (!this.options.infiniteScroll) {
+                // Calculate the safe bounds for categories
+                const totalItems = this.items.length;
+                const maxSafeIndex = Math.max(0, totalItems - this.itemsToShow);
+                
+                // Ensure currentIndex doesn't go beyond safe bounds
+                this.currentIndex = Math.min(this.currentIndex, maxSafeIndex);
+                this.currentIndex = Math.max(0, this.currentIndex);
+            }
+            
             const translateX = -(this.currentIndex * (categoryWidth + gap));
             this.track.style.transform = `translateX(${translateX}px)`;
         } else {
@@ -780,8 +804,25 @@ class Carousel {
             return this.originalItems.length > 0 ? this.originalItems.length - 1 : this.items.length - 1;
         }
         
+        // Check if this is a categories carousel
+        const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
+                                   this.container.id.includes('categories') ||
+                                   this.track.classList.contains('categories-track');
+        
         const totalItems = this.originalItems.length > 0 ? this.originalItems.length : this.items.length;
-        return Math.max(0, totalItems - this.itemsToShow);
+        
+        if (isCategoriesCarousel) {
+            // For categories with infinite scroll, allow unlimited scrolling
+            if (this.options.infiniteScroll) {
+                return this.items.length - 1; // Allow scrolling through all cloned items
+            } else {
+                // For categories without infinite scroll, ensure we never scroll past what we can show
+                return Math.max(0, totalItems - this.itemsToShow);
+            }
+        } else {
+            // For other carousels, use standard calculation
+            return Math.max(0, totalItems - this.itemsToShow);
+        }
     }
     
     prev() {
@@ -789,7 +830,19 @@ class Carousel {
         
         this.isTransitioning = true;
         
-        if (this.options.infiniteScroll) {
+        if (this.carouselType === 'hero') {
+            // Hero carousel usa fade effect y auto-play profesional
+            const prevIndex = this.options.loop 
+                ? (this.currentIndex - 1 + this.items.length) % this.items.length
+                : Math.max(this.currentIndex - 1, 0);
+            
+            this.moveToSlideHero(prevIndex);
+            
+            setTimeout(() => { 
+                this.isTransitioning = false; 
+            }, 800); // Coincide con duración de transición CSS
+            
+        } else if (this.options.infiniteScroll) {
             this.currentIndex--;
             this.updateView();
             
@@ -799,10 +852,12 @@ class Carousel {
                 this.isTransitioning = false;
             }, 500);
         } else {
+            const maxIndex = this.getMaxIndex();
+            
             if (this.currentIndex > 0) {
                 this.currentIndex -= this.options.itemsToScroll;
             } else if (this.options.loop) {
-                this.currentIndex = this.getMaxIndex();
+                this.currentIndex = maxIndex;
             }
             
             this.currentIndex = Math.max(0, this.currentIndex);
@@ -847,47 +902,6 @@ class Carousel {
             }
             
             this.currentIndex = Math.min(maxIndex, this.currentIndex);
-            this.updateView();
-            this.isTransitioning = false;
-        }
-    }
-
-    prev() {
-        if (this.isTransitioning) return;
-        
-        this.isTransitioning = true;
-        
-        if (this.carouselType === 'hero') {
-            // Hero carousel usa fade effect y auto-play profesional
-            const prevIndex = this.options.loop 
-                ? (this.currentIndex - 1 + this.items.length) % this.items.length
-                : Math.max(this.currentIndex - 1, 0);
-            
-            this.moveToSlideHero(prevIndex);
-            
-            setTimeout(() => { 
-                this.isTransitioning = false; 
-            }, 800); // Coincide con duración de transición CSS
-            
-        } else if (this.options.infiniteScroll) {
-            this.currentIndex--;
-            this.updateView();
-            
-            // Check for reset after transition
-            setTimeout(() => {
-                this.handleInfiniteReset();
-                this.isTransitioning = false;
-            }, 500);
-        } else {
-            const maxIndex = this.getMaxIndex();
-            
-            if (this.currentIndex > 0) {
-                this.currentIndex -= this.options.itemsToScroll;
-            } else if (this.options.loop) {
-                this.currentIndex = maxIndex;
-            }
-            
-            this.currentIndex = Math.max(0, this.currentIndex);
             this.updateView();
             this.isTransitioning = false;
         }
@@ -1045,6 +1059,8 @@ function initializeCarousels() {
                 itemsToShow: 2,
                 itemsToScroll: 1,
                 gap: 24,
+                loop: true,
+                infiniteScroll: true,
                 breakpoints: {
                     480: { itemsToShow: 3 },
                     768: { itemsToShow: 4 },
