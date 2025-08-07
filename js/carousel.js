@@ -654,20 +654,33 @@ class Carousel {
             return;
         }
         
-        // Calculate item width
-        const containerWidth = this.track.parentElement.offsetWidth;
-        const totalGap = (this.itemsToShow - 1) * this.options.gap;
-        const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
+        // Check if this is a categories carousel
+        const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
+                                   this.container.id.includes('categories') ||
+                                   this.track.classList.contains('categories-track');
         
-        // Set item widths and styles
-        this.items.forEach((item, index) => {
-            item.style.flex = `0 0 ${itemWidth}px`;
-            item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
-        });
-        
-        // Update transform
-        const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
-        this.track.style.transform = `translateX(${translateX}px)`;
+        if (isCategoriesCarousel) {
+            // For categories, use fixed width from CSS (150px + gap)
+            const categoryWidth = 150; // Fixed width from CSS
+            const gap = 24; // var(--spacing-6) = 24px
+            const translateX = -(this.currentIndex * (categoryWidth + gap));
+            this.track.style.transform = `translateX(${translateX}px)`;
+        } else {
+            // For other carousels, calculate dynamic width
+            const containerWidth = this.track.parentElement.offsetWidth;
+            const totalGap = (this.itemsToShow - 1) * this.options.gap;
+            const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
+            
+            // Set item widths and styles
+            this.items.forEach((item, index) => {
+                item.style.flex = `0 0 ${itemWidth}px`;
+                item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
+            });
+            
+            // Update transform
+            const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
+            this.track.style.transform = `translateX(${translateX}px)`;
+        }
         
         // Update button states
         this.updateButtons();
@@ -675,23 +688,37 @@ class Carousel {
     
     updateViewNoTransition() {
         if (!this.track || this.items.length === 0) return;
-        
-        const containerWidth = this.track.parentElement.offsetWidth;
-        const totalGap = (this.itemsToShow - 1) * this.options.gap;
-        const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
+
+        // Check if this is a categories carousel
+        const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
+                                   this.container.id.includes('categories') ||
+                                   this.track.classList.contains('categories-track');
         
         // Temporarily disable transition
         this.track.style.transition = 'none';
         
-        // Set item widths
-        this.items.forEach((item, index) => {
-            item.style.flex = `0 0 ${itemWidth}px`;
-            item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
-        });
-        
-        // Update transform
-        const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
-        this.track.style.transform = `translateX(${translateX}px)`;
+        if (isCategoriesCarousel) {
+            // For categories, use fixed width from CSS (150px + gap)
+            const categoryWidth = 150; // Fixed width from CSS
+            const gap = 24; // var(--spacing-6) = 24px
+            const translateX = -(this.currentIndex * (categoryWidth + gap));
+            this.track.style.transform = `translateX(${translateX}px)`;
+        } else {
+            // For other carousels, calculate dynamic width
+            const containerWidth = this.track.parentElement.offsetWidth;
+            const totalGap = (this.itemsToShow - 1) * this.options.gap;
+            const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
+            
+            // Set item widths
+            this.items.forEach((item, index) => {
+                item.style.flex = `0 0 ${itemWidth}px`;
+                item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
+            });
+            
+            // Update transform
+            const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
+            this.track.style.transform = `translateX(${translateX}px)`;
+        }
         
         // Force reflow and re-enable transition
         this.track.offsetHeight;
