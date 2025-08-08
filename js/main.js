@@ -79,10 +79,14 @@ class CredicaliddaApp {
         const categoriesMenu = Utils.$('#categoriesMenu');
         
         if (categoriesBtn && categoriesMenu) {
+            console.log('✅ Acordeón encontrado, configurando eventos...');
             Utils.addEvent(categoriesBtn, 'click', (e) => {
                 e.stopPropagation();
+                console.log('🔄 Click en acordeón detectado');
                 this.toggleCategoriesMenu();
             });
+        } else {
+            console.warn('⚠️ Elementos del acordeón no encontrados:', {categoriesBtn, categoriesMenu});
         }
         
         // Smooth scroll for anchor links
@@ -251,16 +255,36 @@ class CredicaliddaApp {
         const categoriesBtn = Utils.$('#categoriesBtn');
         const categoriesMenu = Utils.$('#categoriesMenu');
         
-        if (!categoriesBtn || !categoriesMenu) return;
+        if (!categoriesBtn || !categoriesMenu) {
+            console.warn('⚠️ Elementos no encontrados en toggleCategoriesMenu');
+            return;
+        }
         
         const isOpen = open !== null ? open : !categoriesMenu.classList.contains('active');
+        console.log('🔄 Toggle acordeón:', {isOpen, currentClasses: categoriesMenu.className});
         
         if (isOpen) {
+            // Abrir acordeón con animaciones
             categoriesMenu.classList.add('active');
             categoriesBtn.classList.add('active');
+            console.log('✅ Acordeón abierto, clases agregadas');
+            
+            // Animar items con delay escalonado
+            const items = categoriesMenu.querySelectorAll('.category-item');
+            items.forEach((item, index) => {
+                item.style.transitionDelay = `${index * 0.05}s`;
+            });
         } else {
+            // Cerrar acordeón
             categoriesMenu.classList.remove('active');
             categoriesBtn.classList.remove('active');
+            console.log('✅ Acordeón cerrado, clases removidas');
+            
+            // Resetear delays
+            const items = categoriesMenu.querySelectorAll('.category-item');
+            items.forEach(item => {
+                item.style.transitionDelay = '0s';
+            });
         }
     }
     

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/hero-slider.css">
+    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/smart-search.css">
     
     <!-- Google Fonts -->
@@ -1252,11 +1253,53 @@
     <!-- JavaScript -->
     <script src="js/utils.js"></script>
     <script src="js/hero-slider.js"></script>
-    <script src="js/utils.js"></script>
     <script src="js/carousel.js"></script>
     <script src="js/products.js"></script>
     <script src="js/forms.js"></script>
     <script src="js/smart-search.js"></script>
+    <script src="js/animations.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- Debug Script para Acordeón en Index -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            console.log('🔍 INDEX.HTML - Depurando acordeón...');
+            
+            const categoriesBtn = document.getElementById('categoriesBtn');
+            const categoriesMenu = document.getElementById('categoriesMenu');
+            
+            console.log('INDEX - Elementos encontrados:', {
+                categoriesBtn: !!categoriesBtn,
+                categoriesMenu: !!categoriesMenu,
+                Utils: typeof Utils,
+                CredicaliddaApp: typeof window.CredicaliddaApp,
+                animationsManager: typeof window.animationsManager
+            });
+            
+            if (categoriesBtn && categoriesMenu) {
+                console.log('📋 INDEX - Estado inicial del menú:', {
+                    classes: categoriesMenu.className,
+                    computed: window.getComputedStyle(categoriesMenu).maxHeight,
+                    opacity: window.getComputedStyle(categoriesMenu).opacity
+                });
+                
+                // Test manual del toggle
+                categoriesBtn.addEventListener('click', (e) => {
+                    console.log('🎯 INDEX - Click manual detectado');
+                    setTimeout(() => {
+                        console.log('📋 INDEX - Estado después del click:', {
+                            classes: categoriesMenu.className,
+                            computed: window.getComputedStyle(categoriesMenu).maxHeight,
+                            opacity: window.getComputedStyle(categoriesMenu).opacity
+                        });
+                    }, 100);
+                });
+            } else {
+                console.warn('⚠️ INDEX - No se encontraron elementos del acordeón');
+            }
+        }, 500);
+    });
+    </script>
 </body>
 </html>

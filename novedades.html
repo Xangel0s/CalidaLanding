@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/novedades.css">
+    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/smart-search.css">
 </head>
 <body>
@@ -604,6 +605,45 @@
     <script src="js/main.js"></script>
     <script src="js/novedades.js"></script>
     <script src="js/smart-search.js"></script>
+    <script src="js/animations.js"></script>
+
+    <!-- Debug Script para Acordeón -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            console.log('🔍 Depurando acordeón...');
+            
+            const categoriesBtn = document.getElementById('categoriesBtn');
+            const categoriesMenu = document.getElementById('categoriesMenu');
+            
+            console.log('Elementos encontrados:', {
+                categoriesBtn: !!categoriesBtn,
+                categoriesMenu: !!categoriesMenu,
+                Utils: typeof Utils,
+                CredicaliddaApp: typeof window.CredicaliddaApp
+            });
+            
+            if (categoriesBtn && categoriesMenu) {
+                console.log('📋 Estado inicial del menú:', {
+                    classes: categoriesMenu.className,
+                    style: categoriesMenu.style.cssText,
+                    computed: window.getComputedStyle(categoriesMenu).maxHeight
+                });
+                
+                // Test manual del toggle
+                categoriesBtn.addEventListener('click', (e) => {
+                    console.log('🎯 Click manual detectado');
+                    setTimeout(() => {
+                        console.log('📋 Estado después del click:', {
+                            classes: categoriesMenu.className,
+                            computed: window.getComputedStyle(categoriesMenu).maxHeight
+                        });
+                    }, 100);
+                });
+            }
+        }, 500);
+    });
+    </script>
 
     <script>
     // Módulo de filtros de productos - Novedades

@@ -1,0 +1,140 @@
+/* ===== VARIABLES DE ANIMACIÓN ===== */
+:root {
+    /* Duraciones */
+    --animation-speed-fast: 0.2s;
+    --animation-speed-normal: 0.3s;
+    --animation-speed-slow: 0.5s;
+    --animation-speed-extra-slow: 0.8s;
+    
+    /* Easing Functions */
+    --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --easing-ease-out: cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
+/* ===== ANIMACIONES DEL ACORDEÓN ===== */
+
+/* Botón del acordeón */
+.categories-btn {
+    transition: all var(--animation-speed-normal) var(--easing-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.categories-btn:hover {
+    background: rgba(33, 150, 243, 0.05);
+    transform: translateY(-1px);
+}
+
+.categories-btn:active {
+    transform: translateY(0);
+}
+
+/* Flecha del acordeón */
+.categories-btn .dropdown-arrow {
+    transition: transform var(--animation-speed-normal) var(--easing-smooth);
+}
+
+.categories-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Menú del acordeón - OVERRIDES PARA ANIMACIONES */
+.categories-menu {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: 
+        max-height var(--animation-speed-slow) var(--easing-smooth),
+        opacity var(--animation-speed-normal) var(--easing-smooth),
+        visibility var(--animation-speed-normal) var(--easing-smooth),
+        transform var(--animation-speed-normal) var(--easing-smooth) !important;
+}
+
+.categories-menu.active {
+    max-height: 400px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+/* Items del menú con animación escalonada */
+.category-item {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: 
+        opacity var(--animation-speed-normal) var(--easing-smooth),
+        transform var(--animation-speed-normal) var(--easing-smooth),
+        background var(--animation-speed-fast) var(--easing-smooth);
+}
+
+.categories-menu.active .category-item {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Animación escalonada para cada item */
+.categories-menu.active .category-item:nth-child(1) { transition-delay: 0.05s; }
+.categories-menu.active .category-item:nth-child(2) { transition-delay: 0.1s; }
+.categories-menu.active .category-item:nth-child(3) { transition-delay: 0.15s; }
+.categories-menu.active .category-item:nth-child(4) { transition-delay: 0.2s; }
+.categories-menu.active .category-item:nth-child(5) { transition-delay: 0.25s; }
+.categories-menu.active .category-item:nth-child(6) { transition-delay: 0.3s; }
+.categories-menu.active .category-item:nth-child(7) { transition-delay: 0.35s; }
+
+/* Hover de los items */
+.category-item:hover {
+    background: rgba(33, 150, 243, 0.08);
+    transform: translateX(5px);
+}
+
+/* ===== ANIMACIONES GENERALES ===== */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== ANIMACIONES DE HOVER SUAVES ===== */
+.btn, .header-action-link, .quick-link {
+    transition: all var(--animation-speed-fast) var(--easing-smooth);
+}
+
+.btn:hover, .header-action-link:hover, .quick-link:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active, .header-action-link:active, .quick-link:active {
+    transform: translateY(0);
+}
+
+/* ===== ANIMACIONES DE PRODUCTOS ===== */
+.product-card {
+    transition: transform var(--animation-speed-normal) var(--easing-smooth),
+                box-shadow var(--animation-speed-normal) var(--easing-smooth);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+    .categories-menu {
+        max-height: 300px !important;
+    }
+    
+    .categories-menu.active {
+        max-height: 300px !important;
+    }
+}
