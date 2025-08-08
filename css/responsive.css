@@ -118,19 +118,20 @@
     }
     
     .category-card {
-        width: 120px;
-        padding: var(--spacing-4);
+        width: 120px !important;
+        padding: var(--spacing-4) !important;
     }
     
     .category-icon {
-        width: 60px;
-        height: 60px;
-        margin-bottom: var(--spacing-3);
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: var(--spacing-3) !important;
     }
     
     .category-icon img {
-        width: 40px;
-        height: 40px;
+        width: 100px !important;
+        height: 100px !important;
+        border-radius: 8px !important;
     }
     
     .category-card h4 {
@@ -342,19 +343,20 @@
     }
     
     .category-card {
-        width: 100px;
-        padding: var(--spacing-3);
+        width: 90px !important;
+        padding: var(--spacing-3) !important;
     }
     
     .category-icon {
-        width: 50px;
-        height: 50px;
-        margin-bottom: var(--spacing-2);
+        width: 80px !important;
+        height: 80px !important;
+        margin-bottom: var(--spacing-2) !important;
     }
     
     .category-icon img {
-        width: 30px;
-        height: 30px;
+        width: 80px !important;
+        height: 80px !important;
+        border-radius: 8px !important;
     }
     
     /* Products */

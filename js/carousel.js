@@ -279,6 +279,11 @@ class Carousel {
         const images = slide.querySelectorAll('img, .hero-bg');
         images.forEach(img => {
             if (img.tagName === 'IMG') {
+                // No aplicar estilos a imágenes de categorías
+                if (img.closest('.category-icon') || img.closest('.category-card')) {
+                    return;
+                }
+                
                 img.style.cssText = `
                     width: 100%;
                     height: 100%;

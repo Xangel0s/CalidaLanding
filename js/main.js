@@ -1,53 +1,6 @@
 // Main JavaScript file for Credicálidda website
 
-// Utils object for common functions
-const Utils = {
-    // DOM utilities
-    $: (selector) => document.querySelector(selector),
-    $$: (selector) => document.querySelectorAll(selector),
-    
-    // Event utilities
-    addEvent: (element, event, handler) => {
-        if (element) {
-            element.addEventListener(event, handler);
-        }
-    },
-    
-    removeEvent: (element, event, handler) => {
-        if (element) {
-            element.removeEventListener(event, handler);
-        }
-    },
-    
-    // Error handler
-    errorHandler: {
-        log: (error, type = 'error') => {
-            console.error(`[${type.toUpperCase()}]:`, error);
-            // Here you could send errors to a logging service
-        }
-    },
-    
-    // Storage utilities
-    storage: {
-        set: (key, value) => {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {
-                Utils.errorHandler.log(e, 'storage_set');
-            }
-        },
-        
-        get: (key) => {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : null;
-            } catch (e) {
-                Utils.errorHandler.log(e, 'storage_get');
-                return null;
-            }
-        }
-    }
-};
+// Utils will be loaded from utils.js - no need to redefine here
 
 // Main application class
 class CredicaliddaApp {
@@ -771,6 +724,18 @@ function learnMoreCrediChat() {
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Wait for Utils to be loaded from utils.js
+    if (typeof Utils === 'undefined') {
+        console.log('Waiting for Utils to load...');
+        setTimeout(() => {
+            initializeApp();
+        }, 100);
+    } else {
+        initializeApp();
+    }
+});
+
+function initializeApp() {
     try {
         // Export for global access
         window.CredicaliddaApp = new CredicaliddaApp();
@@ -783,10 +748,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     } catch (error) {
-        if (Utils && Utils.errorHandler) {
+        if (typeof Utils !== 'undefined' && Utils.errorHandler) {
             Utils.errorHandler.log(error, 'app_initialization');
         } else {
             console.error('Failed to initialize CredicaliddaApp:', error);
         }
     }
-});
+}
