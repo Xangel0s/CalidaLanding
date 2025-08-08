@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Acordeón Debug</title>
+    <style>
+        .categories-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .categories-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .categories-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .categories-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .category-item {
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .category-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .debug-info {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f0f8ff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Acordeón Debug</h1>
+    
+    <div class="debug-info">
+        <strong>Estado del acordeón:</strong>
+        <div id="debugInfo">Cargando...</div>
+    </div>
+
+    <div class="categories-dropdown">
+        <button class="categories-btn" id="categoriesBtn">
+            <span>Todas las categorías</span>
+            <span>▼</span>
+        </button>
+        
+        <div class="categories-menu" id="categoriesMenu">
+            <a href="#" class="category-item">📱 Tecnología</a>
+            <a href="#" class="category-item">🏠 Electrodomésticos</a>
+            <a href="#" class="category-item">🪑 Muebles</a>
+            <a href="#" class="category-item">🏍️ Motos y Scooters</a>
+            <a href="#" class="category-item">🔨 Construcción</a>
+            <a href="#" class="category-item">🎮 Gamer</a>
+            <a href="#" class="category-item">📺 Televisores</a>
+        </div>
+    </div>
+
+    <script>
+        // Utils simplificado
+        const Utils = {
+            $: function(selector) {
+                return document.querySelector(selector);
+            },
+            addEvent: function(element, event, handler) {
+                if (element && element.addEventListener) {
+                    element.addEventListener(event, handler);
+                }
+            }
+        };
+
+        // Función de toggle
+        function toggleCategoriesMenu() {
+            const menu = Utils.$('#categoriesMenu');
+            const isActive = menu.classList.contains('active');
+            
+            console.log('Toggle llamado, estado actual:', isActive ? 'activo' : 'inactivo');
+            updateDebugInfo();
+            
+            if (isActive) {
+                menu.classList.remove('active');
+                console.log('Acordeón cerrado');
+            } else {
+                menu.classList.add('active');
+                console.log('Acordeón abierto');
+            }
+            
+            updateDebugInfo();
+        }
+
+        // Función para actualizar info de debug
+        function updateDebugInfo() {
+            const button = Utils.$('#categoriesBtn');
+            const menu = Utils.$('#categoriesMenu');
+            const debugDiv = Utils.$('#debugInfo');
+            
+            const info = {
+                buttonExists: !!button,
+                menuExists: !!menu,
+                hasActiveClass: menu ? menu.classList.contains('active') : false,
+                computedStyles: menu ? {
+                    opacity: window.getComputedStyle(menu).opacity,
+                    visibility: window.getComputedStyle(menu).visibility,
+                    transform: window.getComputedStyle(menu).transform
+                } : null
+            };
+            
+            debugDiv.innerHTML = `
+                <div>Botón existe: ${info.buttonExists}</div>
+                <div>Menú existe: ${info.menuExists}</div>
+                <div>Clase 'active': ${info.hasActiveClass}</div>
+                <div>Opacidad: ${info.computedStyles?.opacity}</div>
+                <div>Visibilidad: ${info.computedStyles?.visibility}</div>
+                <div>Transform: ${info.computedStyles?.transform}</div>
+            `;
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, inicializando...');
+            
+            const categoriesBtn = Utils.$('#categoriesBtn');
+            console.log('Botón encontrado:', !!categoriesBtn);
+            
+            if (categoriesBtn) {
+                Utils.addEvent(categoriesBtn, 'click', function(e) {
+                    e.preventDefault();
+                    console.log('Click en botón detectado');
+                    toggleCategoriesMenu();
+                });
+                console.log('Event listener agregado');
+            } else {
+                console.error('No se encontró el botón de categorías');
+            }
+            
+            updateDebugInfo();
+        });
+
+        // Test manual
+        function testManual() {
+            console.log('=== TEST MANUAL ===');
+            toggleCategoriesMenu();
+        }
+    </script>
+
+    <button onclick="testManual()" style="margin: 20px 0; padding: 10px 20px; background: #007cba; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Test Manual
+    </button>
+</body>
+</html>
