@@ -160,15 +160,48 @@
                             </svg>
                         </button>
                         <div class="categories-menu" id="categoriesMenu">
-                            <a href="novedades.html?categoria=tecnologia" class="category-item"><span>📱 Tecnología</span></a>
-                            <a href="novedades.html?categoria=electrodomesticos" class="category-item"><span>🏠 Electrodomésticos</span></a>
-                            <a href="novedades.html?categoria=muebles" class="category-item"><span>🪑 Muebles</span></a>
-                            <a href="novedades.html?categoria=motos-scooters" class="category-item"><span>🏍️ Motos y Scooters</span></a>
-                            <a href="novedades.html?categoria=construccion" class="category-item"><span>🔨 Construcción y acabados</span></a>
-                            <a href="novedades.html?categoria=gamer" class="category-item"><span>🎮 Gamer</span></a>
-                            <a href="novedades.html?categoria=tablets" class="category-item"><span>📱 Tablets</span></a>
-                            <a href="novedades.html?categoria=celulares" class="category-item"><span>📱 Celulares</span></a>
-                            <a href="novedades.html?categoria=televisores" class="category-item"><span>📺 Televisores</span></a>
+                            <a href="novedades.html?categoria=tecnologia" class="category-item">
+                                <span>📱 Tecnología</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=electrodomesticos" class="category-item">
+                                <span>🏠 Electrodomésticos</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=muebles" class="category-item">
+                                <span>🪑 Muebles</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=motos-scooters" class="category-item">
+                                <span>🏍️ Motos y Scooters</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=construccion" class="category-item">
+                                <span>🔨 Construcción y acabados</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=gamer" class="category-item">
+                                <span>🎮 Gamer</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
+                            <a href="novedades.html?categoria=televisores" class="category-item">
+                                <span>📺 Televisores</span>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                     <div class="quick-links">
@@ -200,8 +233,6 @@
                     <a href="novedades.html?categoria=motos-scooters" class="mobile-menu-link">🏍️ Motos y Scooters</a>
                     <a href="novedades.html?categoria=construccion" class="mobile-menu-link">🔨 Construcción y acabados</a>
                     <a href="novedades.html?categoria=gamer" class="mobile-menu-link">🎮 Gamer</a>
-                    <a href="novedades.html?categoria=tablets" class="mobile-menu-link">📱 Tablets</a>
-                    <a href="novedades.html?categoria=celulares" class="mobile-menu-link">📱 Celulares</a>
                     <a href="novedades.html?categoria=televisores" class="mobile-menu-link">📺 Televisores</a>
                     <hr>
                     <a href="novedades.html?promocion=ofertas" class="mobile-menu-link">🔥 Ofertas</a>
@@ -230,19 +261,9 @@
                         <h3 class="filter-title">Categorías</h3>
                         <div class="filter-content">
                             <label class="filter-item">
-                                <input type="checkbox" name="categoria" value="celulares">
-                                <span class="filter-text">Celulares</span>
-                                <span class="filter-count">(15)</span>
-                            </label>
-                            <label class="filter-item">
                                 <input type="checkbox" name="categoria" value="televisores">
                                 <span class="filter-text">Televisores</span>
                                 <span class="filter-count">(10)</span>
-                            </label>
-                            <label class="filter-item">
-                                <input type="checkbox" name="categoria" value="tablets">
-                                <span class="filter-text">Tablets</span>
-                                <span class="filter-count">(5)</span>
                             </label>
                             <label class="filter-item">
                                 <input type="checkbox" name="categoria" value="tecnologia">
@@ -580,7 +601,7 @@
     
     <!-- Scripts -->
     <script src="js/utils.js"></script>
-    <script src="js/components.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/novedades.js"></script>
     <script src="js/smart-search.js"></script>
 
@@ -635,15 +656,6 @@
                 etiquetas: ['reacondicionados', 'televisores'],
                 imagen: 'images/producto3.jpg',
                 descuento: 10
-            },
-            {
-                nombre: 'iPhone 14 Pro',
-                precio: 4899,
-                categoria: 'celulares',
-                promociones: ['ofertas'],
-                etiquetas: ['ofertas', 'celulares'],
-                imagen: 'images/producto4.jpg',
-                descuento: 12
             },
             {
                 nombre: 'Moto Honda CB125',
