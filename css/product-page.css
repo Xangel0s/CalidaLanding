@@ -387,6 +387,15 @@
     display: block;
 }
 
+/* Override global components.css that hides .tab-content by default */
+/* Ensure content inside an active tab panel is visible on product page */
+.tabs-content .tab-panel .tab-content {
+    display: block; /* take precedence over .tab-content { display:none } */
+}
+.tabs-content .tab-panel:not(.active) .tab-content {
+    display: none;
+}
+
 .tab-content h3 {
     margin-bottom: var(--spacing-6);
     color: var(--gray-900);
