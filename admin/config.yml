@@ -37,6 +37,8 @@ collections:
           { label: "Nombre", name: "name", widget: "string" },
           { label: "Valor", name: "value", widget: "string" }
         ], required: false }
+      - { label: "Formas de pago", name: "payment_methods", widget: "select", multiple: true, options: ["bcp", "yape", "plin"], default: ["bcp", "yape"], required: false }
+      - { label: "Información de envío", name: "shipping", widget: "markdown", required: false }
       - { label: "Fecha de Publicación", name: "date", widget: "datetime" }
 
   - name: "categorias"

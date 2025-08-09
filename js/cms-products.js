@@ -95,12 +95,28 @@
       monthly_payment: data.monthly_payment ?? null,
       discount: data.discount ?? null,
       image: data.image || '',
-      gallery: Array.isArray(data.gallery) ? data.gallery.map(g => g.image || g) : [],
-      description: data.description || '',
-      body: content || ''
+      // support gallery (list of {image} or strings) and images (array of strings)
+      gallery: Array.isArray(data.gallery)
+        ? data.gallery.map(g => (typeof g === 'string' ? g : (g && g.image) || '')).filter(Boolean)
+        : Array.isArray(data.images)
+          ? data.images.filter(Boolean)
+          : [],
+      // descriptions
+      description: data.description || data.short_description || '',
+      body: content || data.body || '',
+      // specs variations
+      specs: Array.isArray(data.specs) ? data.specs : (Array.isArray(data.specifications) ? data.specifications : []),
+      // extra info
+      benefits: Array.isArray(data.benefits) ? data.benefits : [],
+      payment_methods: Array.isArray(data.payment_methods) ? data.payment_methods : [],
+      shipping: data.shipping || ''
     };
     // ensure image present
     if (!p.image && p.gallery && p.gallery.length) p.image = p.gallery[0];
+    // normalize absolute paths for images if they start without slash
+    const fix = (u) => (typeof u === 'string' && !/^https?:\/\//.test(u) && !u.startsWith('/') ? '/' + u : u);
+    if (p.image) p.image = fix(p.image);
+    if (Array.isArray(p.gallery)) p.gallery = p.gallery.map(fix);
     return p;
   }
 

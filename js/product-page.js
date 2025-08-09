@@ -71,7 +71,9 @@ class ProductPageManager {
             description: p.description || '',
             specifications: specs,
             benefits: p.benefits || [],
-            detailed_description: p.body || p.description || ''
+            detailed_description: p.body || p.description || '',
+            payment_methods: Array.isArray(p.payment_methods) ? p.payment_methods : [],
+            shipping: p.shipping || ''
         };
     }
 
@@ -121,6 +123,10 @@ class ProductPageManager {
 
         // Update detailed description
         document.getElementById('detailed-description').innerHTML = this.productData.detailed_description;
+
+        // Update payments and shipping
+        this.updatePayments();
+        this.updateShipping();
     }
 
     updateProductImages() {
@@ -134,7 +140,9 @@ class ProductPageManager {
 
             // Create thumbnails
             thumbnailsContainer.innerHTML = this.productData.images.map((image, index) => `
-                <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="productPageManager.changeMainImage(${index})">
+                <div class="thumbnail ${index === 0 ? 'active' : ''}"
+                     onclick="productPageManager.changeMainImage(${index})"
+                     onmouseenter="productPageManager.changeMainImage(${index})">
                     <img src="${image}" alt="${this.productData.title}" loading="lazy">
                 </div>
             `).join('');
@@ -195,7 +203,22 @@ class ProductPageManager {
     }
 
     initializeGallery() {
-        // Gallery navigation would be implemented here
+        // Change main image on hover over main image cycling through available images
+        const mainImage = document.getElementById('main-product-image');
+        if (!mainImage) return;
+        let hoverTimer = null;
+        const cycle = () => {
+            if (!this.productData || !this.productData.images || this.productData.images.length <= 1) return;
+            const next = (this.currentImageIndex + 1) % this.productData.images.length;
+            this.changeMainImage(next);
+        };
+        mainImage.addEventListener('mouseenter', () => {
+            if (hoverTimer) clearInterval(hoverTimer);
+            hoverTimer = setInterval(cycle, 1200);
+        });
+        mainImage.addEventListener('mouseleave', () => {
+            if (hoverTimer) { clearInterval(hoverTimer); hoverTimer = null; }
+        });
     }
 
     initializeTabs() {
