@@ -37,12 +37,19 @@
       "price_online": 3223,
       "orden": 2,
       "slug": "celular-apple-iphone-14-pro-esim-2022-6gb-128gb-negro-reacondicionado-celr1000negro-128gb",
+      "shipping": "",
       "mas_vendido": false,
       "visible": true,
       "categoria": "tecnologia",
       "monthly_payment": 197.17,
       "title": "CELULAR APPLE IPHONE 14 PRO ESIM 2022 6GB 128GB NEGRO (REACONDICIONADO) CELR1000NEGRO-128GB",
-      "image": "https://caliddape.vtexassets.com/arquivos/ids/158605-1600-auto?v=638689494766370000&width=1600&height=auto&aspect=true"
+      "payment_methods": [
+        "bcp",
+        "plin",
+        "yape"
+      ],
+      "image": "https://caliddape.vtexassets.com/arquivos/ids/158605-1600-auto?v=638689494766370000&width=1600&height=auto&aspect=true",
+      "description": ""
     }
   ]
 }
