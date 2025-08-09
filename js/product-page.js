@@ -8,7 +8,7 @@ class ProductPageManager {
     }
 
     async init() {
-        // Get product slug from URL
+        // Get product slug from URL (?slug=...)
         const slug = this.getProductSlug();
         if (slug) {
             await this.loadProductData(slug);
@@ -19,17 +19,25 @@ class ProductPageManager {
     }
 
     getProductSlug() {
+        // Prefer query param ?slug=...
+        const url = new URL(window.location.href);
+        const qp = url.searchParams.get('slug');
+        if (qp) return qp;
+        // fallback: /<slug>/p pattern
         const path = window.location.pathname;
-        // Extract slug from URL pattern: /slug/p
         const match = path.match(/\/(.+)\/p$/);
         return match ? match[1] : null;
     }
 
     async loadProductData(slug) {
         try {
-            // In a real implementation, this would fetch from Netlify CMS or a backend
-            // For now, we'll use mock data based on the slug
-            this.productData = await this.fetchProductData(slug);
+            // Load from CMS (cms-products.js must be included)
+            if (!window.CMSProducts || !CMSProducts.loadProductBySlug) {
+                throw new Error('CMSProducts loader no disponible');
+            }
+            const p = await CMSProducts.loadProductBySlug(slug);
+            // Normalize to legacy format expected by renderer
+            this.productData = this.normalizeProduct(p);
             this.renderProductData();
         } catch (error) {
             console.error('Error loading product data:', error);
@@ -37,74 +45,34 @@ class ProductPageManager {
         }
     }
 
-    async fetchProductData(slug) {
-        // Mock product data - in production this would fetch from CMS
-        const products = {
-            'televisor-lg-55ut7300psa-uhd-4k-smart-webos': {
-                title: "Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos Bluetooth MERTEC",
-                brand: "LG",
-                price_regular: 2939.00,
-                price_online: 1659.00,
-                discount: 44,
-                monthly_payment: 62.60,
-                stock: 15,
-                images: [
-                    "/images/productos_destacados/tv-lg.jpg",
-                    "/images/productos_destacados/tv-lg-2.jpg",
-                    "/images/productos_destacados/tv-lg-3.jpg"
-                ],
-                description: "Televisor LG 55 pulgadas con tecnología UHD/4K, Smart TV con sistema operativo WebOS, incluye Magic Remote y audífonos Bluetooth MERTEC de regalo.",
-                specifications: [
-                    { name: "Tamaño de pantalla", value: "55 pulgadas" },
-                    { name: "Resolución", value: "3840 x 2160 (UHD/4K)" },
-                    { name: "Sistema operativo", value: "WebOS" },
-                    { name: "Conectividad", value: "Wi-Fi, Bluetooth, HDMI, USB" },
-                    { name: "HDR", value: "HDR10, HLG" },
-                    { name: "Procesador", value: "α5 Gen6 AI Processor 4K" }
-                ],
-                benefits: [
-                    "Entrega gratuita a nivel nacional",
-                    "Garantía oficial de 2 años", 
-                    "Instalación técnica gratuita",
-                    "Financiamiento hasta 36 cuotas",
-                    "Soporte técnico 24/7"
-                ],
-                detailed_description: "Disfruta de una experiencia visual excepcional con el Televisor LG 55UT7300PSA. Con su pantalla UHD/4K de 55 pulgadas y el sistema operativo WebOS, tendrás acceso a todas tus aplicaciones favoritas de streaming."
-            },
-            'cocina-mabe-empotrable-6-hornillas': {
-                title: "Cocina Mabe Empotrable 6 Hornillas Acero Inoxidable + Campana Extractora",
-                brand: "Mabe",
-                price_regular: 3200.00,
-                price_online: 2590.00,
-                discount: 19,
-                monthly_payment: 98.00,
-                stock: 8,
-                images: [
-                    "/images/productos_destacados/cocina-mabe.jpg",
-                    "/images/productos_destacados/cocina-mabe-2.jpg",
-                    "/images/productos_destacados/cocina-mabe-3.jpg"
-                ],
-                description: "Cocina empotrable Mabe de 6 hornillas en acero inoxidable, ideal para familias grandes. Incluye campana extractora de regalo.",
-                specifications: [
-                    { name: "Hornillas", value: "6 quemadores a gas" },
-                    { name: "Material", value: "Acero inoxidable" },
-                    { name: "Dimensiones", value: "90cm x 60cm x 85cm" },
-                    { name: "Encendido", value: "Automático con perilla" },
-                    { name: "Horno", value: "88 litros con grill" },
-                    { name: "Parrillas", value: "Hierro fundido esmaltado" }
-                ],
-                benefits: [
-                    "Instalación gratuita por técnico especializado",
-                    "Conexión de gas incluida",
-                    "Garantía de 2 años en partes y mano de obra",
-                    "Financiamiento hasta 36 cuotas sin interés",
-                    "Campana extractora de regalo"
-                ],
-                detailed_description: "Transforma tu cocina con esta moderna cocina Mabe empotrable de 6 hornillas. Perfecta para preparar múltiples platillos al mismo tiempo con la eficiencia y durabilidad que caracteriza a la marca Mabe."
+    normalizeProduct(p) {
+        const images = [];
+        if (p.image) images.push(p.image);
+        if (Array.isArray(p.gallery)) {
+            p.gallery.forEach(g => { if (g && typeof g === 'string') images.push(g); });
+        }
+        const specs = Array.isArray(p.specs) ? p.specs.map(s => {
+            if (typeof s === 'string') {
+                const idx = s.indexOf(':');
+                return idx > -1 ? { name: s.slice(0, idx).trim(), value: s.slice(idx + 1).trim() } : { name: s, value: '' };
             }
+            const key = Object.keys(s || {})[0];
+            return key ? { name: key, value: String(s[key]) } : { name: '', value: '' };
+        }) : [];
+        return {
+            title: p.title || p.slug,
+            brand: p.brand || '',
+            price_regular: typeof p.price_regular === 'number' ? p.price_regular : null,
+            price_online: typeof p.price_online === 'number' ? p.price_online : null,
+            discount: typeof p.discount === 'number' ? p.discount : null,
+            monthly_payment: typeof p.monthly_payment === 'number' ? p.monthly_payment : null,
+            stock: typeof p.stock === 'number' ? p.stock : 10,
+            images,
+            description: p.description || '',
+            specifications: specs,
+            benefits: p.benefits || [],
+            detailed_description: p.body || p.description || ''
         };
-
-        return products[slug] || null;
     }
 
     renderProductData() {
@@ -126,8 +94,12 @@ class ProductPageManager {
             document.getElementById('price-regular').textContent = `S/ ${this.productData.price_regular.toFixed(2)}`;
             document.getElementById('price-regular-row').style.display = 'flex';
         }
-        document.getElementById('price-online').textContent = `S/ ${this.productData.price_online.toFixed(2)}`;
-        document.getElementById('monthly-payment').textContent = `S/ ${this.productData.monthly_payment.toFixed(2)}`;
+        if (typeof this.productData.price_online === 'number') {
+            document.getElementById('price-online').textContent = `S/ ${this.productData.price_online.toFixed(2)}`;
+        }
+        if (typeof this.productData.monthly_payment === 'number') {
+            document.getElementById('monthly-payment').textContent = `S/ ${this.productData.monthly_payment.toFixed(2)}`;
+        }
 
         // Update discount badge
         if (this.productData.discount) {

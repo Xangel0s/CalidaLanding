@@ -23,7 +23,13 @@ collections:
       - { label: "Precio Online", name: "price_online", widget: "number", value_type: "float" }
       - { label: "Cuota Mensual", name: "monthly_payment", widget: "number", value_type: "float" }
       - { label: "Descuento (%)", name: "discount", widget: "number", value_type: "int", required: false }
-      - { label: "Categoría", name: "category", widget: "select", options: ["tecnologia", "electrodomesticos", "muebles", "motos-scooters", "construccion", "gamer", "celulares", "televisores"] }
+      - label: "Categoría"
+        name: "category"
+        widget: "relation"
+        collection: "categorias"
+        search_fields: ["title", "slug"]
+        value_field: "slug"
+        display_fields: ["title"]
       - { label: "Etiquetas", name: "tags", widget: "select", multiple: true, options: ["destacado", "novedad", "oferta", "combo", "reacondicionado", "mas-vendido"], required: false }
       - { label: "Estado", name: "status", widget: "select", options: ["activo", "inactivo"], default: "activo" }
       - { label: "Stock", name: "stock", widget: "number", value_type: "int", default: 1 }
@@ -58,3 +64,29 @@ collections:
           - { label: "Teléfono", name: "phone", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
           - { label: "WhatsApp", name: "whatsapp", widget: "string" }
+
+  - name: "catalogo"
+    label: "Catálogo"
+    files:
+      - label: "Catálogo de Productos"
+        name: "catalogo"
+        file: "data/catalogo.json"
+        fields:
+          - label: "Items"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "Slug del producto", name: "slug", widget: "string" }
+              - { label: "Visible", name: "visible", widget: "boolean", default: true }
+              - { label: "Destacado (Home)", name: "destacado", widget: "boolean", default: false }
+              - { label: "Más vendido (Home)", name: "mas_vendido", widget: "boolean", default: false }
+              - { label: "Orden", name: "orden", widget: "number", value_type: "int", default: 0 }
+              - { label: "Categoría", name: "categoria", widget: "select", required: false, options: ["tecnologia", "electrodomesticos", "muebles", "motos-scooters", "construccion", "gamer", "celulares", "televisores"] }
+              - { label: "Marca (opcional)", name: "brand", widget: "string", required: false }
+              - { label: "Título (opcional)", name: "title", widget: "string", required: false }
+              - { label: "Imagen principal (opcional)", name: "image", widget: "image", required: false }
+              - { label: "Precio Online (opcional)", name: "price_online", widget: "number", value_type: "float", required: false }
+              - { label: "Precio Regular (opcional)", name: "price_regular", widget: "number", value_type: "float", required: false }
+              - { label: "Cuota Mensual (opcional)", name: "monthly_payment", widget: "number", value_type: "float", required: false }
+              - { label: "Descuento % (opcional)", name: "discount", widget: "number", value_type: "int", required: false }
+              - { label: "Tags (opcional)", name: "tags", widget: "select", multiple: true, required: false, options: ["destacado", "novedad", "oferta", "combo", "reacondicionado", "mas-vendido"] }

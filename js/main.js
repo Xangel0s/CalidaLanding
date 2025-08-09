@@ -79,17 +79,13 @@ class CredicaliddaApp {
         const categoriesMenu = Utils.$('#categoriesMenu');
         
         if (categoriesBtn && categoriesMenu) {
-<<<<<<< HEAD
-            console.log('✅ Acordeón encontrado, configurando eventos...');
-=======
             // Accessibility attributes
             categoriesBtn.setAttribute('aria-haspopup', 'true');
             categoriesBtn.setAttribute('aria-expanded', 'false');
             categoriesBtn.setAttribute('aria-controls', 'categoriesMenu');
             categoriesMenu.setAttribute('role', 'menu');
             categoriesMenu.setAttribute('aria-hidden', 'true');
-
->>>>>>> e6d781c (Subir cambios recientes)
+            console.log('✅ Acordeón encontrado, configurando eventos...');
             Utils.addEvent(categoriesBtn, 'click', (e) => {
                 e.stopPropagation();
                 console.log('🔄 Click en acordeón detectado');
@@ -278,34 +274,26 @@ class CredicaliddaApp {
             // Abrir acordeón con animaciones
             categoriesMenu.classList.add('active');
             categoriesBtn.classList.add('active');
-<<<<<<< HEAD
+            categoriesBtn.setAttribute('aria-expanded', 'true');
+            categoriesMenu.setAttribute('aria-hidden', 'false');
             console.log('✅ Acordeón abierto, clases agregadas');
-            
             // Animar items con delay escalonado
             const items = categoriesMenu.querySelectorAll('.category-item');
             items.forEach((item, index) => {
                 item.style.transitionDelay = `${index * 0.05}s`;
             });
-=======
-            categoriesBtn.setAttribute('aria-expanded', 'true');
-            categoriesMenu.setAttribute('aria-hidden', 'false');
->>>>>>> e6d781c (Subir cambios recientes)
         } else {
             // Cerrar acordeón
             categoriesMenu.classList.remove('active');
             categoriesBtn.classList.remove('active');
-<<<<<<< HEAD
+            categoriesBtn.setAttribute('aria-expanded', 'false');
+            categoriesMenu.setAttribute('aria-hidden', 'true');
             console.log('✅ Acordeón cerrado, clases removidas');
-            
             // Resetear delays
             const items = categoriesMenu.querySelectorAll('.category-item');
             items.forEach(item => {
                 item.style.transitionDelay = '0s';
             });
-=======
-            categoriesBtn.setAttribute('aria-expanded', 'false');
-            categoriesMenu.setAttribute('aria-hidden', 'true');
->>>>>>> e6d781c (Subir cambios recientes)
         }
     }
     

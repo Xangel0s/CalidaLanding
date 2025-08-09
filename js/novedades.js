@@ -1156,9 +1156,11 @@ function clearAllFilters() {
     }
 }
 
-// Initialize when DOM is loaded
+// Initialize when DOM is loaded (guarded if CMS rendering is enabled)
 document.addEventListener('DOMContentLoaded', () => {
-    window.novedadesManager = new NovedadesManager();
+    if (!window.USE_CMS_PRODUCTS) {
+        window.novedadesManager = new NovedadesManager();
+    }
 });
 
 // Handle browser back/forward

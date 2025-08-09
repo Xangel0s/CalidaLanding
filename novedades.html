@@ -602,10 +602,72 @@
     
     <!-- Scripts -->
     <script src="js/utils.js"></script>
+    <script src="js/cms-products.js"></script>
     <script src="js/main.js"></script>
+    <script>
+      // Usar renderizado de productos desde CMS en novedades.html
+      window.USE_CMS_PRODUCTS = true;
+    </script>
     <script src="js/novedades.js"></script>
     <script src="js/smart-search.js"></script>
     <script src="js/animations.js"></script>
+    <script>
+    // Render novedades grid from CMS catalog
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.CMSProducts && CMSProducts.renderNovedadesGrid) {
+            CMSProducts.renderNovedadesGrid({ containerId: 'productsGrid' });
+        } else {
+            console.warn('CMSProducts no disponible en novedades.html');
+        }
+    });
+    </script>
+    <script>
+    // Sincroniza filtros (checkboxes) con la URL y refresca el grid CMS
+    (function() {
+      'use strict';
+      function getCheckedValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value);
+      }
+      function setCheckedFromParams() {
+        const url = new URL(window.location.href);
+        const catParams = url.searchParams.getAll('categoria');
+        const promoParams = url.searchParams.getAll('promocion');
+        if (catParams.length) {
+          document.querySelectorAll('input[name="categoria"]').forEach(input => {
+            input.checked = catParams.includes(input.value);
+          });
+        }
+        if (promoParams.length) {
+          document.querySelectorAll('input[name="promocion"]').forEach(input => {
+            input.checked = promoParams.includes(input.value);
+          });
+        }
+      }
+      function updateURLAndRender() {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('categoria');
+        url.searchParams.delete('promocion');
+        getCheckedValues('categoria').forEach(v => url.searchParams.append('categoria', v));
+        getCheckedValues('promocion').forEach(v => url.searchParams.append('promocion', v));
+        window.history.replaceState({}, '', url.toString());
+        if (window.CMSProducts && CMSProducts.renderNovedadesGrid) {
+          CMSProducts.renderNovedadesGrid({ containerId: 'productsGrid' });
+        }
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        setCheckedFromParams();
+        document.querySelectorAll('input[name="categoria"], input[name="promocion"]').forEach(input => {
+          input.addEventListener('change', updateURLAndRender);
+        });
+      });
+      window.addEventListener('popstate', () => {
+        setCheckedFromParams();
+        if (window.CMSProducts && CMSProducts.renderNovedadesGrid) {
+          CMSProducts.renderNovedadesGrid({ containerId: 'productsGrid' });
+        }
+      });
+    })();
+    </script>
 
     <!-- Debug Script para Acordeón -->
     <script>

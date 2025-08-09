@@ -376,6 +376,11 @@ filter: brightness(0.95);
     color: var(--primary-600);
     background-color: var(--primary-50);
 }
+ 
+ /* Hide 'Mi cuenta' button globally */
+ .header-actions .header-action-link {
+     display: none !important;
+ }
 
 .cart-link {
     position: relative;

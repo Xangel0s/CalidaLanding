@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "slug": "televisor-lg-55ut7300psa-uhd-4k-smart-webos",
+      "visible": true,
+      "destacado": true,
+      "mas_vendido": true,
+      "orden": 1,
+      "categoria": "televisores"
+    },
+    {
+      "slug": "cocina-mabe-empotrable-6-hornillas",
+      "visible": true,
+      "destacado": true,
+      "mas_vendido": false,
+      "orden": 2,
+      "categoria": "electrodomesticos"
+    }
+  ]
+}

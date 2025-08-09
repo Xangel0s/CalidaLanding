@@ -1258,7 +1258,22 @@
     <script src="js/forms.js"></script>
     <script src="js/smart-search.js"></script>
     <script src="js/animations.js"></script>
+    <script src="js/cms-products.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+    // Render home product tracks from CMS catalog
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.CMSProducts && CMSProducts.renderHomeTracks) {
+            CMSProducts.renderHomeTracks({
+                featuredTrackId: 'featuredProductsTrack',
+                bestTrackId: 'bestSellersTrack'
+            });
+        } else {
+            console.warn('CMSProducts no disponible en index.html');
+        }
+    });
+    </script>
 
     <!-- Debug Script para Acordeón en Index -->
     <script>
