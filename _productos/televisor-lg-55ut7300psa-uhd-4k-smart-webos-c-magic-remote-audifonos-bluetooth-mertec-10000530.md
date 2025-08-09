@@ -22,6 +22,8 @@ price_regular: 2939
 price_online: 1659
 monthly_payment: 62.6
 category: tecnologia
+tags:
+  - combo
 status: activo
 stock: 1
 specs:
