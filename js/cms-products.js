@@ -174,6 +174,20 @@
     };
     if (p.image) p.image = fix(p.image);
     if (Array.isArray(p.gallery)) p.gallery = p.gallery.map(fix);
+
+    // Merge with catalog entry as an additional fallback image
+    try {
+      const catalog = await loadCatalog();
+      const it = (catalog || []).find(i => i.slug === slug);
+      if (it && it.image) {
+        const catImg = fix(it.image);
+        // Prepend catalog image if not already present
+        const imgs = new Set([catImg, p.image, ...(p.gallery || [])].filter(Boolean));
+        const list = Array.from(imgs);
+        p.image = list[0] || p.image || '';
+        p.gallery = list;
+      }
+    } catch (_) { /* ignore */ }
     return p;
   }
 
