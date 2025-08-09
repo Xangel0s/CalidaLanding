@@ -134,7 +134,7 @@ class ProductPageManager {
             specifications: specs,
             benefits: p.benefits || [],
             detailed_description: p.body || p.description || '',
-            payment_methods: Array.isArray(p.payment_methods) ? p.payment_methods : [],
+            payment_methods: (Array.isArray(p.payment_methods) && p.payment_methods.length > 0) ? p.payment_methods : ['bcp','yape','plin'],
             shipping: p.shipping || ''
         };
     }
@@ -149,9 +149,14 @@ class ProductPageManager {
         document.getElementById('breadcrumb-product').textContent = this.productData.title;
 
         // Update product info
-        document.getElementById('product-brand').textContent = this.productData.brand;
-        document.getElementById('product-title').textContent = this.productData.title;
-        document.getElementById('product-description').textContent = this.productData.description;
+        document.getElementById('product-brand').textContent = this.productData.brand || '';
+        document.getElementById('product-title').textContent = this.productData.title || '';
+        const descEl = document.getElementById('product-description');
+        if (this.productData.description && this.productData.description.trim()) {
+            descEl.textContent = this.productData.description;
+        } else {
+            descEl.textContent = 'Descripción no disponible.';
+        }
 
         // Update pricing
         if (this.productData.price_regular) {
@@ -183,8 +188,11 @@ class ProductPageManager {
         // Update benefits
         this.updateBenefits();
 
-        // Update detailed description
-        document.getElementById('detailed-description').innerHTML = this.productData.detailed_description;
+        // Update detailed description (fallback message)
+        const dd = document.getElementById('detailed-description');
+        dd.innerHTML = (this.productData.detailed_description && this.productData.detailed_description.trim())
+            ? this.productData.detailed_description
+            : '<p>Aún no hay una descripción detallada para este producto.</p>';
 
         // Update payments and shipping
         this.updatePayments();
@@ -252,13 +260,20 @@ class ProductPageManager {
 
     updateSpecifications() {
         const specsContainer = document.getElementById('specifications-list');
-        if (this.productData.specifications) {
+        if (Array.isArray(this.productData.specifications) && this.productData.specifications.length > 0) {
             specsContainer.innerHTML = this.productData.specifications.map(spec => `
                 <tr>
                     <td class="spec-name">${spec.name}</td>
                     <td class="spec-value">${spec.value}</td>
                 </tr>
             `).join('');
+        } else {
+            specsContainer.innerHTML = `
+                <tr>
+                    <td class="spec-name">—</td>
+                    <td class="spec-value">Sin especificaciones técnicas</td>
+                </tr>
+            `;
         }
     }
 

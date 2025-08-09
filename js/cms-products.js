@@ -221,17 +221,34 @@
     if (p.image) p.image = fix(p.image);
     if (Array.isArray(p.gallery)) p.gallery = p.gallery.map(fix);
 
-    // Merge with catalog entry as an additional fallback image
+    // Merge with catalog entry to backfill missing fields (best-effort)
     try {
       const catalog = await loadCatalog();
       const it = (catalog || []).find(i => i.slug === slug);
-      if (it && it.image) {
-        const catImg = fix(it.image);
-        // Prepend catalog image if not already present
-        const imgs = new Set([catImg, p.image, ...(p.gallery || [])].filter(Boolean));
-        const list = Array.from(imgs);
-        p.image = list[0] || p.image || '';
-        p.gallery = list;
+      if (it) {
+        // Backfill textual/meta fields only if missing
+        const empty = (v) => v == null || (typeof v === 'string' && v.trim() === '') || (Array.isArray(v) && v.length === 0);
+        if (empty(p.title) && it.title) p.title = it.title;
+        if (empty(p.brand) && it.brand) p.brand = it.brand;
+        if (empty(p.description) && it.description) p.description = it.description;
+        if (empty(p.body) && it.body) p.body = it.body;
+        if (empty(p.specs) && Array.isArray(it.specs)) p.specs = it.specs;
+        if (empty(p.benefits) && Array.isArray(it.benefits)) p.benefits = it.benefits;
+        if (empty(p.payment_methods) && Array.isArray(it.payment_methods)) p.payment_methods = it.payment_methods;
+        if (empty(p.shipping) && it.shipping) p.shipping = it.shipping;
+        if (p.price_online == null && typeof it.price_online === 'number') p.price_online = it.price_online;
+        if (p.price_regular == null && typeof it.price_regular === 'number') p.price_regular = it.price_regular;
+        if (p.monthly_payment == null && typeof it.monthly_payment === 'number') p.monthly_payment = it.monthly_payment;
+        if (p.discount == null && typeof it.discount === 'number') p.discount = it.discount;
+
+        // Images: prepend catalog image if not already present
+        if (it.image) {
+          const catImg = fix(it.image);
+          const imgs = new Set([catImg, p.image, ...(p.gallery || [])].filter(Boolean));
+          const list = Array.from(imgs);
+          p.image = list[0] || p.image || '';
+          p.gallery = list;
+        }
       }
     } catch (_) { /* ignore */ }
     return p;
