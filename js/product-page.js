@@ -207,15 +207,23 @@ class ProductPageManager {
         // Update benefits
         this.updateBenefits();
 
-        // Update detailed description (fallback message)
-        const dd = document.getElementById('detailed-description');
+        // Update detailed description (fallback message) with robust fallbacks
+        const descHTML = (this.productData.detailed_description && this.productData.detailed_description.trim())
+            ? this.productData.detailed_description
+            : '<p>Aún no hay una descripción detallada para este producto.</p>';
+        let dd = document.getElementById('detailed-description');
         if (dd) {
-            const html = (this.productData.detailed_description && this.productData.detailed_description.trim())
-                ? this.productData.detailed_description
-                : '<p>Aún no hay una descripción detallada para este producto.</p>';
-            dd.innerHTML = html;
+            dd.innerHTML = descHTML;
         } else {
-            console.debug('[ProductPage] No se encontró #detailed-description');
+            // Fallback: write directly into description tab content
+            const descPanel = document.querySelector('#description .tab-content');
+            if (descPanel) {
+                descPanel.innerHTML = `<h3>Descripción del Producto</h3>${descHTML}`;
+                const parent = descPanel.closest('.tab-panel');
+                if (parent) parent.style.display = parent.classList.contains('active') ? 'block' : 'none';
+            } else {
+                console.debug('[ProductPage] No se encontró contenedor de descripción');
+            }
         }
 
         // Update payments and shipping
@@ -237,10 +245,15 @@ class ProductPageManager {
                 if (payWrap && payWrap.innerHTML.trim() === '') {
                     this.updatePayments();
                 }
-                const shipWrap = document.querySelector('#shipping .tab-content .shipping-info');
-                if (shipWrap && shipWrap.innerHTML.trim() === '') {
-                    this.updateShipping();
+                let shipWrap = document.querySelector('#shipping .tab-content .shipping-info');
+                if (!shipWrap) {
+                    const scont = document.querySelector('#shipping .tab-content');
+                    if (scont) {
+                        scont.innerHTML = '<div class="shipping-info"></div>';
+                        shipWrap = scont.querySelector('.shipping-info');
+                    }
                 }
+                if (shipWrap && shipWrap.innerHTML.trim() === '') this.updateShipping();
             } catch (e) { console.debug('[ProductPage] Defensive populate error', e); }
         }, 0);
     }
