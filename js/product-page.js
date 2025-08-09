@@ -14,9 +14,9 @@ class ProductPageManager {
         const index = ids.indexOf(tabId);
         if (index === -1) return;
         tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabPanels.forEach(panel => panel.classList.remove('active'));
+        tabPanels.forEach(panel => { panel.classList.remove('active'); panel.style.display = 'none'; });
         if (tabButtons[index]) tabButtons[index].classList.add('active');
-        if (tabPanels[index]) tabPanels[index].classList.add('active');
+        if (tabPanels[index]) { tabPanels[index].classList.add('active'); tabPanels[index].style.display = 'block'; }
     }
 
     updatePayments() {
@@ -393,15 +393,21 @@ class ProductPageManager {
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabPanels = document.querySelectorAll('.tab-panel');
 
+        // Initialize visibility based on 'active' class
+        tabPanels.forEach(panel => {
+            panel.style.display = panel.classList.contains('active') ? 'block' : 'none';
+        });
+
         tabButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
                 // Remove active class from all tabs and panels
                 tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabPanels.forEach(panel => panel.classList.remove('active'));
+                tabPanels.forEach(panel => { panel.classList.remove('active'); panel.style.display = 'none'; });
 
                 // Add active class to clicked tab and corresponding panel
                 button.classList.add('active');
                 tabPanels[index].classList.add('active');
+                tabPanels[index].style.display = 'block';
                 // Update hash for deep-linking
                 const id = tabPanels[index].id;
                 if (id) history.replaceState(null, '', `#${id}`);
