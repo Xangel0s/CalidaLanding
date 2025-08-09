@@ -24,6 +24,11 @@ monthly_payment: 62.6
 category: tecnologia
 status: activo
 stock: 1
+specs:
+  - name: Nuevo
+    value: ALTA
+  - name: Alto
+    value: nuevo
 date: 2025-08-09T02:26:00.000-05:00
 ---
 
