@@ -13,6 +13,7 @@
     height: 100%;
 }
 
+/* Base slide styles + displacement animation readiness */
 .hero-slide {
     position: absolute;
     top: 0;
@@ -20,13 +21,35 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity 0.8s ease-in-out;
+    transform: translateX(100%);
+    transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
     z-index: 1;
+    will-change: transform, opacity;
 }
 
+/* Active slide in view */
 .hero-slide.active {
     opacity: 1;
+    transform: translateX(0);
     z-index: 2;
+}
+
+/* Entering states (set from JS before activating) */
+.hero-slide.enter-right { /* next coming from right */
+    transform: translateX(100%);
+}
+.hero-slide.enter-left { /* next coming from left */
+    transform: translateX(-100%);
+}
+
+/* Exiting states */
+.hero-slide.exit-left { /* current leaving to left */
+    transform: translateX(-100%);
+    opacity: 0;
+}
+.hero-slide.exit-right { /* current leaving to right */
+    transform: translateX(100%);
+    opacity: 0;
 }
 
 .hero-content {
@@ -96,6 +119,15 @@
     background-position: center;
     background-repeat: no-repeat;
     z-index: 1;
+    transform: scale(1);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Subtle Ken Burns effect on active slide */
+.hero-slide.active .hero-bg {
+    transition: transform 8s ease-out;
+    transform: scale(1.06);
 }
 
 /* Hero Controls */
@@ -119,7 +151,7 @@
 
 .hero-arrow:hover {
     background: white;
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.06);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -155,7 +187,7 @@
     border: 2px solid rgba(255, 255, 255, 0.5);
     background: transparent;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease;
 }
 
 .hero-indicator:hover {
@@ -166,7 +198,19 @@
 .hero-indicator.active {
     background: white;
     border-color: white;
-    transform: scale(1.1);
+    transform: scale(1.08);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .hero-slide {
+        transition: none;
+    }
+    .hero-slide .hero-bg,
+    .hero-slide.active .hero-bg {
+        transition: none;
+        transform: none;
+    }
 }
 
 /* Responsive Design */

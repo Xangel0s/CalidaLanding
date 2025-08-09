@@ -4,6 +4,11 @@ class Carousel {
     constructor(container, options = {}) {
         this.container = typeof container === 'string' ? Utils.$(container) : container;
         if (!this.container) return;
+        // Prevent double-initialization on the same container
+        if (this.container.dataset.carouselInitialized === 'true') {
+            console.warn('Carousel already initialized, skipping:', this.container.id || this.container.className);
+            return false;
+        }
         
         this.options = {
             autoPlay: false,
@@ -28,6 +33,9 @@ class Carousel {
         this.originalItems = [];
         
         this.init();
+
+        // Mark as initialized
+        this.container.dataset.carouselInitialized = 'true';
     }
     
     init() {
@@ -88,9 +96,8 @@ class Carousel {
         const containerId = this.container.id;
         const containerClass = this.container.className;
         
-        if (containerId === 'heroSlider' || containerClass.includes('hero')) {
-            return 'hero';
-        } else if (containerId.includes('categories') || containerClass.includes('categories')) {
+        // Hero banner es manejado por `HeroSlider` dedicado; no usar `Carousel` para hero
+        if (containerId.includes('categories') || containerClass.includes('categories')) {
             return 'categories';
         } else if (containerId.includes('Products') || containerId.includes('Sellers') || containerClass.includes('products') || containerClass.includes('sellers')) {
             return 'products';
@@ -156,7 +163,7 @@ class Carousel {
     setupFallbackCarousel() {
         // Fallback: try common selectors
         const selectors = [
-            '.categories-track', '.best-sellers-track', '.products-track', '.hero-slider',
+            '.categories-track', '.best-sellers-track', '.products-track',
             '#categoriesTrack', '#featuredProductsTrack', '#bestSellersTrack'
         ];
         
@@ -496,12 +503,18 @@ class Carousel {
     applyTrackStyles() {
         if (this.track) {
             this.track.style.display = 'flex';
-            this.track.style.transition = 'transform 0.5s ease-in-out';
+            // Smoother and slightly faster transition for all standard carousels (incl. categories)
+            this.track.style.transition = 'transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+            this.track.style.willChange = 'transform';
         }
     }
     
     setupInfiniteScroll() {
         if (!this.options.infiniteScroll || this.originalItems.length === 0) return;
+        if (this.track.dataset.infiniteSetup === 'true') {
+            // Already set up; avoid duplicating clones
+            return;
+        }
         
         // Clear existing items
         this.track.innerHTML = '';
@@ -530,6 +543,7 @@ class Carousel {
         // Update items array and set initial position
         this.items = [...this.track.children];
         this.currentIndex = clonesNeeded; // Start at first real item
+        this.track.dataset.infiniteSetup = 'true';
     }
     
     setupEventListeners() {
@@ -660,14 +674,18 @@ class Carousel {
         }
         
         // Check if this is a categories carousel
+        const containerId = (this.container && this.container.id) ? this.container.id : '';
         const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
-                                   this.container.id.includes('categories') ||
+                                   containerId.includes('categories') ||
                                    this.track.classList.contains('categories-track');
         
         if (isCategoriesCarousel) {
-            // For categories, use fixed width from CSS (150px + gap)
-            const categoryWidth = 150; // Fixed width from CSS
-            const gap = 24; // var(--spacing-6) = 24px
+            // For categories, compute width and gap from DOM to stay in sync with CSS
+            const firstItem = this.items[0];
+            const styles = window.getComputedStyle(this.track);
+            const rawGap = styles.columnGap || styles.gap || '24px';
+            const gap = parseInt(rawGap, 10) || 24;
+            const categoryWidth = firstItem ? firstItem.offsetWidth : 150;
             
             // Only limit bounds if NOT using infinite scroll
             if (!this.options.infiniteScroll) {
@@ -706,30 +724,30 @@ class Carousel {
     updateViewNoTransition() {
         if (!this.track || this.items.length === 0) return;
 
-        // Check if this is a categories carousel
-        const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
-                                   this.container.id.includes('categories') ||
-                                   this.track.classList.contains('categories-track');
-        
+        // Safely detect categories carousel
+        const containerId2 = (this.container && this.container.id) ? this.container.id : '';
+        const isCategoriesCarousel = this.container.classList.contains('categories-carousel') ||
+                                     containerId2.includes('categories') ||
+                                     this.track.classList.contains('categories-track');
+
         // Temporarily disable transition
         this.track.style.transition = 'none';
-        
+
         if (isCategoriesCarousel) {
-            // For categories, use fixed width from CSS (150px + gap)
-            const categoryWidth = 150; // Fixed width from CSS
-            const gap = 24; // var(--spacing-6) = 24px
-            
-            // Only limit bounds if NOT using infinite scroll
+            // Compute width and gap from DOM to stay in sync with CSS
+            const firstItem = this.items[0];
+            const styles = window.getComputedStyle(this.track);
+            const rawGap = styles.columnGap || styles.gap || '24px';
+            const gap = parseInt(rawGap, 10) || 24;
+            const categoryWidth = firstItem ? firstItem.offsetWidth : 150;
+
             if (!this.options.infiniteScroll) {
-                // Calculate the safe bounds for categories
                 const totalItems = this.items.length;
                 const maxSafeIndex = Math.max(0, totalItems - this.itemsToShow);
-                
-                // Ensure currentIndex doesn't go beyond safe bounds
                 this.currentIndex = Math.min(this.currentIndex, maxSafeIndex);
                 this.currentIndex = Math.max(0, this.currentIndex);
             }
-            
+
             const translateX = -(this.currentIndex * (categoryWidth + gap));
             this.track.style.transform = `translateX(${translateX}px)`;
         } else {
@@ -737,22 +755,21 @@ class Carousel {
             const containerWidth = this.track.parentElement.offsetWidth;
             const totalGap = (this.itemsToShow - 1) * this.options.gap;
             const itemWidth = (containerWidth - totalGap) / this.itemsToShow;
-            
+
             // Set item widths
             this.items.forEach((item, index) => {
                 item.style.flex = `0 0 ${itemWidth}px`;
                 item.style.marginRight = index < this.items.length - 1 ? `${this.options.gap}px` : '0';
             });
-            
-            // Update transform
+
             const translateX = -(this.currentIndex * (itemWidth + this.options.gap));
             this.track.style.transform = `translateX(${translateX}px)`;
         }
-        
+
         // Force reflow and re-enable transition
-        this.track.offsetHeight;
-        this.track.style.transition = 'transform 0.5s ease-in-out';
-        
+        this.track.offsetHeight; // reflow
+        this.track.style.transition = 'transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+
         this.updateButtons();
     }
     
@@ -761,16 +778,17 @@ class Carousel {
         
         const clonesNeeded = Math.max(4, Math.ceil(this.originalItems.length / 2));
         const totalWithClones = this.items.length;
-        const endCloneSection = totalWithClones - clonesNeeded;
+        const startReal = clonesNeeded;
+        const endRealExclusive = clonesNeeded + this.originalItems.length; // exclusive upper bound
         
         // Reset position if we're in clone territory
-        if (this.currentIndex <= 1) {
-            // We're too far left, jump to equivalent position on the right
-            this.currentIndex = this.currentIndex + this.originalItems.length;
+        if (this.currentIndex < startReal) {
+            // Too far left (in left clones), jump forward by originals count
+            this.currentIndex += this.originalItems.length;
             this.updateViewNoTransition();
-        } else if (this.currentIndex >= endCloneSection - 1) {
-            // We're too far right, jump to equivalent position on the left
-            this.currentIndex = this.currentIndex - this.originalItems.length;
+        } else if (this.currentIndex >= endRealExclusive) {
+            // Too far right (in right clones), jump back by originals count
+            this.currentIndex -= this.originalItems.length;
             this.updateViewNoTransition();
         }
     }
@@ -810,8 +828,9 @@ class Carousel {
         }
         
         // Check if this is a categories carousel
+        const containerId2 = (this.container && this.container.id) ? this.container.id : '';
         const isCategoriesCarousel = this.container.classList.contains('categories-carousel') || 
-                                   this.container.id.includes('categories') ||
+                                   containerId2.includes('categories') ||
                                    this.track.classList.contains('categories-track');
         
         const totalItems = this.originalItems.length > 0 ? this.originalItems.length : this.items.length;

@@ -196,6 +196,9 @@ class FormManager {
     }
     
     handleSearchInput(query) {
+        // If SmartSearch exists, do not run legacy suggestions to avoid conflicts
+        if (document.getElementById('searchSuggestions')) return;
+
         if (query.trim().length >= 2) {
             this.showSearchSuggestions(query.trim());
         } else {
@@ -216,6 +219,9 @@ class FormManager {
     }
     
     showSearchSuggestions(query) {
+        // If SmartSearch exists, skip legacy suggestions
+        if (document.getElementById('searchSuggestions')) return;
+
         // Implementation for search suggestions dropdown
         // This would be implemented based on available products
         const suggestions = ProductManager.instance?.searchProducts(query).slice(0, 5) || [];
@@ -227,6 +233,8 @@ class FormManager {
     updateSearchSuggestions(suggestions, query) {
         const searchContainer = Utils.$('.search-container');
         if (!searchContainer) return;
+        // If SmartSearch exists, skip legacy suggestions
+        if (document.getElementById('searchSuggestions')) return;
         
         // Remove existing suggestions
         const existingSuggestions = searchContainer.querySelector('.search-suggestions');
@@ -277,6 +285,8 @@ class FormManager {
     }
     
     hideSearchSuggestions() {
+        // If SmartSearch exists, skip legacy removal to avoid deleting main suggestions container
+        if (document.getElementById('searchSuggestions')) return;
         const suggestions = Utils.$('.search-suggestions');
         if (suggestions) {
             suggestions.remove();

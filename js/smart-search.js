@@ -8,6 +8,7 @@ class SmartSearch {
         this.dynamicSuggestions = document.getElementById('dynamicSuggestions');
         this.noResults = document.getElementById('noResults');
         this.similarCategories = document.getElementById('similarCategories');
+        this.searchBtn = this.searchForm ? this.searchForm.querySelector('.search-btn') : null;
         
         this.currentFocus = -1;
         this.isOpen = false;
@@ -79,6 +80,22 @@ class SmartSearch {
         this.searchInput.addEventListener('input', (e) => this.handleInput(e));
         this.searchInput.addEventListener('keydown', (e) => this.handleKeydown(e));
         this.searchForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        // On click, if empty, open accordion with popular searches
+        this.searchInput.addEventListener('click', () => {
+            // Always force showing and re-triggering animation on each click
+            this.showSuggestions(true);
+            // Always show Popular on click (override any typed content)
+            this.showPopularSearches();
+        });
+        if (this.searchBtn) {
+            this.searchBtn.addEventListener('click', (e) => {
+                if (this.searchInput && this.searchInput.value.trim() === '') {
+                    // Prevent empty submit; show accordion instead every click
+                    e.preventDefault();
+                    this.showSuggestions(true);
+                }
+            });
+        }
         
         // Click outside to close
         document.addEventListener('click', (e) => {
@@ -91,16 +108,16 @@ class SmartSearch {
         this.addClickHandlers();
     }
     
-    showSuggestions() {
-        if (!this.isOpen) {
+    showSuggestions(force = false) {
+        if (!this.isOpen || force) {
             this.searchSuggestions.classList.add('show');
             this.isOpen = true;
-            
-            if (this.searchInput.value.trim() === '') {
-                this.showPopularSearches();
-            } else {
-                this.handleInput({ target: this.searchInput });
-            }
+        }
+        // Decide what to show each time
+        if (this.searchInput.value.trim() === '') {
+            this.showPopularSearches();
+        } else {
+            this.handleInput({ target: this.searchInput });
         }
     }
     
@@ -113,11 +130,33 @@ class SmartSearch {
     
     showPopularSearches() {
         this.hideAllSections();
+        // Activate section
         this.popularSearches.classList.add('active');
+        // Restart entrance animation
+        this.popularSearches.classList.remove('animate-in');
+        void this.popularSearches.offsetWidth; // reflow to restart CSS animation
+        this.popularSearches.classList.add('animate-in');
+        // Accordion open: set max-height to content height
+        this.popularSearches.style.maxHeight = this.popularSearches.scrollHeight + 'px';
+        this.popularSearches.classList.add('accordion-open');
+        // Pulse the search input subtly
+        if (this.searchInput) {
+            this.searchInput.classList.remove('popular-pulse');
+            void this.searchInput.offsetWidth;
+            this.searchInput.classList.add('popular-pulse');
+            // Clean up after animation ends
+            setTimeout(() => {
+                if (this.searchInput) this.searchInput.classList.remove('popular-pulse');
+            }, 800);
+        }
     }
     
     hideAllSections() {
         this.popularSearches.classList.remove('active');
+        // Accordion close
+        this.popularSearches.classList.remove('accordion-open');
+        this.popularSearches.style.maxHeight = '0px';
+        this.popularSearches.classList.remove('animate-in');
         this.dynamicSuggestions.classList.remove('active');
         this.noResults.classList.remove('active');
     }

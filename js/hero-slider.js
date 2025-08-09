@@ -13,6 +13,7 @@ class HeroSlider {
         this.totalSlides = this.slides.length;
         this.autoPlayInterval = null;
         this.autoPlayDelay = 5000; // 5 seconds
+        this.isAnimating = false;
         
         this.init();
     }
@@ -25,6 +26,12 @@ class HeroSlider {
             return;
         }
         
+        // Ensure slides have proper transition inline (guards against CSS overrides)
+        this.slides.forEach((s) => {
+            s.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+            s.style.willChange = 'transform, opacity';
+        });
+
         console.log('✅ Initializing Hero Slider with', this.totalSlides, 'slides');
         console.log('📋 Slides found:', this.slides);
         console.log('📋 Indicators found:', this.indicatorButtons.length);
@@ -46,8 +53,17 @@ class HeroSlider {
         this.setupAutoPlay();
         this.setupTouchEvents();
         
-        // Initialize first slide
-        this.showSlide(0);
+        // Initialize first slide (set active without animation)
+        this.slides.forEach((s, i) => {
+            s.classList.remove('enter-left','enter-right','exit-left','exit-right','active');
+            if (i === 0) s.classList.add('active');
+        });
+        this.indicatorButtons.forEach((btn, i) => {
+            const active = i === 0;
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        this.currentSlide = 0;
         
         // Start autoplay
         this.startAutoPlay();
@@ -60,15 +76,21 @@ class HeroSlider {
         }
         
         this.indicatorButtons.forEach((button, index) => {
+            // Accessibility attributes
+            button.setAttribute('role', 'button');
+            button.setAttribute('aria-label', `Ir al banner ${index + 1}`);
+            button.setAttribute('aria-selected', index === this.currentSlide ? 'true' : 'false');
             button.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.goToSlide(index);
+                const direction = index > this.currentSlide ? 'next' : 'prev';
+                this.goToSlide(index, direction);
             });
         });
     }
     
     setupArrows() {
         if (this.prevButton) {
+            this.prevButton.setAttribute('aria-label', 'Banner anterior');
             this.prevButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.prevSlide();
@@ -76,6 +98,7 @@ class HeroSlider {
         }
         
         if (this.nextButton) {
+            this.nextButton.setAttribute('aria-label', 'Siguiente banner');
             this.nextButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.nextSlide();
@@ -125,54 +148,77 @@ class HeroSlider {
         });
     }
     
-    showSlide(index) {
+    showSlide(index, direction = 'next') {
         console.log('🔄 Changing from slide', this.currentSlide + 1, 'to slide', index + 1);
+        if (index === this.currentSlide) return;
+        if (this.isAnimating) return;
+        this.isAnimating = true;
         
-        // Remove active class from all slides
-        this.slides.forEach((slide, i) => {
-            const wasActive = slide.classList.contains('active');
-            slide.classList.toggle('active', i === index);
-            const isNowActive = slide.classList.contains('active');
-            
-            if (wasActive && !isNowActive) {
-                console.log('📤 Slide', i + 1, 'hidden');
-            } else if (!wasActive && isNowActive) {
-                console.log('📥 Slide', i + 1, 'shown');
-                // Get the background image from the slide
-                const bgElement = slide.querySelector('.hero-bg');
-                if (bgElement) {
-                    const bgImage = bgElement.style.backgroundImage;
-                    console.log('🖼️ Background image:', bgImage);
-                }
-            }
+        const current = this.slides[this.currentSlide];
+        const next = this.slides[index];
+        if (!current || !next) { this.isAnimating = false; return; }
+
+        // Cleanup any transient classes
+        [current, next].forEach(s => s.classList.remove('enter-left','enter-right','exit-left','exit-right'));
+
+        // Prepare entering direction on next slide
+        const enterClass = direction === 'prev' ? 'enter-left' : 'enter-right';
+        const exitClass = direction === 'prev' ? 'exit-right' : 'exit-left';
+        next.classList.add(enterClass);
+
+        // Force reflow so initial position is applied
+        // eslint-disable-next-line no-unused-expressions
+        next.offsetWidth;
+
+        // Activate next and animate:
+        // 1) current goes to exit side (will move from 0 -> ±100%)
+        // 2) next starts at enter side and then we remove enterClass to move to 0
+        current.classList.add(exitClass);
+        next.classList.add('active');
+        // Use double rAF to guarantee style recalc before transition starts
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                next.classList.remove(enterClass);
+            });
         });
-        
-        // Update indicators
-        this.indicatorButtons.forEach((button, i) => {
-            button.classList.toggle('active', i === index);
-        });
-        
-        this.currentSlide = index;
-        
-        console.log('✅ Now showing slide', index + 1, 'of', this.totalSlides);
+
+        const onDone = () => {
+            next.removeEventListener('transitionend', onDone);
+            // Cleanup
+            current.classList.remove('active','exit-left','exit-right');
+            next.classList.remove('enter-left','enter-right');
+
+            // Update indicators
+            this.indicatorButtons.forEach((button, i) => {
+                const active = i === index;
+                button.classList.toggle('active', active);
+                button.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+
+            this.currentSlide = index;
+            this.isAnimating = false;
+            console.log('✅ Now showing slide', index + 1, 'of', this.totalSlides);
+        };
+        next.addEventListener('transitionend', onDone, { once: true });
     }
     
-    goToSlide(index) {
+    goToSlide(index, direction = null) {
         if (index >= 0 && index < this.totalSlides) {
             this.stopAutoPlay();
-            this.showSlide(index);
+            const dir = direction || (index > this.currentSlide ? 'next' : 'prev');
+            this.showSlide(index, dir);
             this.startAutoPlay();
         }
     }
     
     nextSlide() {
         const nextIndex = (this.currentSlide + 1) % this.totalSlides;
-        this.showSlide(nextIndex);
+        this.showSlide(nextIndex, 'next');
     }
     
     prevSlide() {
         const prevIndex = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
-        this.showSlide(prevIndex);
+        this.showSlide(prevIndex, 'prev');
     }
     
     startAutoPlay() {
@@ -205,15 +251,12 @@ class HeroSlider {
 }
 
 // Initialize Hero Slider when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing Hero Slider...');
-    window.heroSlider = new HeroSlider();
-});
-
-// Also initialize if DOM is already loaded
 if (document.readyState === 'loading') {
-    console.log('DOM still loading, waiting...');
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded, initializing Hero Slider...');
+        window.heroSlider = new HeroSlider();
+    });
 } else {
-    console.log('DOM already loaded, initializing Hero Slider immediately...');
+    console.log('DOM already loaded, initializing Hero Slider...');
     window.heroSlider = new HeroSlider();
 }

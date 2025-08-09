@@ -79,7 +79,17 @@ class CredicaliddaApp {
         const categoriesMenu = Utils.$('#categoriesMenu');
         
         if (categoriesBtn && categoriesMenu) {
+<<<<<<< HEAD
             console.log('✅ Acordeón encontrado, configurando eventos...');
+=======
+            // Accessibility attributes
+            categoriesBtn.setAttribute('aria-haspopup', 'true');
+            categoriesBtn.setAttribute('aria-expanded', 'false');
+            categoriesBtn.setAttribute('aria-controls', 'categoriesMenu');
+            categoriesMenu.setAttribute('role', 'menu');
+            categoriesMenu.setAttribute('aria-hidden', 'true');
+
+>>>>>>> e6d781c (Subir cambios recientes)
             Utils.addEvent(categoriesBtn, 'click', (e) => {
                 e.stopPropagation();
                 console.log('🔄 Click en acordeón detectado');
@@ -161,7 +171,8 @@ class CredicaliddaApp {
             
             if (searchContainer && searchSuggestions && 
                 !searchContainer.contains(e.target)) {
-                searchSuggestions.remove();
+                // Hide instead of removing so SmartSearch can reuse the element
+                searchSuggestions.classList.remove('show');
             }
         });
     }
@@ -267,6 +278,7 @@ class CredicaliddaApp {
             // Abrir acordeón con animaciones
             categoriesMenu.classList.add('active');
             categoriesBtn.classList.add('active');
+<<<<<<< HEAD
             console.log('✅ Acordeón abierto, clases agregadas');
             
             // Animar items con delay escalonado
@@ -274,10 +286,15 @@ class CredicaliddaApp {
             items.forEach((item, index) => {
                 item.style.transitionDelay = `${index * 0.05}s`;
             });
+=======
+            categoriesBtn.setAttribute('aria-expanded', 'true');
+            categoriesMenu.setAttribute('aria-hidden', 'false');
+>>>>>>> e6d781c (Subir cambios recientes)
         } else {
             // Cerrar acordeón
             categoriesMenu.classList.remove('active');
             categoriesBtn.classList.remove('active');
+<<<<<<< HEAD
             console.log('✅ Acordeón cerrado, clases removidas');
             
             // Resetear delays
@@ -285,6 +302,10 @@ class CredicaliddaApp {
             items.forEach(item => {
                 item.style.transitionDelay = '0s';
             });
+=======
+            categoriesBtn.setAttribute('aria-expanded', 'false');
+            categoriesMenu.setAttribute('aria-hidden', 'true');
+>>>>>>> e6d781c (Subir cambios recientes)
         }
     }
     
@@ -320,7 +341,8 @@ class CredicaliddaApp {
         // Remove search suggestions
         const searchSuggestions = Utils.$('.search-suggestions');
         if (searchSuggestions) {
-            searchSuggestions.remove();
+            // Hide instead of removing so SmartSearch can reuse the element
+            searchSuggestions.classList.remove('show');
         }
     }
     

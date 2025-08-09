@@ -487,6 +487,27 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+
+    /* Exception: mantener la transición del banner hero
+       Nota: esto anula la preferencia de 'reducir movimiento' SOLO para el hero.
+       Si quieres respetar estrictamente la preferencia del usuario, elimina este bloque. */
+    .hero-slide {
+        transition-duration: 0.6s !important;
+    }
+
+    /* Exception: mantener la transición de pistas de carruseles */
+    .categories-track,
+    .best-sellers-track,
+    .products-track {
+        transition-duration: 0.5s !important;
+    }
+
+    /* Exception: mantener transiciones del dropdown de categorías */
+    .categories-menu,
+    .categories-btn .dropdown-arrow,
+    .category-item {
+        transition-duration: 0.2s !important;
+    }
 }
 
 /* Dark mode support (if needed in future) */
