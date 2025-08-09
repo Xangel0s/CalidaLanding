@@ -81,8 +81,43 @@
   }
 
   async function loadProductBySlug(slug) {
-    const md = await fetchText(`/_productos/${slug}.md`);
-    const { data, content } = parseFrontMatter(md);
+    let data = {}, content = '';
+    try {
+      const md = await fetchText(`/_productos/${slug}.md`);
+      const parsed = parseFrontMatter(md);
+      data = parsed.data || {};
+      content = parsed.content || '';
+    } catch (e) {
+      // Fallback: use catalog entry to avoid breaking product page
+      try {
+        const catalog = await loadCatalog();
+        const it = (catalog || []).find(i => i.slug === slug);
+        if (it) {
+          // Build minimal product object from catalog
+          const fix = (u) => (typeof u === 'string' && !/^https?:\/\//.test(u) && !u.startsWith('/') ? '/' + u : u);
+          return {
+            slug,
+            title: it.title || it.slug,
+            brand: it.brand || '',
+            category: it.categoria || '',
+            tags: it.tags || [],
+            price_online: it.price_online ?? null,
+            price_regular: it.price_regular ?? null,
+            monthly_payment: it.monthly_payment ?? null,
+            discount: it.discount ?? null,
+            image: fix(it.image || ''),
+            gallery: it.gallery ? it.gallery.map(fix) : [],
+            description: it.description || '',
+            body: '',
+            specs: [],
+            benefits: [],
+            payment_methods: Array.isArray(it.payment_methods) ? it.payment_methods : [],
+            shipping: ''
+          };
+        }
+      } catch (_) { /* ignore */ }
+      throw e; // rethrow so caller can handle 'not found' state
+    }
     // Map fields to a unified product shape
     const p = {
       slug: data.slug || slug,
@@ -200,7 +235,11 @@
     // Load details for each (enrich)
     const products = await Promise.all(filtered.map(async (it) => {
       const p = await loadProductBySlug(it.slug);
-      return { ...p, ...it };
+      // Prefer normalized fields from MD over catalog to avoid overriding with raw paths
+      // Also ensure final image is set
+      const merged = { ...it, ...p };
+      if (!merged.image && p.image) merged.image = p.image;
+      return merged;
     }));
 
     container.innerHTML = products.map(buildGridCard).join('');

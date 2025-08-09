@@ -124,9 +124,13 @@ class ProductPageManager {
         // Update detailed description
         document.getElementById('detailed-description').innerHTML = this.productData.detailed_description;
 
-        // Update payments and shipping
-        this.updatePayments();
-        this.updateShipping();
+        // Update payments and shipping (guard if older script is served)
+        if (typeof this.updatePayments === 'function') {
+            this.updatePayments();
+        }
+        if (typeof this.updateShipping === 'function') {
+            this.updateShipping();
+        }
     }
 
     updateProductImages() {
@@ -188,18 +192,24 @@ class ProductPageManager {
 
     setupEventListeners() {
         // Quantity controls
-        document.getElementById('qty-minus').addEventListener('click', () => this.changeQuantity(-1));
-        document.getElementById('qty-plus').addEventListener('click', () => this.changeQuantity(1));
-        document.getElementById('quantity-input').addEventListener('change', (e) => {
+        const minus = document.getElementById('qty-minus');
+        const plus = document.getElementById('qty-plus');
+        const qtyInput = document.getElementById('quantity-input');
+        const waBtn = document.getElementById('whatsapp-btn');
+        const calcBtn = document.getElementById('calculate-financing');
+
+        if (minus) minus.addEventListener('click', () => this.changeQuantity(-1));
+        if (plus) plus.addEventListener('click', () => this.changeQuantity(1));
+        if (qtyInput) qtyInput.addEventListener('change', (e) => {
             this.quantity = Math.max(1, parseInt(e.target.value) || 1);
             this.updateQuantityDisplay();
         });
 
         // WhatsApp button
-        document.getElementById('whatsapp-btn').addEventListener('click', () => this.contactWhatsApp());
+        if (waBtn) waBtn.addEventListener('click', () => this.contactWhatsApp());
 
         // Calculate financing button
-        document.getElementById('calculate-financing').addEventListener('click', () => this.calculateFinancing());
+        if (calcBtn) calcBtn.addEventListener('click', () => this.calculateFinancing());
     }
 
     initializeGallery() {
