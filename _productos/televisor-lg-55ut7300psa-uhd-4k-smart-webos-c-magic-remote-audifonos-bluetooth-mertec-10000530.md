@@ -3,7 +3,7 @@ title: Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos
   Bluetooth MERTEC 10000530
 slug: televisor-lg-55ut7300psa-uhd-4k-smart-webos
 brand: LG
-image: https://caliddape.vtexassets.com/arquivos/ids/169335-800-auto?v=638876876510830000&width=800&height=auto&aspect=true
+image: /images/productos/tv1.png
 gallery:
   - https://caliddape.vtexassets.com/arquivos/ids/169335-800-auto?v=638876876510830000&width=800&height=auto&aspect=true
   - https://caliddape.vtexassets.com/arquivos/ids/169336-800-auto?v=638876876511300000&width=800&height=auto&aspect=true
