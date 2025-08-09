@@ -7,6 +7,18 @@ class ProductPageManager {
         this.init();
     }
 
+    activateTab(tabId) {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        const ids = Array.from(tabPanels).map(p => p.id);
+        const index = ids.indexOf(tabId);
+        if (index === -1) return;
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        if (tabButtons[index]) tabButtons[index].classList.add('active');
+        if (tabPanels[index]) tabPanels[index].classList.add('active');
+    }
+
     updatePayments() {
         // Render dynamic payments info using product data when available
         const wrap = document.querySelector('#payment .tab-content');
@@ -71,6 +83,14 @@ class ProductPageManager {
             this.setupEventListeners();
             this.initializeGallery();
             this.initializeTabs();
+            // If there is a hash, activate that tab on load
+            const h = (window.location.hash || '').replace('#','');
+            if (h) this.activateTab(h);
+            // Keep tabs in sync with hash changes
+            window.addEventListener('hashchange', () => {
+                const hh = (window.location.hash || '').replace('#','');
+                if (hh) this.activateTab(hh);
+            });
         }
     }
 
@@ -148,14 +168,22 @@ class ProductPageManager {
         // Update breadcrumb
         document.getElementById('breadcrumb-product').textContent = this.productData.title;
 
-        // Update product info
+        // Update product info (show only a short snippet here; full info lives in tabs below)
         document.getElementById('product-brand').textContent = this.productData.brand || '';
         document.getElementById('product-title').textContent = this.productData.title || '';
         const descEl = document.getElementById('product-description');
-        if (this.productData.description && this.productData.description.trim()) {
-            descEl.textContent = this.productData.description;
+        const rawFull = (this.productData.description && this.productData.description.trim())
+            ? this.productData.description
+            : (this.productData.detailed_description || '');
+        // Strip HTML to avoid breaking layout in the summary
+        const plain = String(rawFull).replace(/<[^>]*>/g, '').trim();
+        const maxLen = 220;
+        if (plain) {
+            const short = plain.length > maxLen ? plain.slice(0, maxLen).trim() + '…' : plain;
+            const more = plain.length > maxLen ? ` <a href="#description" class="more-link" data-tab="description">Ver descripción completa</a>` : '';
+            descEl.innerHTML = short + more;
         } else {
-            descEl.textContent = 'Descripción no disponible.';
+            descEl.textContent = '';
         }
 
         // Update pricing
@@ -356,7 +384,24 @@ class ProductPageManager {
                 // Add active class to clicked tab and corresponding panel
                 button.classList.add('active');
                 tabPanels[index].classList.add('active');
+                // Update hash for deep-linking
+                const id = tabPanels[index].id;
+                if (id) history.replaceState(null, '', `#${id}`);
             });
+        });
+
+        // Delegate clicks from summary link to activate tab
+        document.addEventListener('click', (e) => {
+            const a = e.target.closest('a.more-link[data-tab]');
+            if (!a) return;
+            e.preventDefault();
+            const id = a.getAttribute('data-tab');
+            if (id) {
+                this.activateTab(id);
+                history.replaceState(null, '', `#${id}`);
+                const tabsTop = document.querySelector('.product-details');
+                if (tabsTop) tabsTop.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
     }
 
