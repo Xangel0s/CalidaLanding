@@ -168,22 +168,13 @@ class ProductPageManager {
         // Update breadcrumb
         document.getElementById('breadcrumb-product').textContent = this.productData.title;
 
-        // Update product info (show only a short snippet here; full info lives in tabs below)
+        // Update product info (hide description at top; all details live in tabs)
         document.getElementById('product-brand').textContent = this.productData.brand || '';
         document.getElementById('product-title').textContent = this.productData.title || '';
         const descEl = document.getElementById('product-description');
-        const rawFull = (this.productData.description && this.productData.description.trim())
-            ? this.productData.description
-            : (this.productData.detailed_description || '');
-        // Strip HTML to avoid breaking layout in the summary
-        const plain = String(rawFull).replace(/<[^>]*>/g, '').trim();
-        const maxLen = 220;
-        if (plain) {
-            const short = plain.length > maxLen ? plain.slice(0, maxLen).trim() + '…' : plain;
-            const more = plain.length > maxLen ? ` <a href="#description" class="more-link" data-tab="description">Ver descripción completa</a>` : '';
-            descEl.innerHTML = short + more;
-        } else {
+        if (descEl) {
             descEl.textContent = '';
+            descEl.style.display = 'none';
         }
 
         // Update pricing

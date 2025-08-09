@@ -438,24 +438,40 @@ class CredicaliddaApp {
     // Performance monitoring
     reportPerformance() {
         if (!window.performance) return;
-        
-        const timing = performance.timing;
-        const navigation = performance.navigation;
-        
+
+        // Prefer PerformanceNavigationTiming (modern) over deprecated performance.timing
+        let pageLoadTime = null, domReadyTime = null, firstByteTime = null;
+        let navigationType = 'unknown', redirectCount = 0;
+
+        try {
+            const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+            if (navEntries && navEntries.length > 0) {
+                const nav = navEntries[0];
+                pageLoadTime = nav.loadEventEnd - nav.startTime;
+                domReadyTime = nav.domContentLoadedEventEnd - nav.startTime;
+                firstByteTime = nav.responseStart - nav.startTime;
+                navigationType = nav.type || navigationType;
+                redirectCount = nav.redirectCount || 0;
+            } else if (performance.timing) {
+                const t = performance.timing;
+                // Ensure end markers exist before subtracting
+                pageLoadTime = (t.loadEventEnd && t.navigationStart) ? (t.loadEventEnd - t.navigationStart) : null;
+                domReadyTime = (t.domContentLoadedEventEnd && t.navigationStart) ? (t.domContentLoadedEventEnd - t.navigationStart) : null;
+                firstByteTime = (t.responseStart && t.navigationStart) ? (t.responseStart - t.navigationStart) : null;
+                if (performance.navigation) {
+                    navigationType = performance.navigation.type;
+                    redirectCount = performance.navigation.redirectCount;
+                }
+            }
+        } catch (_) { /* swallow errors safely */ }
+
         const metrics = {
-            // Page load metrics
-            pageLoadTime: timing.loadEventEnd - timing.navigationStart,
-            domReadyTime: timing.domContentLoadedEventEnd - timing.navigationStart,
-            firstByteTime: timing.responseStart - timing.navigationStart,
-            
-            // Navigation type
-            navigationType: navigation.type,
-            redirectCount: navigation.redirectCount,
-            
-            // Connection info
+            pageLoadTime,
+            domReadyTime,
+            firstByteTime,
+            navigationType,
+            redirectCount,
             connectionType: navigator.connection?.effectiveType || 'unknown',
-            
-            // Timestamp
             timestamp: new Date().toISOString()
         };
         
