@@ -39,6 +39,15 @@ collections:
         ], required: false }
       - { label: "Formas de pago", name: "payment_methods", widget: "select", multiple: true, options: ["bcp", "yape", "plin"], default: ["bcp", "yape"], required: false }
       - { label: "Información de envío", name: "shipping", widget: "markdown", required: false }
+      # Opciones de visualización y contenido editable (pagos y envío)
+      - { label: "Mostrar bloque Crédito", name: "show_payment_credit", widget: "boolean", default: true, required: false }
+      - { label: "Mostrar bloque Contado", name: "show_payment_cash", widget: "boolean", default: true, required: false }
+      - { label: "Mostrar cuota mensual", name: "show_monthly", widget: "boolean", default: true, required: false }
+      - { label: "Mostrar precio especial online", name: "show_price_online", widget: "boolean", default: true, required: false }
+      - { label: "HTML personalizado: Crédito", name: "payment_credit_html", widget: "markdown", required: false, hint: "Si lo completas, reemplaza el bloque estándar de crédito." }
+      - { label: "HTML personalizado: Contado", name: "payment_cash_html", widget: "markdown", required: false, hint: "Si lo completas, reemplaza el bloque estándar de contado." }
+      - { label: "Mostrar pestaña de Envío", name: "show_shipping", widget: "boolean", default: true, required: false }
+      - { label: "HTML personalizado: Envío", name: "shipping_html", widget: "markdown", required: false }
       - { label: "Fecha de Publicación", name: "date", widget: "datetime" }
 
   - name: "categorias"
@@ -95,6 +104,15 @@ collections:
                 ] }
               - { label: "Formas de pago (opcional)", name: "payment_methods", widget: "select", multiple: true, required: false, options: ["bcp", "yape", "plin"] }
               - { label: "Información de envío (opcional)", name: "shipping", widget: "markdown", required: false }
+              # Opciones de visualización y contenido editable (pagos y envío)
+              - { label: "Mostrar bloque Crédito", name: "show_payment_credit", widget: "boolean", default: true, required: false }
+              - { label: "Mostrar bloque Contado", name: "show_payment_cash", widget: "boolean", default: true, required: false }
+              - { label: "Mostrar cuota mensual", name: "show_monthly", widget: "boolean", default: true, required: false }
+              - { label: "Mostrar precio especial online", name: "show_price_online", widget: "boolean", default: true, required: false }
+              - { label: "HTML personalizado: Crédito", name: "payment_credit_html", widget: "markdown", required: false }
+              - { label: "HTML personalizado: Contado", name: "payment_cash_html", widget: "markdown", required: false }
+              - { label: "Mostrar pestaña de Envío", name: "show_shipping", widget: "boolean", default: true, required: false }
+              - { label: "HTML personalizado: Envío", name: "shipping_html", widget: "markdown", required: false }
               - { label: "Precio Online (opcional)", name: "price_online", widget: "number", value_type: "float", required: false }
               - { label: "Precio Regular (opcional)", name: "price_regular", widget: "number", value_type: "float", required: false }
               - { label: "Cuota Mensual (opcional)", name: "monthly_payment", widget: "number", value_type: "float", required: false }
