@@ -221,6 +221,18 @@
     font-size: var(--font-size-sm);
 }
 
+.price-actions {
+  margin-top: 0.5rem;
+}
+
+.price-actions .btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /* Product Actions */
 .product-actions {
     display: flex;
@@ -319,10 +331,17 @@
     margin-bottom: 0;
 }
 
+.benefit-item .icon, .price-actions .btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
 .benefit-item .icon {
-    width: 20px;
-    height: 20px;
-    color: var(--green-600);
+  color: var(--green-600);
+}
+
+.price-actions .btn .icon {
+  color: #fff;
 }
 
 /* Product Details Tabs */
