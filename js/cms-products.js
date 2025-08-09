@@ -27,54 +27,91 @@
   function parseFrontMatter(md) {
     const out = { data: {}, content: '' };
     if (!md.startsWith('---')) { out.content = md; return out; }
-    const end = md.indexOf('\n---', 3);
+    // support both \n--- and \r\n--- terminator
+    let end = md.indexOf('\n---', 3);
+    if (end === -1) end = md.indexOf('\r\n---', 3);
     if (end === -1) { out.content = md; return out; }
+    // Determine terminator length (4 for \n---, 5 for \r\n---)
+    const termLen = md.slice(end, end + 4) === '\n---' ? 4 : 5;
     const raw = md.slice(3, end).trim();
-    const body = md.slice(end + 4).trim();
+    const body = md.slice(end + termLen).replace(/^[-\s]*\r?\n/, '').trim();
     out.content = body;
 
     const lines = raw.split(/\r?\n/);
     let i = 0;
+    const parseScalar = (val) => {
+      if (val == null) return '';
+      let v = String(val).trim();
+      v = v.replace(/^"|"$/g, '');
+      if (/^[-+]?[0-9]*\.?[0-9]+$/.test(v)) {
+        const num = Number(v); return Number.isNaN(num) ? v : num;
+      }
+      if (v === 'true' || v === 'false') return v === 'true';
+      return v;
+    };
+
     while (i < lines.length) {
       const line = lines[i];
-      if (!line.trim()) { i++; continue; }
-      // list start
-      if (line.includes(':') && lines[i + 1] && lines[i + 1].trim().startsWith('- ')) {
-        const [kRaw] = line.split(':');
-        const key = kRaw.trim();
+      if (!line || !line.trim()) { i++; continue; }
+
+      // key: value or key: (list/object start)
+      const idx = line.indexOf(':');
+      if (idx === -1) { i++; continue; }
+      const key = line.slice(0, idx).trim();
+      let rest = line.slice(idx + 1);
+
+      // If next line(s) form a list starting with '- '
+      const next = lines[i + 1];
+      if (next && next.trim().startsWith('- ')) {
         const arr = [];
-        i++;
-        while (i < lines.length && lines[i].trim().startsWith('- ')) {
-          const itemLine = lines[i].trim().slice(2);
-          if (itemLine.includes(':')) {
-            // object item like name: value
-            const [ik, iv] = itemLine.split(':');
-            const obj = {}; obj[ik.trim()] = iv.trim().replace(/^"|"$/g, '');
-            arr.push(obj);
+        i++; // move to first list item
+        let currentObj = null;
+        while (i < lines.length) {
+          const l = lines[i];
+          if (!l) { i++; continue; }
+          const trimmed = l.trim();
+          // End list when line does not start with '-' or space-indented continuation
+          if (!trimmed.startsWith('- ') && !/^\s+\S/.test(l)) break;
+
+          if (trimmed.startsWith('- ')) {
+            // Start new item
+            const itemLine = trimmed.slice(2);
+            if (itemLine.includes(':')) {
+              const cidx = itemLine.indexOf(':');
+              const ik = itemLine.slice(0, cidx).trim();
+              const iv = parseScalar(itemLine.slice(cidx + 1).trim());
+              currentObj = {}; currentObj[ik] = iv; arr.push(currentObj);
+            } else {
+              arr.push(parseScalar(itemLine));
+              currentObj = null;
+            }
+            i++;
+            // collect continuation lines for object items (indented key: value)
+            while (i < lines.length) {
+              const cont = lines[i];
+              if (!cont) { i++; continue; }
+              if (/^\s{2,}[^\s].*:\s*.+/.test(cont)) {
+                const t = cont.trim();
+                const c2idx = t.indexOf(':');
+                const ck = t.slice(0, c2idx).trim();
+                const cv = parseScalar(t.slice(c2idx + 1).trim());
+                if (currentObj) currentObj[ck] = cv;
+                i++;
+                continue;
+              }
+              break;
+            }
           } else {
-            arr.push(itemLine.replace(/^"|"$/g, ''));
+            // Indented continuation without a new '- ' (ignore or attach if object exists)
+            i++;
           }
-          i++;
         }
         out.data[key] = arr;
-        continue; // already advanced i
+        continue;
       }
-      // simple key: value
-      if (line.includes(':')) {
-        const idx = line.indexOf(':');
-        const key = line.slice(0, idx).trim();
-        let val = line.slice(idx + 1).trim();
-        val = val.replace(/^"|"$/g, '');
-        // numbers
-        if (/^[-+]?[0-9]*\.?[0-9]+$/.test(val)) {
-          const num = Number(val);
-          out.data[key] = Number.isNaN(num) ? val : num;
-        } else if (val === 'true' || val === 'false') {
-          out.data[key] = val === 'true';
-        } else {
-          out.data[key] = val;
-        }
-      }
+
+      // Simple scalar
+      out.data[key] = parseScalar(rest);
       i++;
     }
     return out;
@@ -269,14 +306,17 @@
     filtered.sort((a, b) => (a.orden || 0) - (b.orden || 0));
 
     // Load details for each (enrich)
-    const products = await Promise.all(filtered.map(async (it) => {
+    const products = (await Promise.all(filtered.map(async (it) => {
       const p = await loadProductBySlug(it.slug);
       // Prefer normalized fields from MD over catalog to avoid overriding with raw paths
       // Also ensure final image is set
       const merged = { ...it, ...p };
       if (!merged.image && p.image) merged.image = p.image;
       return merged;
-    }));
+    })))
+      // Ocultar fichas inactivas o sin stock
+      .filter(p => (p.status || '').toLowerCase() !== 'inactivo')
+      .filter(p => (typeof p.stock === 'number' ? p.stock > 0 : true));
 
     container.innerHTML = products.map(buildGridCard).join('');
   };
@@ -302,8 +342,16 @@
       )
     ]);
 
-    if (featuredTrack) featuredTrack.innerHTML = pDest.map(buildHomeCard).join('');
-    if (bestTrack) bestTrack.innerHTML = pBest.map(buildHomeCard).join('');
+    // Filtrar inactivos/sin stock antes de renderizar
+    const pDestOk = pDest
+      .filter(p => (p.status || '').toLowerCase() !== 'inactivo')
+      .filter(p => (typeof p.stock === 'number' ? p.stock > 0 : true));
+    const pBestOk = pBest
+      .filter(p => (p.status || '').toLowerCase() !== 'inactivo')
+      .filter(p => (typeof p.stock === 'number' ? p.stock > 0 : true));
+
+    if (featuredTrack) featuredTrack.innerHTML = pDestOk.map(buildHomeCard).join('');
+    if (bestTrack) bestTrack.innerHTML = pBestOk.map(buildHomeCard).join('');
   };
 
   global.CMSProducts = CMS;

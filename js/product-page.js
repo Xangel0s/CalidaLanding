@@ -7,6 +7,54 @@ class ProductPageManager {
         this.init();
     }
 
+    updatePayments() {
+        // Render dynamic payments info using product data when available
+        const wrap = document.querySelector('#payment .tab-content');
+        if (!wrap) return;
+        const monthly = typeof this.productData.monthly_payment === 'number' ? this.productData.monthly_payment.toFixed(2) : null;
+        const blocks = [];
+        blocks.push(`
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <h4>💳 Con Credicálidda</h4>
+                    <p>${monthly ? `Paga en cuotas cómodas desde S/ ${monthly} al mes` : 'Paga en cuotas cómodas con evaluación rápida'}</p>
+                    <ul>
+                        <li>Sin trámites complicados</li>
+                        <li>Solo necesitas tu DNI</li>
+                        <li>Cuotas competitivas</li>
+                        <li>Aprobación en minutos</li>
+                    </ul>
+                </div>
+                <div class="payment-method">
+                    <h4>💰 Pago al Contado</h4>
+                    <p>${typeof this.productData.price_online === 'number' ? `Precio especial online: S/ ${this.productData.price_online.toFixed(2)}` : 'Precio especial online'}</p>
+                    <ul>
+                        <li>Transferencia bancaria</li>
+                        <li>Pago en efectivo</li>
+                        <li>Tarjeta de débito</li>
+                    </ul>
+                </div>
+            </div>
+        `);
+        wrap.innerHTML = `<h3>Formas de Pago Disponibles</h3>${blocks.join('')}`;
+    }
+
+    updateShipping() {
+        // Use product-specific shipping text if provided, else default professional message with WhatsApp CTA
+        const wrap = document.querySelector('#shipping .tab-content .shipping-info');
+        if (!wrap) return;
+        const defaultText = `Dependiendo del producto, el tiempo y costo de envío pueden variar. Para una atención personalizada, consulta con un asesor por WhatsApp.`;
+        const msg = this.productData.shipping && String(this.productData.shipping).trim().length > 0
+            ? this.productData.shipping
+            : `${defaultText} <a href="https://wa.me/51999999999" target="_blank" rel="noopener">Escríbenos aquí</a>.`;
+        wrap.innerHTML = `
+            <div class="shipping-option">
+                <h4>🚚 Información de Envío</h4>
+                <p>${msg}</p>
+            </div>
+        `;
+    }
+
     async init() {
         // Get product slug from URL (?slug=...)
         const slug = this.getProductSlug();
@@ -52,10 +100,16 @@ class ProductPageManager {
             p.gallery.forEach(g => { if (g && typeof g === 'string') images.push(g); });
         }
         const specs = Array.isArray(p.specs) ? p.specs.map(s => {
+            if (!s) return { name: '', value: '' };
             if (typeof s === 'string') {
                 const idx = s.indexOf(':');
                 return idx > -1 ? { name: s.slice(0, idx).trim(), value: s.slice(idx + 1).trim() } : { name: s, value: '' };
             }
+            // If object with explicit name/value (from front matter)
+            if (typeof s === 'object' && ('name' in s || 'value' in s)) {
+                return { name: String(s.name || '').trim(), value: String(s.value || '').trim() };
+            }
+            // Fallback: take first key as name and its value as value
             const key = Object.keys(s || {})[0];
             return key ? { name: key, value: String(s[key]) } : { name: '', value: '' };
         }) : [];
@@ -124,13 +178,9 @@ class ProductPageManager {
         // Update detailed description
         document.getElementById('detailed-description').innerHTML = this.productData.detailed_description;
 
-        // Update payments and shipping (guard if older script is served)
-        if (typeof this.updatePayments === 'function') {
-            this.updatePayments();
-        }
-        if (typeof this.updateShipping === 'function') {
-            this.updateShipping();
-        }
+        // Update payments and shipping
+        this.updatePayments();
+        this.updateShipping();
     }
 
     updateProductImages() {
