@@ -137,19 +137,58 @@ class ProductPageManager {
         const mainImage = document.getElementById('main-product-image');
         const thumbnailsContainer = document.getElementById('product-thumbnails');
         
+        const toProxy = (url) => {
+            try {
+                if (!url) return url;
+                const u = String(url);
+                if (/^https?:\/\//i.test(u)) {
+                    // Use weserv proxy (expects hostless URL)
+                    const hostless = u.replace(/^https?:\/\//i, '');
+                    return `https://images.weserv.nl/?url=${encodeURIComponent(hostless)}`;
+                }
+                return url;
+            } catch { return url; }
+        };
+
         if (this.productData.images && this.productData.images.length > 0) {
             // Set main image
+            mainImage.dataset.src = this.productData.images[0];
             mainImage.src = this.productData.images[0];
             mainImage.alt = this.productData.title;
+            let triedProxyMain = false;
+            mainImage.onerror = () => {
+                if (!triedProxyMain) {
+                    triedProxyMain = true;
+                    mainImage.src = toProxy(mainImage.dataset.src);
+                } else {
+                    mainImage.src = '/images/placeholder-product.jpg';
+                }
+            };
 
             // Create thumbnails
             thumbnailsContainer.innerHTML = this.productData.images.map((image, index) => `
                 <div class="thumbnail ${index === 0 ? 'active' : ''}"
                      onclick="productPageManager.changeMainImage(${index})"
                      onmouseenter="productPageManager.changeMainImage(${index})">
-                    <img src="${image}" alt="${this.productData.title}" loading="lazy">
+                    <img src="${image}" data-src="${image}" alt="${this.productData.title}" loading="lazy">
                 </div>
             `).join('');
+
+            // Attach error fallback for thumbnails
+            thumbnailsContainer.querySelectorAll('img').forEach(img => {
+                let tried = false;
+                img.addEventListener('error', () => {
+                    if (!tried) {
+                        tried = true;
+                        const original = img.getAttribute('data-src') || img.src;
+                        const hostless = String(original).replace(/^https?:\/\//i, '');
+                        img.src = `https://images.weserv.nl/?url=${encodeURIComponent(hostless)}`;
+                    } else {
+                        const thumb = img.closest('.thumbnail');
+                        if (thumb) thumb.style.display = 'none';
+                    }
+                });
+            });
         }
     }
 
@@ -250,7 +289,19 @@ class ProductPageManager {
 
     changeMainImage(index) {
         if (this.productData.images && this.productData.images[index]) {
-            document.getElementById('main-product-image').src = this.productData.images[index];
+            const img = document.getElementById('main-product-image');
+            img.dataset.src = this.productData.images[index];
+            let triedProxy = false;
+            img.onerror = () => {
+                if (!triedProxy) {
+                    triedProxy = true;
+                    const hostless = String(img.dataset.src || '').replace(/^https?:\/\//i, '');
+                    img.src = `https://images.weserv.nl/?url=${encodeURIComponent(hostless)}`;
+                } else {
+                    img.src = '/images/placeholder-product.jpg';
+                }
+            };
+            img.src = this.productData.images[index];
             
             // Update active thumbnail
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {

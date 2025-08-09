@@ -148,8 +148,30 @@
     };
     // ensure image present
     if (!p.image && p.gallery && p.gallery.length) p.image = p.gallery[0];
-    // normalize absolute paths for images if they start without slash
-    const fix = (u) => (typeof u === 'string' && !/^https?:\/\//.test(u) && !u.startsWith('/') ? '/' + u : u);
+    // robust normalization for URLs
+    const fix = (raw) => {
+      if (typeof raw !== 'string' || !raw) return raw;
+      let u = raw.trim();
+      // resolve './' and '../' to absolute root
+      if (u.startsWith('./')) u = u.slice(1);
+      if (u.startsWith('../')) {
+        while (u.startsWith('../')) u = u.slice(3);
+        if (!u.startsWith('/')) u = '/' + u;
+      }
+      // prepend slash for local relative paths
+      if (!/^https?:\/\//i.test(u) && !u.startsWith('/')) u = '/' + u;
+      // upgrade http -> https for same-host assets (avoid mixed content)
+      if (/^http:\/\//i.test(u)) {
+        try {
+          const urlObj = new URL(u);
+          // if host is same as current or known CDN without https issues, upgrade
+          u = 'https://' + urlObj.host + urlObj.pathname + urlObj.search + urlObj.hash;
+        } catch (_) { /* ignore parse errors */ }
+      }
+      // encode spaces
+      u = u.replace(/\s/g, '%20');
+      return u;
+    };
     if (p.image) p.image = fix(p.image);
     if (Array.isArray(p.gallery)) p.gallery = p.gallery.map(fix);
     return p;
