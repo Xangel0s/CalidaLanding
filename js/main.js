@@ -6,9 +6,13 @@
 class CredicaliddaApp {
     constructor() {
         this.init();
+        // Expose namespace
+        window.CredicAlidda = window.CredicAlidda || {};
     }
     
     init() {
+        // Load site settings (WhatsApp, etc.) ASAP
+        this.loadSiteSettings();
         this.setupEventListeners();
         this.initializeComponents();
         this.handlePageLoad();

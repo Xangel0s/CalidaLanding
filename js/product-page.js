@@ -20,11 +20,12 @@ class ProductPageManager {
     }
 
     updatePayments() {
-        // Render dynamic payments info using product data when available
+        // Render payments with optional sections and editable HTML
         const wrap = document.querySelector('#payment .tab-content');
         if (!wrap) return;
-        const monthly = typeof this.productData.monthly_payment === 'number' ? this.productData.monthly_payment.toFixed(2) : null;
-        const methods = Array.isArray(this.productData.payment_methods) ? this.productData.payment_methods : [];
+
+        const pd = this.productData || {};
+        const methods = Array.isArray(pd.payment_methods) ? pd.payment_methods : [];
         const methodLabel = (m) => ({ bcp: 'BCP', yape: 'Yape', plin: 'Plin' }[m] || m);
         const logoUrl = (m) => `/images/pagos/${m}.jpg`;
         const logos = methods.map(m => `
@@ -33,11 +34,18 @@ class ProductPageManager {
             </div>
         `).join('');
 
-        const html = `
-            <div class="payment-methods">
+        // Credit section (optional + editable)
+        let creditSection = '';
+        if (pd.payment_credit_html) {
+            creditSection = `<div class="payment-method">${pd.payment_credit_html}</div>`;
+        } else if (pd.show_payment_credit) {
+            const monthly = (typeof pd.monthly_payment === 'number' && pd.show_monthly)
+                ? `Paga en cuotas cómodas desde S/ ${pd.monthly_payment.toFixed(2)} al mes`
+                : 'Paga en cuotas cómodas con evaluación rápida';
+            creditSection = `
                 <div class="payment-method">
                     <h4>💳 Con Credicálidda</h4>
-                    <p>${monthly ? `Paga en cuotas cómodas desde S/ ${monthly} al mes` : 'Paga en cuotas cómodas con evaluación rápida'}</p>
+                    <p>${monthly}</p>
                     <div class="pay-logos">${logos}</div>
                     <ul>
                         <li>Sin trámites complicados</li>
@@ -45,28 +53,62 @@ class ProductPageManager {
                         <li>Cuotas competitivas</li>
                         <li>Aprobación en minutos</li>
                     </ul>
-                </div>
+                </div>`;
+        }
+
+        // Cash section (optional + editable)
+        let cashSection = '';
+        if (pd.payment_cash_html) {
+            cashSection = `<div class="payment-method">${pd.payment_cash_html}</div>`;
+        } else if (pd.show_payment_cash) {
+            const priceLine = (typeof pd.price_online === 'number' && pd.show_price_online)
+                ? `Precio especial online: S/ ${pd.price_online.toFixed(2)}`
+                : 'Precio especial online';
+            cashSection = `
                 <div class="payment-method">
                     <h4>💰 Pago al Contado</h4>
-                    <p>${typeof this.productData.price_online === 'number' ? `Precio especial online: S/ ${this.productData.price_online.toFixed(2)}` : 'Precio especial online'}</p>
+                    <p>${priceLine}</p>
                     <ul>
                         <li>Transferencia bancaria</li>
                         <li>Pago en efectivo</li>
                         <li>Tarjeta de débito</li>
                     </ul>
-                </div>
-            </div>`;
-        wrap.innerHTML = `<h3>Formas de Pago Disponibles</h3>${html}`;
+                </div>`;
+        }
+
+        const combined = [creditSection, cashSection].filter(Boolean).join('');
+        wrap.innerHTML = combined
+            ? `<h3>Formas de Pago Disponibles</h3><div class="payment-methods">${combined}</div>`
+            : `<h3>Formas de Pago</h3><p>Información disponible al consultar con un asesor por WhatsApp.</p>`;
     }
 
     updateShipping() {
-        // Use product-specific shipping text if provided, else default professional message with WhatsApp CTA
-        const wrap = document.querySelector('#shipping .tab-content .shipping-info');
-        if (!wrap) return;
+        // Editable shipping info + optional visibility
+        const panel = document.getElementById('shipping');
+        const container = document.querySelector('#shipping .tab-content');
+        if (!panel || !container) return;
+
+        const pd = this.productData || {};
+        if (pd.show_shipping === false && !pd.shipping_html && !pd.shipping) {
+            // Hide entire panel if explicitly disabled and no text provided
+            panel.classList.remove('active');
+            panel.style.display = 'none';
+            // If it was active, switch to description
+            const activeBtn = document.querySelector('.tab-btn.active');
+            if (activeBtn && activeBtn.dataset && activeBtn.dataset.tab === 'shipping') {
+                this.activateTab('description');
+            }
+            return;
+        }
+
+        let wrap = document.querySelector('#shipping .tab-content .shipping-info');
+        if (!wrap) {
+            container.innerHTML = '<div class="shipping-info"></div>';
+            wrap = document.querySelector('#shipping .tab-content .shipping-info');
+        }
+
         const defaultText = `Dependiendo del producto, el tiempo y costo de envío pueden variar. Para una atención personalizada, consulta con un asesor por WhatsApp.`;
-        const msg = this.productData.shipping && String(this.productData.shipping).trim().length > 0
-            ? this.productData.shipping
-            : `${defaultText} <a href="https://wa.me/51999999999" target="_blank" rel="noopener">Escríbenos aquí</a>.`;
+        const msg = pd.shipping_html || pd.shipping || `${defaultText} <a href="https://wa.me/51999999999" target="_blank" rel="noopener">Escríbenos aquí</a>.`;
         wrap.innerHTML = `
             <div class="shipping-option">
                 <h4>🚚 Información de Envío</h4>
@@ -155,7 +197,16 @@ class ProductPageManager {
             benefits: p.benefits || [],
             detailed_description: p.body || p.description || '',
             payment_methods: (Array.isArray(p.payment_methods) && p.payment_methods.length > 0) ? p.payment_methods : ['bcp','yape','plin'],
-            shipping: p.shipping || ''
+            shipping: p.shipping || '',
+            // New editable/optional fields
+            show_payment_credit: p.show_payment_credit !== false,
+            show_payment_cash: p.show_payment_cash !== false,
+            show_monthly: p.show_monthly !== false,
+            show_price_online: p.show_price_online !== false,
+            payment_credit_html: p.payment_credit_html || '',
+            payment_cash_html: p.payment_cash_html || '',
+            show_shipping: p.show_shipping !== false,
+            shipping_html: p.shipping_html || ''
         };
     }
 
@@ -367,6 +418,7 @@ class ProductPageManager {
         const plus = document.getElementById('qty-plus');
         const qtyInput = document.getElementById('quantity-input');
         const waBtn = document.getElementById('whatsapp-btn');
+        const waInline = document.getElementById('whatsapp-price-btn');
         const calcBtn = document.getElementById('calculate-financing');
 
         if (minus) minus.addEventListener('click', () => this.changeQuantity(-1));
@@ -376,8 +428,9 @@ class ProductPageManager {
             this.updateQuantityDisplay();
         });
 
-        // WhatsApp button
-        if (waBtn) waBtn.addEventListener('click', () => this.contactWhatsApp());
+        // WhatsApp buttons
+        if (waBtn) waBtn.addEventListener('click', (e) => { e.preventDefault(); this.contactWhatsApp(); });
+        if (waInline) waInline.addEventListener('click', (e) => { e.preventDefault(); this.contactWhatsApp(); });
 
         // Calculate financing button
         if (calcBtn) calcBtn.addEventListener('click', () => this.calculateFinancing());
@@ -477,8 +530,27 @@ class ProductPageManager {
     }
 
     contactWhatsApp() {
-        const message = `Hola, estoy interesado en: ${this.productData.title}. ¿Podrían darme más información?`;
-        const whatsappUrl = `https://wa.me/51999999999?text=${encodeURIComponent(message)}`;
+        const qty = this.quantity || 1;
+        const price = (this.productData && typeof this.productData.price_online === 'number')
+            ? `Precio online: S/ ${this.productData.price_online.toFixed(2)}`
+            : '';
+        const url = window.location.href;
+        const msg = [
+            `Hola 👋, me interesa este producto: ${this.productData?.title || ''}`,
+            price,
+            `Cantidad: ${qty}`,
+            `Link: ${url}`
+        ].filter(Boolean).join('\n');
+
+        // Try to use a global setting if exists, else fallback
+        const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
+            || (window.SiteSettings && window.SiteSettings.whatsapp)
+            || '51999999999';
+
+        const whatsappUrl = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+        // Also reflect into inline anchor href so right-click works
+        const waInline = document.getElementById('whatsapp-price-btn');
+        if (waInline) waInline.href = whatsappUrl;
         window.open(whatsappUrl, '_blank');
     }
 
