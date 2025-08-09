@@ -15,6 +15,22 @@
       "mas_vendido": false,
       "orden": 2,
       "categoria": "electrodomesticos"
+    },
+    {
+      "discount": "",
+      "price_regular": 2939,
+      "brand": "LG",
+      "destacado": true,
+      "price_online": 1659,
+      "orden": 0,
+      "slug": "Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos Bluetooth MERTEC 10000530",
+      "mas_vendido": false,
+      "visible": true,
+      "categoria": "tecnologia",
+      "monthly_payment": 62.6,
+      "title": "Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos Bluetooth MERTEC 10000530",
+      "tags": null,
+      "image": "https://caliddape.vtexassets.com/arquivos/ids/169335-800-auto?v=638876876510830000&width=800&height=auto&aspect=true"
     }
   ]
 }
