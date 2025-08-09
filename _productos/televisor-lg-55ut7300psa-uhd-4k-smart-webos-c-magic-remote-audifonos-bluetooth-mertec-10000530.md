@@ -4,6 +4,10 @@ title: Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos
 slug: televisor-lg-55ut7300psa-uhd-4k-smart-webos
 brand: LG
 image: https://caliddape.vtexassets.com/arquivos/ids/169335-800-auto?v=638876876510830000&width=800&height=auto&aspect=true
+gallery:
+  - https://caliddape.vtexassets.com/arquivos/ids/169335-800-auto?v=638876876510830000&width=800&height=auto&aspect=true
+  - https://caliddape.vtexassets.com/arquivos/ids/169336-800-auto?v=638876876511300000&width=800&height=auto&aspect=true
+  - https://caliddape.vtexassets.com/arquivos/ids/169337-800-auto?v=638876845872330000&width=800&height=auto&aspect=true
 description: >-
   Disfruta de una experiencia visual impresionante con el Televisor LG 55” UHD
   4K modelo 55UT7300PSA, que te ofrece imágenes nítidas, colores vibrantes y
