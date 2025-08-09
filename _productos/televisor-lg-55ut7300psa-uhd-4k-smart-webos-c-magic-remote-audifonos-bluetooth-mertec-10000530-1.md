@@ -18,7 +18,7 @@ description: >-
 
 
   Y para completar la experiencia, ¡lleva contigo los audífonos Bluetooth MERTEC MT-022B! Con sonido envolvente, diseño ergonómico y batería de larga duración, son ideales para escuchar música, atender llamadas o ver tus series con total comodidad y libertad de movimiento.
-price_regular: 2939
+price_regular: 2
 price_online: 1659
 monthly_payment: 62.6
 category: tecnologia
