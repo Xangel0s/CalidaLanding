@@ -1,17 +1,3 @@
 {
-  "items": [
-    {
-      "price_regular": 1,
-      "brand": "LG",
-      "destacado": true,
-      "orden": 2,
-      "slug": "cocina-mabe-empotrable-6-hornillas",
-      "mas_vendido": false,
-      "visible": true,
-      "categoria": "electrodomesticos",
-      "monthly_payment": 222,
-      "title": "Cocina",
-      "image": "https://caliddape.vtexassets.com/arquivos/ids/169337-800-auto?v=638876845872330000&width=800&height=auto&aspect=true"
-    }
-  ]
+  "items": []
 }
