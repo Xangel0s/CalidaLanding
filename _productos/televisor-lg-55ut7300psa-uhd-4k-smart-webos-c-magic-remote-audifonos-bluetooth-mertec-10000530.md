@@ -31,7 +31,11 @@ specs:
     value: ALTA
   - name: Alto
     value: nuevo
-date: 2025-08-09T02:26:00.000-05:00
+payment_methods:
+  - bcp
+  - plin
+  - yape
+date: 2025-08-09T11:36:00.000-05:00
 ---
 
 Disfruta de una experiencia visual impresionante con el Televisor LG 55” UHD 4K modelo 55UT7300PSA, que te ofrece imágenes nítidas, colores vibrantes y brillo optimizado en cada escena. Con sistema operativo WebOS y control Magic Remote, accede a tus apps favoritas, navega con facilidad y proyecta contenido desde tu smartphone para transformar tu hogar en un verdadero centro multimedia.
