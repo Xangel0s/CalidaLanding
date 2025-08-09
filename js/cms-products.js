@@ -132,6 +132,15 @@
         if (it) {
           // Build minimal product object from catalog
           const fix = (u) => (typeof u === 'string' && !/^https?:\/\//.test(u) && !u.startsWith('/') ? '/' + u : u);
+          const mapGallery = (g) => {
+            if (!Array.isArray(g)) return [];
+            return g.map(item => {
+              if (!item) return '';
+              if (typeof item === 'string') return fix(item);
+              if (typeof item === 'object' && item.image) return fix(item.image);
+              return '';
+            }).filter(Boolean);
+          };
           return {
             slug,
             title: it.title || it.slug,
@@ -143,10 +152,10 @@
             monthly_payment: it.monthly_payment ?? null,
             discount: it.discount ?? null,
             image: fix(it.image || ''),
-            gallery: it.gallery ? it.gallery.map(fix) : [],
+            gallery: mapGallery(it.gallery),
             description: it.description || '',
             body: '',
-            specs: [],
+            specs: Array.isArray(it.specs) ? it.specs : [],
             benefits: [],
             payment_methods: Array.isArray(it.payment_methods) ? it.payment_methods : [],
             shipping: ''

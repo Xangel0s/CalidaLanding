@@ -12,12 +12,21 @@ class ProductPageManager {
         const wrap = document.querySelector('#payment .tab-content');
         if (!wrap) return;
         const monthly = typeof this.productData.monthly_payment === 'number' ? this.productData.monthly_payment.toFixed(2) : null;
-        const blocks = [];
-        blocks.push(`
+        const methods = Array.isArray(this.productData.payment_methods) ? this.productData.payment_methods : [];
+        const methodLabel = (m) => ({ bcp: 'BCP', yape: 'Yape', plin: 'Plin' }[m] || m);
+        const logoUrl = (m) => `/images/pagos/${m}.jpg`;
+        const logos = methods.map(m => `
+            <div class="pay-chip" title="${methodLabel(m)}">
+                <img src="${logoUrl(m)}" alt="${methodLabel(m)}" loading="lazy" onerror="this.onerror=null; this.replaceWith(document.createTextNode('${methodLabel(m)}'));" />
+            </div>
+        `).join('');
+
+        const html = `
             <div class="payment-methods">
                 <div class="payment-method">
                     <h4>💳 Con Credicálidda</h4>
                     <p>${monthly ? `Paga en cuotas cómodas desde S/ ${monthly} al mes` : 'Paga en cuotas cómodas con evaluación rápida'}</p>
+                    <div class="pay-logos">${logos}</div>
                     <ul>
                         <li>Sin trámites complicados</li>
                         <li>Solo necesitas tu DNI</li>
@@ -34,9 +43,8 @@ class ProductPageManager {
                         <li>Tarjeta de débito</li>
                     </ul>
                 </div>
-            </div>
-        `);
-        wrap.innerHTML = `<h3>Formas de Pago Disponibles</h3>${blocks.join('')}`;
+            </div>`;
+        wrap.innerHTML = `<h3>Formas de Pago Disponibles</h3>${html}`;
     }
 
     updateShipping() {

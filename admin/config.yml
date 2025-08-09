@@ -87,6 +87,14 @@ collections:
               - { label: "Marca (opcional)", name: "brand", widget: "string", required: false }
               - { label: "Título (opcional)", name: "title", widget: "string", required: false }
               - { label: "Imagen principal (opcional)", name: "image", widget: "image", required: false }
+              - { label: "Galería de Imágenes (opcional)", name: "gallery", widget: "list", field: { label: "Imagen", name: "image", widget: "image" }, required: false }
+              - { label: "Descripción (opcional)", name: "description", widget: "text", required: false }
+              - { label: "Especificaciones (opcional)", name: "specs", widget: "list", required: false, fields: [
+                  { label: "Nombre", name: "name", widget: "string" },
+                  { label: "Valor", name: "value", widget: "string" }
+                ] }
+              - { label: "Formas de pago (opcional)", name: "payment_methods", widget: "select", multiple: true, required: false, options: ["bcp", "yape", "plin"] }
+              - { label: "Información de envío (opcional)", name: "shipping", widget: "markdown", required: false }
               - { label: "Precio Online (opcional)", name: "price_online", widget: "number", value_type: "float", required: false }
               - { label: "Precio Regular (opcional)", name: "price_regular", widget: "number", value_type: "float", required: false }
               - { label: "Cuota Mensual (opcional)", name: "monthly_payment", widget: "number", value_type: "float", required: false }
