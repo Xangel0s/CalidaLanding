@@ -209,13 +209,40 @@ class ProductPageManager {
 
         // Update detailed description (fallback message)
         const dd = document.getElementById('detailed-description');
-        dd.innerHTML = (this.productData.detailed_description && this.productData.detailed_description.trim())
-            ? this.productData.detailed_description
-            : '<p>Aún no hay una descripción detallada para este producto.</p>';
+        if (dd) {
+            const html = (this.productData.detailed_description && this.productData.detailed_description.trim())
+                ? this.productData.detailed_description
+                : '<p>Aún no hay una descripción detallada para este producto.</p>';
+            dd.innerHTML = html;
+        } else {
+            console.debug('[ProductPage] No se encontró #detailed-description');
+        }
 
         // Update payments and shipping
         this.updatePayments();
         this.updateShipping();
+
+        // Double-check tabs populated (defensive)
+        setTimeout(() => {
+            try {
+                const dd2 = document.getElementById('detailed-description');
+                if (dd2 && dd2.innerHTML.trim() === '') {
+                    dd2.innerHTML = '<p>Aún no hay una descripción detallada para este producto.</p>';
+                }
+                const specsEl = document.getElementById('specifications-list');
+                if (specsEl && specsEl.children.length === 0) {
+                    this.updateSpecifications();
+                }
+                const payWrap = document.querySelector('#payment .tab-content');
+                if (payWrap && payWrap.innerHTML.trim() === '') {
+                    this.updatePayments();
+                }
+                const shipWrap = document.querySelector('#shipping .tab-content .shipping-info');
+                if (shipWrap && shipWrap.innerHTML.trim() === '') {
+                    this.updateShipping();
+                }
+            } catch (e) { console.debug('[ProductPage] Defensive populate error', e); }
+        }, 0);
     }
 
     updateProductImages() {
