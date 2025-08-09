@@ -9,12 +9,14 @@
       "categoria": "televisores"
     },
     {
-      "slug": "cocina-mabe-empotrable-6-hornillas",
-      "visible": true,
+      "price_regular": 1,
       "destacado": true,
-      "mas_vendido": false,
       "orden": 2,
+      "slug": "cocina-mabe-empotrable-6-hornillas",
+      "mas_vendido": false,
+      "visible": true,
       "categoria": "electrodomesticos",
+      "monthly_payment": 222,
       "image": "https://caliddape.vtexassets.com/arquivos/ids/169337-800-auto?v=638876845872330000&width=800&height=auto&aspect=true"
     },
     {
