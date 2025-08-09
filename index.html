@@ -1264,6 +1264,11 @@
     <script>
     // Render home product tracks from CMS catalog
     document.addEventListener('DOMContentLoaded', () => {
+        // Limpia cualquier contenido mock antes de renderizar desde CMS
+        const featuredEl = document.getElementById('featuredProductsTrack');
+        const bestEl = document.getElementById('bestSellersTrack');
+        if (featuredEl) featuredEl.innerHTML = '';
+        if (bestEl) bestEl.innerHTML = '';
         if (window.CMSProducts && CMSProducts.renderHomeTracks) {
             CMSProducts.renderHomeTracks({
                 featuredTrackId: 'featuredProductsTrack',
