@@ -17,6 +17,40 @@ class CredicaliddaApp {
         this.initializeComponents();
         this.handlePageLoad();
     }
+
+    async loadSiteSettings() {
+        try {
+            // Prefer JSON settings (public)
+            let number = '';
+            try {
+                const rj = await fetch('/data/site-settings.json', { cache: 'no-store' });
+                if (rj.ok) {
+                    const j = await rj.json();
+                    if (j && j.whatsapp) number = String(j.whatsapp);
+                }
+            } catch (_) { /* ignore */ }
+
+            if (!number) {
+                // Fallback to YAML
+                try {
+                    const ry = await fetch('/_config/general.yml', { cache: 'no-store' });
+                    if (ry.ok) {
+                        const text = await ry.text();
+                        const m = text.match(/\bwhatsapp\s*:\s*(["']?)([^\r\n"']+)\1/);
+                        if (m) number = m[2];
+                    }
+                } catch (_) { /* ignore */ }
+            }
+
+            if (number) {
+                const digits = number.replace(/[^0-9]/g, '');
+                window.CredicAlidda = Object.assign(window.CredicAlidda || {}, { whatsapp: digits });
+            }
+        } catch (e) {
+            if (window.Utils && Utils.errorHandler) Utils.errorHandler.log(e, 'load_site_settings');
+            else console.debug('[SiteSettings] load error', e);
+        }
+    }
     
     // Add missing methods
     reportPerformance() {
