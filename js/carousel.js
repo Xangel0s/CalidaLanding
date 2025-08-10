@@ -32,10 +32,12 @@ class Carousel {
         this.autoPlayTimer = null;
         this.originalItems = [];
         
-        this.init();
+        const inited = this.init();
 
-        // Mark as initialized
-        this.container.dataset.carouselInitialized = 'true';
+        // Mark as initialized only if init succeeded
+        if (inited) {
+            this.container.dataset.carouselInitialized = 'true';
+        }
     }
     
     init() {
@@ -46,13 +48,15 @@ class Carousel {
             return false;
         }
         
-        // For infinite scroll carousels, setup clones first
+        // Calculate itemsToShow early for correct cloning math
+        this.updateItemsToShow();
+
+        // For infinite scroll carousels, setup clones after itemsToShow is known
         if (this.options.infiniteScroll) {
             this.setupInfiniteScroll();
         }
-        
+
         this.setupEventListeners();
-        this.updateItemsToShow();
         this.updateView();
         
         if (this.options.autoPlay) {
@@ -520,30 +524,135 @@ class Carousel {
         this.track.innerHTML = '';
         
         // Create multiple clones for seamless infinite scrolling
-        const clonesNeeded = Math.max(4, Math.ceil(this.originalItems.length / 2));
+        // Ensure enough buffer: at least itemsToShow + 2 on each side
+        const minBuffer = (this.itemsToShow || 1) + 2;
+        const clonesNeeded = Math.max(minBuffer, Math.ceil(this.originalItems.length / 2));
         
+        // Helper: deep-clone a node and strip duplicate IDs to avoid CSS/JS conflicts
+        const cloneAndSanitize = (node) => {
+            const cloned = node.cloneNode(true);
+            const stack = [cloned];
+            while (stack.length) {
+                const el = stack.pop();
+                if (el.nodeType === 1) {
+                    if (el.id) el.removeAttribute('id');
+                    el.setAttribute('data-clone', 'true');
+                    // prevent nested carousels/scripts from binding again on clones
+                    if (el.dataset && el.dataset.carouselInitialized) delete el.dataset.carouselInitialized;
+                    for (let i = 0; i < el.children.length; i++) stack.push(el.children[i]);
+                }
+            }
+            return cloned;
+        };
+
         // Add clones at the beginning (reverse order)
         for (let i = 0; i < clonesNeeded; i++) {
-            const cloneIndex = (this.originalItems.length - 1 - i) % this.originalItems.length;
-            const clone = this.originalItems[cloneIndex].cloneNode(true);
+            if (!this.originalItems.length) break;
+            const cloneIndexRaw = (this.originalItems.length - 1 - i);
+            const cloneIndex = ((cloneIndexRaw % this.originalItems.length) + this.originalItems.length) % this.originalItems.length;
+            const src = this.originalItems[cloneIndex];
+            if (!src) continue;
+            const clone = cloneAndSanitize(src);
             this.track.appendChild(clone);
         }
         
         // Add all original items
         this.originalItems.forEach(item => {
-            this.track.appendChild(item.cloneNode(true));
+            if (!item) return;
+            this.track.appendChild(cloneAndSanitize(item));
         });
         
         // Add clones at the end
         for (let i = 0; i < clonesNeeded; i++) {
-            const clone = this.originalItems[i % this.originalItems.length].cloneNode(true);
+            if (!this.originalItems.length) break;
+            const src = this.originalItems[i % this.originalItems.length];
+            if (!src) continue;
+            const clone = cloneAndSanitize(src);
             this.track.appendChild(clone);
         }
         
         // Update items array and set initial position
         this.items = [...this.track.children];
+        this._clonesPadding = clonesNeeded; // store padding of clones at each side
         this.currentIndex = clonesNeeded; // Start at first real item
         this.track.dataset.infiniteSetup = 'true';
+    }
+
+    // Calculate itemsToShow based on breakpoints and container width
+    updateItemsToShow() {
+        // Default
+        let items = this.options.itemsToShow || 1;
+        try {
+            const width = this.container.getBoundingClientRect().width || window.innerWidth;
+            const bps = this.options.breakpoints || {};
+            const sorted = Object.keys(bps).map(n => parseInt(n, 10)).filter(n => !isNaN(n)).sort((a,b)=>a-b);
+            for (const bp of sorted) {
+                if (width >= bp && bps[bp] && bps[bp].itemsToShow) {
+                    items = bps[bp].itemsToShow;
+                }
+            }
+        } catch (_) {}
+        this.itemsToShow = Math.max(1, items);
+    }
+
+    // Compute step width (item width + gap) safely
+    _getStepWidth() {
+        if (!this.items || this.items.length === 0) return 0;
+        const first = this.items[Math.min(this.currentIndex, this.items.length - 1)] || this.items[0];
+        const rect = first.getBoundingClientRect();
+        const gap = Number(this.options.gap || 0);
+        // Use rect.width; margin gaps are handled by transform offsets using gap
+        return rect.width + gap;
+    }
+
+    // Apply transform according to currentIndex
+    updateView() {
+        if (!this.track || !this.items || this.items.length === 0) return;
+        // Apply item sizing
+        const gap = Number(this.options.gap || 0);
+        const totalGap = gap * (this.itemsToShow - 1);
+        const containerWidth = this.container.getBoundingClientRect().width;
+        const itemWidth = Math.max(1, (containerWidth - totalGap) / this.itemsToShow);
+
+        this.items.forEach((item, idx) => {
+            item.style.flex = `0 0 ${itemWidth}px`;
+            // Apply right margin to all except last visual slot; simpler to apply to all and rely on container overflow hidden
+            item.style.marginRight = `${gap}px`;
+        });
+
+        const step = itemWidth + gap;
+        const offsetRaw = Math.max(0, Math.min(this.currentIndex, this.items.length - 1)) * step;
+        const offset = Math.round(offsetRaw); // avoid subpixel jitter
+        this.track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+        this.updateButtons();
+    }
+
+    // Seamless reset when crossing clone boundaries
+    handleInfiniteReset() {
+        if (!this.options.infiniteScroll || !this._clonesPadding) return;
+        const pad = this._clonesPadding;
+        const realLen = this.originalItems.length;
+        if (!realLen) return;
+        // Normalize first-visible index into [0, realLen-1]
+        const firstVisible = this.currentIndex - pad;
+        const mod = ((firstVisible % realLen) + realLen) % realLen; // safe modulo
+        const normalizedIndex = pad + mod;
+        const needsSnap = (normalizedIndex !== this.currentIndex);
+        const newIndex = normalizedIndex;
+
+        if (!needsSnap) return;
+
+        // Disable transition, snap, then restore transition next frame
+        const prevTransition = this.track.style.transition;
+        this.track.style.transition = 'none';
+        this.currentIndex = newIndex;
+        this.updateView();
+        // Force reflow
+        void this.track.offsetWidth;
+        // Restore transition asynchronously
+        requestAnimationFrame(() => {
+            this.track.style.transition = prevTransition || 'transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1)';
+        });
     }
     
     setupEventListeners() {
@@ -590,6 +699,15 @@ class Carousel {
             this.updateView();
         }, 250));
         
+        // When using infinite scroll, snap exactly on the end of the CSS transition to avoid flicker
+        if (this.options.infiniteScroll && this.track) {
+            Utils.addEvent(this.track, 'transitionend', (e) => {
+                if (e.propertyName && e.propertyName !== 'transform') return;
+                this.handleInfiniteReset();
+                this.isTransitioning = false;
+            });
+        }
+
         // Pause autoplay on hover
         if (this.options.autoPlay) {
             Utils.addEvent(this.container, 'mouseenter', () => this.pauseAutoPlay());
@@ -869,12 +987,7 @@ class Carousel {
         } else if (this.options.infiniteScroll) {
             this.currentIndex--;
             this.updateView();
-            
-            // Check for reset after transition
-            setTimeout(() => {
-                this.handleInfiniteReset();
-                this.isTransitioning = false;
-            }, 500);
+            // isTransitioning will be released on transitionend
         } else {
             const maxIndex = this.getMaxIndex();
             
@@ -910,12 +1023,7 @@ class Carousel {
         } else if (this.options.infiniteScroll) {
             this.currentIndex++;
             this.updateView();
-            
-            // Check for reset after transition
-            setTimeout(() => {
-                this.handleInfiniteReset();
-                this.isTransitioning = false;
-            }, 500);
+            // isTransitioning will be released on transitionend
         } else {
             const maxIndex = this.getMaxIndex();
             
