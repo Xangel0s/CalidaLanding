@@ -71,6 +71,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-4);
+    align-items: center; /* center the gallery content to avoid oversized feel */
 }
 
 .product-main-image {
@@ -78,14 +79,17 @@
     background-color: var(--gray-50);
     border-radius: 1rem;
     overflow: hidden;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5; /* a bit taller than wide to reduce perceived width */
+    max-width: 520px; /* constrain main image width */
+    width: 100%;
+    margin: 0 auto; /* center inside column */
 }
 
 .product-main-image img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: var(--spacing-4);
+    padding: var(--spacing-3); /* slightly tighter padding */
 }
 
 .product-badge {
@@ -111,8 +115,8 @@
 }
 
 .thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 68px;
+    height: 68px;
     border: 2px solid var(--gray-200);
     border-radius: 0.5rem;
     overflow: hidden;
