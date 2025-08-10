@@ -534,10 +534,14 @@ class ProductPageManager {
         const price = (this.productData && typeof this.productData.price_online === 'number')
             ? `Precio online: S/ ${this.productData.price_online.toFixed(2)}`
             : '';
+        const monthly = (this.productData && this.productData.show_monthly !== false && typeof this.productData.monthly_payment === 'number')
+            ? `Quiero pagar en cuotas desde: S/ ${this.productData.monthly_payment.toFixed(2)} al mes`
+            : '';
         const url = window.location.href;
         const msg = [
             `Hola 👋, me interesa este producto: ${this.productData?.title || ''}`,
             price,
+            monthly,
             `Cantidad: ${qty}`,
             `Link: ${url}`
         ].filter(Boolean).join('\n');
