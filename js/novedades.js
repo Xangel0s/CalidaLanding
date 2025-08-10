@@ -1151,8 +1151,51 @@ function showNotification(message, type = 'info') {
 }
 
 function clearAllFilters() {
-    if (window.novedadesManager) {
+    // 1) Limpiar visualmente todos los checkboxes del sidebar
+    try {
+        document.querySelectorAll('.filters-sidebar input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+    } catch (_) { /* ignore */ }
+
+    // 1.1) Si se usa el grid CMS en novedades.html, limpiar URL y re-render
+    try {
+        const url = new URL(window.location.href);
+        ['categoria','promocion','precio','marca','descuento','page','sort','q','busqueda'].forEach(k => url.searchParams.delete(k));
+        window.history.replaceState({}, '', url.toString());
+        if (window.CMSProducts && typeof CMSProducts.renderNovedadesGrid === 'function') {
+            CMSProducts.renderNovedadesGrid({ containerId: 'productsGrid' });
+        }
+    } catch (_) { /* ignore */ }
+
+    // 2) Si estamos en modo sin CMS y existe NovedadesManager, delegar
+    if (window.novedadesManager && typeof window.novedadesManager.clearAllFilters === 'function') {
         window.novedadesManager.clearAllFilters();
+        return;
+    }
+
+    // 3) Si estamos en modo CMS y existe ProductsManager, usar su limpieza
+    if (window.productsManager) {
+        if (typeof window.clearFilters === 'function') {
+            window.clearFilters();
+        } else {
+            // Fallback directo por si clearFilters no está expuesto
+            try {
+                window.productsManager.currentFilters = {
+                    categoria: '',
+                    filtro: '',
+                    busqueda: '',
+                    ordenar: 'relevancia'
+                };
+                window.productsManager.currentPage = 1;
+                // Limpiar posibles selects/inputs estándar si existen
+                const cat = document.getElementById('categoryFilter'); if (cat) cat.value = '';
+                const tag = document.getElementById('tagFilter'); if (tag) tag.value = '';
+                const q = document.getElementById('searchInput'); if (q) q.value = '';
+                const sort = document.getElementById('sortSelect'); if (sort) sort.value = 'relevancia';
+                window.productsManager.applyFilters();
+            } catch (_) { /* ignore */ }
+        }
     }
 }
 

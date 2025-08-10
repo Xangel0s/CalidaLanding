@@ -474,6 +474,9 @@ function clearFilters() {
             ordenar: 'relevancia'
         };
         
+        // Reiniciar paginación
+        window.productsManager.currentPage = 1;
+        
         // Limpiar form controls
         document.getElementById('categoryFilter').value = '';
         document.getElementById('tagFilter').value = '';
@@ -482,6 +485,11 @@ function clearFilters() {
         
         window.productsManager.applyFilters();
     }
+}
+
+// Alias global para compatibilidad con el HTML (onclick="clearAllFilters()")
+function clearAllFilters() {
+    clearFilters();
 }
 
 // Inicializar cuando se carga la página

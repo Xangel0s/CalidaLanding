@@ -579,6 +579,8 @@
 .whatsapp-banner {
     background: linear-gradient(135deg, var(--green-600) 0%, #059669 100%);
     padding: var(--spacing-4) 0;
+    /* Evita línea blanca por subpíxeles en algunos navegadores/zoom */
+    margin-bottom: -1px;
 }
 
 .whatsapp-content {

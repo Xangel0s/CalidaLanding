@@ -224,14 +224,21 @@ class CredicaliddaApp {
     }
     
     initializeComponents() {
-        // Initialize lazy loading
-        Utils.lazyLoad.init();
+        // Initialize WhatsApp FAB early (even if other utilities fail)
+        try {
+            if (this.isHomePage()) this.createWhatsAppFab();
+        } catch (e) {
+            console.warn('[WA-FAB] init skipped', e);
+        }
+
+        // Initialize lazy loading (guarded)
+        try { if (Utils && Utils.lazyLoad && Utils.lazyLoad.init) Utils.lazyLoad.init(); } catch (_) {}
         
-        // Initialize animations on scroll
-        this.initScrollAnimations();
+        // Initialize animations on scroll (guarded)
+        try { this.initScrollAnimations(); } catch (_) {}
         
-        // Initialize performance monitoring
-        Utils.performance.mark('app-initialized');
+        // Initialize performance monitoring (guarded)
+        try { if (Utils && Utils.performance && Utils.performance.mark) Utils.performance.mark('app-initialized'); } catch (_) {}
         
         // Note: Carousels are initialized in carousel.js to avoid conflicts
     }
@@ -397,20 +404,12 @@ class CredicaliddaApp {
     }
     
     updateScrollToTop(scrollY) {
-        let scrollToTopBtn = Utils.$('#scrollToTop');
-        
-        // Create scroll to top button if it doesn't exist
-        if (!scrollToTopBtn && scrollY > 500) {
-            scrollToTopBtn = this.createScrollToTopButton();
+        // Feature disabled: ensure the button is removed if present
+        const scrollToTopBtn = Utils.$('#scrollToTop');
+        if (scrollToTopBtn && scrollToTopBtn.parentNode) {
+            scrollToTopBtn.parentNode.removeChild(scrollToTopBtn);
         }
-        
-        if (scrollToTopBtn) {
-            if (scrollY > 500) {
-                scrollToTopBtn.classList.add('visible');
-            } else {
-                scrollToTopBtn.classList.remove('visible');
-            }
-        }
+        return;
     }
     
     createScrollToTopButton() {
@@ -429,6 +428,98 @@ class CredicaliddaApp {
         
         document.body.appendChild(button);
         return button;
+    }
+
+    // ---- WhatsApp FAB (Home) ----
+    isHomePage() {
+        const p = location.pathname.replace(/\/+/g, '/');
+        return p === '/' || /\/index\.html?$/i.test(p);
+    }
+
+    createWhatsAppFab() {
+        try {
+            if (Utils.$('#waFab')) return;
+
+            const fab = document.createElement('button');
+            fab.id = 'waFab';
+            // Force default position bottom-right
+            fab.className = 'wa-fab pos-br';
+            // Inline styles to override any conflicting CSS
+            fab.style.position = 'fixed';
+            fab.style.right = '16px';
+            fab.style.left = 'auto';
+            fab.style.bottom = '24px';
+            fab.style.top = 'auto';
+            fab.style.zIndex = '10010';
+            fab.setAttribute('aria-label', 'Comprar por WhatsApp');
+            fab.innerHTML = `
+                <span class="wa-icon" aria-hidden="true">
+                    <svg class="icon-wsp" viewBox="0 0 32 32" fill="currentColor" width="22" height="22">
+                        <path d="M19.11 17.8c-.28-.15-1.65-.82-1.9-.91-.25-.09-.43-.14-.62.14-.19.28-.71.91-.87 1.1-.16.19-.32.21-.6.07-.28-.14-1.16-.43-2.2-1.38-.81-.72-1.36-1.61-1.52-1.88-.16-.28-.02-.43.12-.58.12-.12.28-.32.42-.48.14-.16.19-.28.28-.47.09-.19.05-.36-.02-.5-.07-.14-.62-1.49-.85-2.04-.22-.52-.44-.45-.62-.46l-.53-.01c-.19 0-.5.07-.77.36-.28.28-1.02.99-1.02 2.41s1.05 2.8 1.2 2.99c.14.19 2.07 3.16 5.01 4.43.7.3 1.25.48 1.68.61.71.23 1.35.2 1.86.12.57-.08 1.65-.67 1.89-1.32.23-.64.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
+                        <path d="M26.77 5.23A11.9 11.9 0 0016 2.1 11.9 11.9 0 005.23 5.23 11.9 11.9 0 002.1 16c0 2.1.54 4.16 1.57 5.98L2 30l8.2-1.64A13.9 13.9 0 0016 29.9c6.38 0 11.9-4.3 13.19-10.48 1.29-6.18-2.36-12.35-8.42-14.19zM16 27.78c-2.12 0-4.18-.6-5.96-1.74l-.43-.27-4.86.97.99-4.74-.28-.45A11.8 11.8 0 014.22 16C4.22 9.5 9.5 4.22 16 4.22S27.78 9.5 27.78 16 22.5 27.78 16 27.78z"/>
+                    </svg>
+                    <svg class="icon-x" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </span>
+                <span class="wa-label">
+                    <span>Comprar por WhatsApp</span>
+                    <svg class="wa-label-icon" viewBox="0 0 32 32" fill="currentColor" width="18" height="18" aria-hidden="true">
+                        <path d="M19.11 17.8c-.28-.15-1.65-.82-1.9-.91-.25-.09-.43-.14-.62.14-.19.28-.71.91-.87 1.1-.16.19-.32.21-.6.07-.28-.14-1.16-.43-2.2-1.38-.81-.72-1.36-1.61-1.52-1.88-.16-.28-.02-.43.12-.58.12-.12.28-.32.42-.48.14-.16.19-.28.28-.47.09-.19.05-.36-.02-.5-.07-.14-.62-1.49-.85-2.04-.22-.52-.44-.45-.62-.46l-.53-.01c-.19 0-.5.07-.77.36-.28.28-1.02.99-1.02 2.41s1.05 2.8 1.2 2.99c.14.19 2.07 3.16 5.01 4.43.7.3 1.25.48 1.68.61.71.23 1.35.2 1.86.12.57-.08 1.65-.67 1.89-1.32.23-.64.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
+                    </svg>
+                </span>
+            `;
+
+            // Toggle + open behavior
+            let autoCloseTimer = null;
+            const toggle = () => {
+                fab.classList.toggle('expanded');
+                clearTimeout(autoCloseTimer);
+                if (fab.classList.contains('expanded')) {
+                    // Keep expanded for 30 seconds before auto-collapsing
+                    autoCloseTimer = setTimeout(() => fab.classList.remove('expanded'), 30000);
+                }
+            };
+
+            // Icon (circle) toggles expand/collapse
+            const iconEl = fab.querySelector('.wa-icon');
+            if (iconEl) {
+                iconEl.style.cursor = 'pointer';
+                iconEl.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    toggle();
+                });
+            }
+
+            // Label opens WhatsApp
+            const labelEl = fab.querySelector('.wa-label');
+            if (labelEl) {
+                labelEl.style.cursor = 'pointer';
+                labelEl.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    this.openWhatsAppHome();
+                });
+            }
+
+            // Prevent parent button default clicks from interfering
+            fab.addEventListener('click', (e) => e.preventDefault());
+
+            document.body.appendChild(fab);
+        } catch (e) {
+            console.warn('[WA-FAB] init error', e);
+        }
+    }
+
+    openWhatsAppHome() {
+        const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
+            || (window.SiteSettings && window.SiteSettings.whatsapp)
+            || '51999999999';
+        const msg = 'Hola, estoy interesado en comprar un producto.';
+        const link = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+        window.open(link, '_blank');
     }
     
     highlightCategory(category) {

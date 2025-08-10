@@ -251,6 +251,165 @@ background: var(--linear-gradient-revert);
 filter: brightness(0.95);
 }
 
+/* Scroll To Top button (global) */
+.scroll-to-top {
+    position: fixed;
+    right: var(--spacing-4);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--spacing-4));
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+    z-index: 1000; /* por encima del banner */
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.scroll-to-top .icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+/* WhatsApp FAB (Home) */
+.wa-fab {
+    position: fixed;
+    right: var(--spacing-4);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--spacing-6));
+    z-index: 1001;
+    display: inline-grid;
+    place-items: center;
+    background: var(--green-600);
+    color: #fff;
+    border-radius: 9999px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.2);
+    border: 0;
+    padding: 0;
+    width: auto;
+    height: 56px; /* perfect circle height */
+    aspect-ratio: 1 / 1; /* force perfect circle */
+    transition: filter var(--transition-fast), transform var(--transition-fast);
+    position: relative;
+}
+
+/* Deployment pop animation */
+@keyframes fab-pop {
+    0% { transform: scale(0.94); filter: brightness(0.98); }
+    60% { transform: scale(1.04); filter: brightness(1.06); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+.wa-fab .wa-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 9999px;
+    position: relative;
+}
+
+.wa-fab .wa-icon .icon-x { position: absolute; opacity: 0; transform: scale(0.8); transition: opacity var(--transition-normal), transform var(--transition-normal); }
+.wa-fab .wa-icon .icon-wsp { position: absolute; opacity: 1; transform: scale(1); transition: opacity var(--transition-normal), transform var(--transition-normal); }
+.wa-fab.expanded .wa-icon .icon-x { opacity: 1; transform: scale(1); }
+.wa-fab.expanded .wa-icon .icon-wsp { opacity: 0; transform: scale(0.8); }
+
+.wa-fab .wa-label {
+    position: absolute;
+    right: calc(100% + 8px); /* bubble appears to the left of the circle */
+    top: 50%;
+    transform: translate(4px, -50%) scale(0.96);
+    transform-origin: right center;
+    background: var(--green-600);
+    color: #fff;
+    border-radius: 9999px;
+    padding: 10px 12px;
+    box-shadow: var(--shadow-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--transition-normal), opacity var(--transition-normal), background var(--transition-normal), color var(--transition-normal);
+}
+
+.wa-fab.expanded .wa-label {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    pointer-events: auto;
+}
+
+/* Morph label to a compact X when closing */
+.wa-fab .wa-label.closing {
+    background: var(--green-700);
+    color: #fff;
+}
+.wa-fab .wa-label.closing > span { display: none; }
+.wa-fab .wa-label.closing .wa-label-icon {
+    width: 16px; height: 16px;
+    /* Draw X via stroke using the existing SVG container: replace path via CSS is not possible,
+       so we simply scale down the icon to hint close during the brief closing state */
+    opacity: 0.85;
+}
+
+.wa-fab .wa-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: rgba(0,0,0,0.06);
+    color: #111;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.wa-fab .wa-close:hover { background: rgba(0,0,0,0.1); }
+.wa-fab .wa-close:active { transform: scale(0.98); }
+
+.wa-fab.expanded .wa-close { display: inline-flex; opacity: 1; }
+
+.wa-fab:hover { filter: brightness(1.05); }
+.wa-fab:active { transform: translateY(1px); }
+
+/* Play pop animation on expand */
+.wa-fab.expanded { animation: fab-pop 220ms cubic-bezier(.2,.8,.2,1); }
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .wa-fab,
+    .wa-fab .wa-label,
+    .wa-fab .wa-close { transition: none !important; animation: none !important; }
+}
+
+/* Position helpers (optional) */
+.wa-fab.pos-br { right: var(--spacing-4); left: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + var(--spacing-6)); top: auto; }
+.wa-fab.pos-bl { left: var(--spacing-4); right: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + var(--spacing-6)); top: auto; }
+.wa-fab.pos-tr { right: var(--spacing-4); left: auto; top: var(--spacing-4); bottom: auto; }
+.wa-fab.pos-tl { left: var(--spacing-4); right: auto; top: var(--spacing-4); bottom: auto; }
+
+/* Adjust label direction based on position */
+.wa-fab.pos-bl .wa-label,
+.wa-fab.pos-tl .wa-label { left: calc(100% + 8px); right: auto; transform-origin: left center; }
+.wa-fab.pos-bl.expanded .wa-label,
+.wa-fab.pos-tl.expanded .wa-label { transform: translateY(-50%) scale(1); }
+
 /* Header Styles */
 .header {
     position: sticky;
