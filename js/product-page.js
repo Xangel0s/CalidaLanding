@@ -67,7 +67,12 @@ class ProductPageManager {
         if (!panel || !container) return;
 
         const pd = this.productData || {};
-        const hasContent = !!(pd.shipping_html || pd.shipping);
+        // Determine if CMS provided meaningful content (not just whitespace/empty HTML)
+        const rawContent = (pd.shipping_html || pd.shipping || '');
+        const textOnly = typeof rawContent === 'string'
+            ? rawContent.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()
+            : '';
+        const hasContent = textOnly.length > 0;
         const visible = pd.show_shipping !== false;
 
         if (!visible) {
@@ -93,7 +98,7 @@ class ProductPageManager {
         }
 
         const msg = hasContent
-            ? (pd.shipping_html || pd.shipping)
+            ? rawContent
             : 'Los tiempos y costos de envío pueden variar según el producto y la zona. Para una atención personalizada y confirmar disponibilidad de entrega, contáctanos por WhatsApp y te brindaremos la mejor opción.';
         wrap.innerHTML = `
             <div class="shipping-option">
