@@ -83,23 +83,30 @@ class ProductPageManager {
     }
 
     updateShipping() {
-        // Editable shipping info + optional visibility
+        // Shipping: CMS-driven only. If no CMS content, hide the tab (no predefined text).
         const panel = document.getElementById('shipping');
         const container = document.querySelector('#shipping .tab-content');
         if (!panel || !container) return;
 
         const pd = this.productData || {};
-        if (pd.show_shipping === false && !pd.shipping_html && !pd.shipping) {
-            // Hide entire panel if explicitly disabled and no text provided
+        const hasContent = !!(pd.shipping_html || pd.shipping);
+        const visible = pd.show_shipping !== false;
+
+        if (!visible) {
+            // Hide entire panel if disabled in CMS
             panel.classList.remove('active');
             panel.style.display = 'none';
-            // If it was active, switch to description
+            const btn = document.querySelector('.tab-btn[data-tab="shipping"]');
+            if (btn) btn.style.display = 'none';
+            // If active, switch to description
             const activeBtn = document.querySelector('.tab-btn.active');
-            if (activeBtn && activeBtn.dataset && activeBtn.dataset.tab === 'shipping') {
-                this.activateTab('description');
-            }
+            if (activeBtn && activeBtn.dataset && activeBtn.dataset.tab === 'shipping') this.activateTab('description');
             return;
         }
+
+        // Ensure tab button visible
+        const btn = document.querySelector('.tab-btn[data-tab="shipping"]');
+        if (btn) btn.style.display = '';
 
         let wrap = document.querySelector('#shipping .tab-content .shipping-info');
         if (!wrap) {
@@ -107,12 +114,11 @@ class ProductPageManager {
             wrap = document.querySelector('#shipping .tab-content .shipping-info');
         }
 
-        const defaultText = `Dependiendo del producto, el tiempo y costo de envío pueden variar. Para una atención personalizada, consulta con un asesor por WhatsApp.`;
-        const msg = pd.shipping_html || pd.shipping || `${defaultText} <a href="https://wa.me/51999999999" target="_blank" rel="noopener">Escríbenos aquí</a>.`;
+        const msg = hasContent ? (pd.shipping_html || pd.shipping) : 'Sin información de envío.';
         wrap.innerHTML = `
             <div class="shipping-option">
                 <h4>🚚 Información de Envío</h4>
-                <p>${msg}</p>
+                <div>${msg}</div>
             </div>
         `;
     }
