@@ -213,7 +213,7 @@
     gap: var(--spacing-6);
 }
 
-.product-card {
+.products-carousel .product-card {
     flex: 0 0 auto;
     width: 280px;
     background-color: white;
@@ -224,12 +224,12 @@
     border: 1px solid var(--gray-200);
 }
 
-.product-card:hover {
+.products-carousel .product-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-xl);
 }
 
-.product-image {
+.products-carousel .product-image {
     position: relative;
     width: 100%;
     height: 200px;
@@ -237,18 +237,18 @@
     background-color: var(--gray-100);
 }
 
-.product-image img {
+.products-carousel .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform var(--transition-normal);
 }
 
-.product-card:hover .product-image img {
+.products-carousel .product-card:hover .product-image img {
     transform: scale(1.05);
 }
 
-.product-badge {
+.products-carousel .product-badge {
     position: absolute;
     top: var(--spacing-3);
     left: var(--spacing-3);
@@ -260,11 +260,11 @@
     border-radius: 0.25rem;
 }
 
-.product-content {
+.products-carousel .product-content {
     padding: var(--spacing-5);
 }
 
-.product-title {
+.products-carousel .product-title {
     font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--gray-900);
@@ -277,36 +277,36 @@
     overflow: hidden;
 }
 
-.product-price {
+.products-carousel .product-price {
     margin-bottom: var(--spacing-4);
 }
 
-.price-original {
+.products-carousel .price-original {
     font-size: var(--font-size-sm);
     color: var(--gray-400);
     text-decoration: line-through;
     margin-bottom: var(--spacing-1);
 }
 
-.price-current {
+.products-carousel .price-current {
     font-size: var(--font-size-xl);
     font-weight: 700;
     color: var(--gray-900);
     margin-bottom: var(--spacing-1);
 }
 
-.price-installment {
+.products-carousel .price-installment {
     font-size: var(--font-size-sm);
     color: var(--primary-600);
     font-weight: 600;
 }
 
-.product-actions {
+.products-carousel .product-actions {
     display: flex;
     gap: var(--spacing-2);
 }
 
-.btn-add-cart {
+.products-carousel .btn-add-cart {
     flex: 1;
     background-color: var(--primary-500);
     color: white;
@@ -317,11 +317,11 @@
     transition: background-color var(--transition-fast);
 }
 
-.btn-add-cart:hover {
+.products-carousel .btn-add-cart:hover {
     background-color: var(--primary-600);
 }
 
-.btn-whatsapp {
+.products-carousel .btn-whatsapp {
     background-color: var(--green-500);
     color: white;
     padding: var(--spacing-3);
@@ -331,7 +331,7 @@
     transition: background-color var(--transition-fast);
 }
 
-.btn-whatsapp:hover {
+.products-carousel .btn-whatsapp:hover {
     background-color: var(--green-600);
 }
 
