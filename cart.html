@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito - Credicálidda</title>
+  <meta name="description" content="Revisa tu carrito de compras en Credicálidda">
+  <link rel="icon" type="image/x-icon" href="/images/icono/icon.ico">
+  <link rel="icon" type="image/png" href="/images/icono/icon.png">
+  <link rel="shortcut icon" href="/images/icono/icon.ico">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link rel="stylesheet" href="/css/cart.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="top-bar">
+      <div class="container">
+        <div class="top-bar-content">
+          <div class="top-bar-left">
+            <span class="top-bar-item">📦 Despacho gratuito para tus compras</span>
+          </div>
+          <div class="top-bar-center">
+            <span class="top-bar-item">💡 Paga en cuotas en tu recibo de gas natural</span>
+          </div>
+          <div class="top-bar-right">
+            <span class="top-bar-item">⚡ Compras en minutos, solo necesitas tu DNI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <a href="/index.html"><img src="/images/logo/calidalogo.svg" alt="Credicálidda" class="logo-img"></a>
+          </div>
+          <div class="search-container">
+            <form class="search-form" id="searchForm">
+              <input type="text" placeholder="Buscar productos, marcas..." class="search-input" id="searchInput">
+              <button type="submit" class="search-btn">Buscar</button>
+            </form>
+          </div>
+          <div class="header-actions">
+            <a href="#" class="header-action-link">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Mi cuenta</span>
+            </a>
+            <a href="/cart.html" class="cart-link" id="cartLink">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              <span class="cart-count" id="cartCount">0</span>
+            </a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <div class="container">
+        <div class="nav-content">
+          <div class="categories-dropdown">
+            <button class="categories-btn" id="categoriesBtn">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+              <span>Todas las categorías</span>
+              <svg class="icon dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6,9 12,15 18,9"></polyline></svg>
+            </button>
+          </div>
+          <div class="quick-links">
+            <a href="/novedades.html?filtro=ofertas" class="quick-link ofertas">🔥 Ofertas</a>
+            <a href="/novedades.html?filtro=combos" class="quick-link combos">📦 Combos</a>
+            <a href="/novedades.html?filtro=novedades" class="quick-link novedades">✨ Novedades</a>
+            <a href="/novedades.html?filtro=reacondicionados" class="quick-link reacondicionados">♻️ Reacondicionados</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="cart-page zoom-80">
+    <div class="container">
+      <h1 class="cart-title">Tu carrito</h1>
+      <div class="cart-layout">
+        <section class="cart-items" id="cartItems">
+          <div class="empty">Tu carrito está vacío.</div>
+        </section>
+        <aside class="cart-summary">
+          <div class="summary-box">
+            <h3>Resumen</h3>
+            <div class="row"><span>Cuotas</span><strong id="sumSubtotal">S/ 0.00</strong></div>
+            <div class="row"><span>Envío</span><strong>Por calcular</strong></div>
+            <div class="divider"></div>
+            <div class="row total"><span>Total en cuotas</span><strong id="sumTotal">S/ 0.00</strong></div>
+            <button class="btn btn-primary btn-large" id="checkoutBtn">Continuar compra</button>
+          </div>
+          <form class="cart-form" id="cartForm">
+            <h3>Tus datos</h3>
+            <label>Nombre y Apellido<input type="text" id="cfName" required></label>
+            <label>Celular<input type="tel" id="cfPhone" required></label>
+            <label>Correo electrónico<input type="email" id="cfEmail"></label>
+            <label>Comentarios<textarea id="cfNotes" rows="3" placeholder="Opcional"></textarea></label>
+            <button type="submit" class="btn btn-whatsapp btn-large">Consultar por WhatsApp</button>
+          </form>
+        </aside>
+      </div>
+
+      <section class="recommended">
+        <div class="section-header"><h2>También te puede interesar</h2></div>
+        <div class="carousel" id="recCarousel"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="whatsapp-banner">
+      <div class="container">
+        <div class="whatsapp-content">
+          <div class="whatsapp-text">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <div>
+              <p><strong>¿Tienes dudas? ¡Hablamos!</strong></p>
+              <p>Obtén asesoría gratuita por WhatsApp</p>
+            </div>
+          </div>
+          <button class="btn btn-white" onclick="contactWhatsApp()">Contactar Ahora</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/cms-products.js"></script>
+  <script src="/js/cart.js"></script>
+</body>
+</html>

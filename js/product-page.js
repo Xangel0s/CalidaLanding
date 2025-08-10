@@ -552,16 +552,35 @@ class ProductPageManager {
     addToCart() {
         try {
             const qty = Math.max(1, parseInt(this.quantity, 10) || 1);
-            // Update UI badge
+            const pd = this.productData || {};
+            const slug = this.getProductSlug() || pd.slug || pd.title || 'producto';
+            const item = {
+                slug: String(slug),
+                title: String(pd.title || slug),
+                price: (typeof pd.price_online === 'number') ? pd.price_online : 0,
+                image: (Array.isArray(pd.images) && pd.images[0]) ? pd.images[0] : '/images/placeholder-product.jpg',
+                monthly: (typeof pd.monthly_payment === 'number') ? pd.monthly_payment : null,
+                qty
+            };
+
+            // Load existing cart
+            let items = [];
+            try { items = JSON.parse(localStorage.getItem('cartItems') || '[]'); } catch { items = []; }
+            if (!Array.isArray(items)) items = [];
+            // Merge by slug
+            const idx = items.findIndex(x => x && x.slug === item.slug);
+            if (idx >= 0) { items[idx].qty = Math.max(1, (parseInt(items[idx].qty, 10) || 0) + qty); }
+            else items.push(item);
+            localStorage.setItem('cartItems', JSON.stringify(items));
+
+            // Update UI badge with total qty
+            const totalQty = items.reduce((s, it) => s + (parseInt(it.qty, 10) || 0), 0);
             const badge = document.getElementById('cartCount');
-            const prev = badge ? parseInt(badge.textContent, 10) || 0 : 0;
-            const next = prev + qty;
-            if (badge) badge.textContent = String(next);
-            // Persist lightweight count for session
-            try { localStorage.setItem('cartCount', String(next)); } catch {}
-            // Feedback placeholder
-            const title = this.productData?.title ? `“${this.productData.title}”` : 'Producto';
-            alert(`${title} agregado al carrito (x${qty}).`);
+            if (badge) badge.textContent = String(totalQty);
+            try { localStorage.setItem('cartCount', String(totalQty)); } catch {}
+
+            // Redirect to cart
+            window.location.href = '/cart.html';
         } catch (e) {
             alert('No se pudo agregar al carrito.');
         }
