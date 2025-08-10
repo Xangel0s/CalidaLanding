@@ -409,6 +409,7 @@ class ProductPageManager {
 
     updateStockStatus() {
         const stockElement = document.getElementById('stock-status');
+        if (!stockElement) return; // UI de stock removida en product.html
         if (this.productData.stock > 0) {
             stockElement.textContent = `${this.productData.stock} unidades disponibles`;
             stockElement.className = 'stock-available';
