@@ -20,10 +20,8 @@ class ProductPageManager {
     }
 
     updatePayments() {
-        // Render payments with optional sections and editable HTML
         const wrap = document.querySelector('#payment .tab-content');
         if (!wrap) return;
-
         const pd = this.productData || {};
         const methods = Array.isArray(pd.payment_methods) ? pd.payment_methods : [];
         const methodLabel = (m) => ({ bcp: 'BCP', yape: 'Yape', plin: 'Plin' }[m] || m);
@@ -34,52 +32,41 @@ class ProductPageManager {
             </div>
         `).join('');
 
-        // Credit section (optional + editable)
         let creditSection = '';
         if (pd.payment_credit_html) {
             creditSection = `<div class="payment-method">${pd.payment_credit_html}</div>`;
         } else if (pd.show_payment_credit) {
             const monthly = (typeof pd.monthly_payment === 'number' && pd.show_monthly)
-                ? `Paga en cuotas cómodas desde S/ ${pd.monthly_payment.toFixed(2)} al mes`
-                : 'Paga en cuotas cómodas con evaluación rápida';
+                ? `Desde S/ ${pd.monthly_payment.toFixed(2)} al mes`
+                : '';
+            const monthlyHTML = monthly ? `<p>${monthly}</p>` : '';
             creditSection = `
                 <div class="payment-method">
-                    <h4>💳 Con Credicálidda</h4>
-                    <p>${monthly}</p>
+                    <h4> Con Credicálidda</h4>
+                    ${monthlyHTML}
                     <div class="pay-logos">${logos}</div>
-                    <ul>
-                        <li>Sin trámites complicados</li>
-                        <li>Solo necesitas tu DNI</li>
-                        <li>Cuotas competitivas</li>
-                        <li>Aprobación en minutos</li>
-                    </ul>
                 </div>`;
         }
 
-        // Cash section (optional + editable)
         let cashSection = '';
         if (pd.payment_cash_html) {
             cashSection = `<div class="payment-method">${pd.payment_cash_html}</div>`;
         } else if (pd.show_payment_cash) {
             const priceLine = (typeof pd.price_online === 'number' && pd.show_price_online)
-                ? `Precio especial online: S/ ${pd.price_online.toFixed(2)}`
-                : 'Precio especial online';
+                ? `Precio online: S/ ${pd.price_online.toFixed(2)}`
+                : '';
+            const priceHTML = priceLine ? `<p>${priceLine}</p>` : '';
             cashSection = `
                 <div class="payment-method">
-                    <h4>💰 Pago al Contado</h4>
-                    <p>${priceLine}</p>
-                    <ul>
-                        <li>Transferencia bancaria</li>
-                        <li>Pago en efectivo</li>
-                        <li>Tarjeta de débito</li>
-                    </ul>
+                    <h4> Pago al Contado</h4>
+                    ${priceHTML}
                 </div>`;
         }
 
         const combined = [creditSection, cashSection].filter(Boolean).join('');
         wrap.innerHTML = combined
             ? `<h3>Formas de Pago Disponibles</h3><div class="payment-methods">${combined}</div>`
-            : `<h3>Formas de Pago</h3><p>Información disponible al consultar con un asesor por WhatsApp.</p>`;
+            : `<h3>Formas de Pago</h3><p></p>`;
     }
 
     updateShipping() {

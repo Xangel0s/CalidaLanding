@@ -158,7 +158,16 @@
             specs: Array.isArray(it.specs) ? it.specs : [],
             benefits: [],
             payment_methods: Array.isArray(it.payment_methods) ? it.payment_methods : [],
-            shipping: ''
+            // CMS-first fields from catalog as fallback
+            show_payment_credit: it.show_payment_credit !== false,
+            show_payment_cash: it.show_payment_cash !== false,
+            show_monthly: it.show_monthly !== false,
+            show_price_online: it.show_price_online !== false,
+            payment_credit_html: it.payment_credit_html || '',
+            payment_cash_html: it.payment_cash_html || '',
+            show_shipping: it.show_shipping !== false,
+            shipping_html: it.shipping_html || '',
+            shipping: it.shipping || ''
           };
         }
       } catch (_) { /* ignore */ }
@@ -190,6 +199,15 @@
       // extra info
       benefits: Array.isArray(data.benefits) ? data.benefits : [],
       payment_methods: Array.isArray(data.payment_methods) ? data.payment_methods : [],
+      // Editable sections from front matter
+      show_payment_credit: data.show_payment_credit !== false,
+      show_payment_cash: data.show_payment_cash !== false,
+      show_monthly: data.show_monthly !== false,
+      show_price_online: data.show_price_online !== false,
+      payment_credit_html: data.payment_credit_html || '',
+      payment_cash_html: data.payment_cash_html || '',
+      show_shipping: data.show_shipping !== false,
+      shipping_html: data.shipping_html || '',
       shipping: data.shipping || ''
     };
     // ensure image present
@@ -235,6 +253,14 @@
         if (empty(p.specs) && Array.isArray(it.specs)) p.specs = it.specs;
         if (empty(p.benefits) && Array.isArray(it.benefits)) p.benefits = it.benefits;
         if (empty(p.payment_methods) && Array.isArray(it.payment_methods)) p.payment_methods = it.payment_methods;
+        if (empty(p.payment_credit_html) && it.payment_credit_html) p.payment_credit_html = it.payment_credit_html;
+        if (empty(p.payment_cash_html) && it.payment_cash_html) p.payment_cash_html = it.payment_cash_html;
+        if (p.show_payment_credit === undefined && typeof it.show_payment_credit === 'boolean') p.show_payment_credit = it.show_payment_credit;
+        if (p.show_payment_cash === undefined && typeof it.show_payment_cash === 'boolean') p.show_payment_cash = it.show_payment_cash;
+        if (p.show_monthly === undefined && typeof it.show_monthly === 'boolean') p.show_monthly = it.show_monthly;
+        if (p.show_price_online === undefined && typeof it.show_price_online === 'boolean') p.show_price_online = it.show_price_online;
+        if (empty(p.shipping_html) && it.shipping_html) p.shipping_html = it.shipping_html;
+        if (p.show_shipping === undefined && typeof it.show_shipping === 'boolean') p.show_shipping = it.show_shipping;
         if (empty(p.shipping) && it.shipping) p.shipping = it.shipping;
         if (p.price_online == null && typeof it.price_online === 'number') p.price_online = it.price_online;
         if (p.price_regular == null && typeof it.price_regular === 'number') p.price_regular = it.price_regular;
