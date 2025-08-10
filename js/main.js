@@ -147,6 +147,18 @@ class CredicaliddaApp {
                 }
             });
         });
+
+        // Ensure cart icon navigates to cart page on all pages
+        this.setCartLinkTargets();
+    }
+
+    setCartLinkTargets() {
+        try {
+            const links = (Utils && Utils.$$) ? Utils.$$('.cart-link') : Array.from(document.querySelectorAll('.cart-link'));
+            links.forEach(a => {
+                if (a) a.setAttribute('href', '/cart.html');
+            });
+        } catch (_) { /* ignore */ }
     }
     
     setupScrollEvents() {
