@@ -157,6 +157,29 @@
       "title": "PC Gamer Haku Green Ryzen 7 8700G 16GB DDR5 500GB 24\" Curvo MIPCLISTA - MI PC LISTA 2999RYZ1902",
       "image": "https://caliddape.vtexassets.com/arquivos/ids/169491-800-auto?v=638879250633100000&width=800&height=auto&aspect=true",
       "description": "Este equipo es ideal para aquellos que buscan un alto rendimiento en juegos, diseño gráfico y tareas profesionales.\n"
+    },
+    {
+      "brand": "APPLE",
+      "destacado": true,
+      "price_online": 3028,
+      "orden": 7,
+      "show_price_online": true,
+      "show_monthly": true,
+      "slug": "celular-apple-iphone-15-esim-2023-6gb-128gb-negro--reacondicionado--1607/p",
+      "show_payment_cash": true,
+      "mas_vendido": false,
+      "show_shipping": true,
+      "visible": true,
+      "gallery": [
+        "https://caliddape.vtexassets.com/arquivos/ids/160284-800-auto?v=638899252112470000&width=800&height=auto&aspect=true",
+        "https://caliddape.vtexassets.com/arquivos/ids/160286-800-auto?v=638899252112470000&width=800&height=auto&aspect=true"
+      ],
+      "categoria": "tecnologia",
+      "show_payment_credit": true,
+      "monthly_payment": 185.25,
+      "title": "CELULAR APPLE IPHONE 15 ESIM 2023 6GB 128GB NEGRO (REACONDICIONADO) CELR1007NEGRO-128GB",
+      "image": "https://caliddape.vtexassets.com/arquivos/ids/160285-800-auto?v=638899252112300000&width=800&height=auto&aspect=true",
+      "description": "EL IPHONE 15 ESIM ES UN CELULAR DE GRAN CAPACIDAD Y RAPIDEZ,(EL % DE BATERÍA ES DE 78 A 100 DE VIDA ÚTIL, NO INCLUYE CUBO CARGADOR, INCLUYE CAJA Y CABLE DE CARGA GENÉRICOS.) IDEAL PARA TAREAS COTIDIANAS. PRESENTA PEQUEÑOS DETALLES ESTÉTICOS, UN DISEÑO ELEGANTE, ES PERFECTO PARA QUIENES BUSCAN ESTILO Y A UN PRECIO ACCESIBLE..\n"
     }
   ]
 }
