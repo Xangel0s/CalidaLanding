@@ -1,4 +1,19 @@
 /* Product Page Styles */
+/* Scoped zoom for product page */
+body.zoom-80 {
+    zoom: 0.8; /* Chrome/Edge */
+}
+
+/* Fallback using transform for browsers that ignore zoom */
+@supports not (zoom: 0.8) {
+  body.zoom-80 {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+  body.zoom-80 .header, body.zoom-80 .footer, body.zoom-80 main, body.zoom-80 .product-page {
+    transform: scale(1); /* avoid double scaling of nested components if any */
+  }
+}
 
 .product-page {
     padding: var(--spacing-8) 0;
