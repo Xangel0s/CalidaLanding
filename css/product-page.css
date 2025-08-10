@@ -481,7 +481,7 @@
 /* Payment Methods */
 .payment-methods {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--spacing-6);
 }
 
@@ -562,7 +562,6 @@
         gap: var(--spacing-8);
     }
     
-    .payment-methods,
     .shipping-info {
         grid-template-columns: 1fr;
     }

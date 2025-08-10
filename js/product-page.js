@@ -23,14 +23,6 @@ class ProductPageManager {
         const wrap = document.querySelector('#payment .tab-content');
         if (!wrap) return;
         const pd = this.productData || {};
-        const methods = Array.isArray(pd.payment_methods) ? pd.payment_methods : [];
-        const methodLabel = (m) => ({ bcp: 'BCP', yape: 'Yape', plin: 'Plin' }[m] || m);
-        const logoUrl = (m) => `/images/pagos/${m}.jpg`;
-        const logos = methods.map(m => `
-            <div class="pay-chip" title="${methodLabel(m)}">
-                <img src="${logoUrl(m)}" alt="${methodLabel(m)}" loading="lazy" onerror="this.onerror=null; this.replaceWith(document.createTextNode('${methodLabel(m)}'));" />
-            </div>
-        `).join('');
 
         let creditSection = '';
         if (pd.payment_credit_html) {
@@ -44,7 +36,6 @@ class ProductPageManager {
                 <div class="payment-method">
                     <h4> Con Credicálidda</h4>
                     ${monthlyHTML}
-                    <div class="pay-logos">${logos}</div>
                 </div>`;
         }
 
@@ -101,7 +92,9 @@ class ProductPageManager {
             wrap = document.querySelector('#shipping .tab-content .shipping-info');
         }
 
-        const msg = hasContent ? (pd.shipping_html || pd.shipping) : 'Sin información de envío.';
+        const msg = hasContent
+            ? (pd.shipping_html || pd.shipping)
+            : 'Los tiempos y costos de envío pueden variar según el producto y la zona. Para una atención personalizada y confirmar disponibilidad de entrega, contáctanos por WhatsApp y te brindaremos la mejor opción.';
         wrap.innerHTML = `
             <div class="shipping-option">
                 <h4>🚚 Información de Envío</h4>
