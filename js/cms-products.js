@@ -404,6 +404,47 @@
 
     if (featuredTrack) featuredTrack.innerHTML = pDestOk.map(buildHomeCard).join('');
     if (bestTrack) bestTrack.innerHTML = pBestOk.map(buildHomeCard).join('');
+
+    // Initialize carousels after content is injected
+    try {
+      // Featured carousel container
+      const featuredContainer = (featuredTrack && (featuredTrack.closest('.best-sellers-carousel') || featuredTrack.parentElement?.closest('.best-sellers-carousel'))) 
+        || document.getElementById('featuredProductsCarousel');
+      if (featuredContainer && typeof Carousel === 'function') {
+        new Carousel(featuredContainer, {
+          infiniteScroll: true,
+          loop: true,
+          autoPlay: false,
+          itemsToShow: 1,
+          gap: 24,
+          breakpoints: {
+            640: { itemsToShow: 2 },
+            900: { itemsToShow: 3 },
+            1200: { itemsToShow: 4 }
+          }
+        });
+      }
+
+      // Best sellers carousel container (if exists on page)
+      const bestContainer = (bestTrack && (bestTrack.closest('.best-sellers-carousel') || bestTrack.parentElement?.closest('.best-sellers-carousel'))) 
+        || document.getElementById('bestSellersCarousel');
+      if (bestContainer && typeof Carousel === 'function') {
+        new Carousel(bestContainer, {
+          infiniteScroll: true,
+          loop: true,
+          autoPlay: false,
+          itemsToShow: 1,
+          gap: 24,
+          breakpoints: {
+            640: { itemsToShow: 2 },
+            900: { itemsToShow: 3 },
+            1200: { itemsToShow: 4 }
+          }
+        });
+      }
+    } catch (err) {
+      console.warn('No se pudo inicializar los carouseles de home:', err);
+    }
   };
 
   global.CMSProducts = CMS;
