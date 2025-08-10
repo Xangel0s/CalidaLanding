@@ -109,6 +109,15 @@ class ProductPageManager {
     }
 
     async init() {
+        // Initialize cart badge from storage (front-only)
+        try {
+            const stored = parseInt(localStorage.getItem('cartCount'), 10);
+            if (Number.isFinite(stored) && stored > 0) {
+                const badge = document.getElementById('cartCount');
+                if (badge) badge.textContent = String(stored);
+            }
+        } catch {}
+
         // Get product slug from URL (?slug=...)
         const slug = this.getProductSlug();
         if (slug) {
@@ -412,6 +421,43 @@ class ProductPageManager {
         if (waBtn) waBtn.addEventListener('click', (e) => { e.preventDefault(); this.contactWhatsApp(); });
         // Calculate financing button
         if (calcBtn) calcBtn.addEventListener('click', () => this.calculateFinancing());
+
+        // Quantity and Add to Cart (front-only)
+        const qtyInput = document.getElementById('qty-input');
+        const qtyMinus = document.getElementById('qty-minus');
+        const qtyPlus = document.getElementById('qty-plus');
+        const addBtn = document.getElementById('add-to-cart');
+
+        if (qtyInput) {
+            // initialize from state
+            qtyInput.value = String(this.quantity || 1);
+            qtyInput.addEventListener('change', () => {
+                const v = parseInt(qtyInput.value, 10);
+                const q = Number.isFinite(v) && v > 0 ? v : 1;
+                this.setQuantity(q);
+                qtyInput.value = String(this.quantity);
+            });
+        }
+        if (qtyMinus) qtyMinus.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.setQuantity(Math.max(1, (this.quantity || 1) - 1));
+            if (qtyInput) qtyInput.value = String(this.quantity);
+        });
+        if (qtyPlus) qtyPlus.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.setQuantity((this.quantity || 1) + 1);
+            if (qtyInput) qtyInput.value = String(this.quantity);
+        });
+        if (addBtn) addBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // sync from input before adding
+            if (qtyInput) {
+                const v = parseInt(qtyInput.value, 10);
+                if (Number.isFinite(v) && v > 0) this.quantity = v; else this.quantity = 1;
+                qtyInput.value = String(this.quantity);
+            }
+            this.addToCart();
+        });
     }
 
     initializeGallery() {
@@ -498,7 +544,28 @@ class ProductPageManager {
         }
     }
 
-    // Quantity UI removed
+    // Quantity helpers and Add to Cart (front-only placeholder)
+    setQuantity(q) {
+        this.quantity = Math.max(1, parseInt(q, 10) || 1);
+    }
+
+    addToCart() {
+        try {
+            const qty = Math.max(1, parseInt(this.quantity, 10) || 1);
+            // Update UI badge
+            const badge = document.getElementById('cartCount');
+            const prev = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+            const next = prev + qty;
+            if (badge) badge.textContent = String(next);
+            // Persist lightweight count for session
+            try { localStorage.setItem('cartCount', String(next)); } catch {}
+            // Feedback placeholder
+            const title = this.productData?.title ? `“${this.productData.title}”` : 'Producto';
+            alert(`${title} agregado al carrito (x${qty}).`);
+        } catch (e) {
+            alert('No se pudo agregar al carrito.');
+        }
+    }
 
     contactWhatsApp() {
         const qty = this.quantity || 1;
