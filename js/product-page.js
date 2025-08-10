@@ -413,25 +413,11 @@ class ProductPageManager {
     }
 
     setupEventListeners() {
-        // Quantity controls
-        const minus = document.getElementById('qty-minus');
-        const plus = document.getElementById('qty-plus');
-        const qtyInput = document.getElementById('quantity-input');
         const waBtn = document.getElementById('whatsapp-btn');
-        const waInline = document.getElementById('whatsapp-price-btn');
         const calcBtn = document.getElementById('calculate-financing');
 
-        if (minus) minus.addEventListener('click', () => this.changeQuantity(-1));
-        if (plus) plus.addEventListener('click', () => this.changeQuantity(1));
-        if (qtyInput) qtyInput.addEventListener('change', (e) => {
-            this.quantity = Math.max(1, parseInt(e.target.value) || 1);
-            this.updateQuantityDisplay();
-        });
-
-        // WhatsApp buttons
+        // WhatsApp button
         if (waBtn) waBtn.addEventListener('click', (e) => { e.preventDefault(); this.contactWhatsApp(); });
-        if (waInline) waInline.addEventListener('click', (e) => { e.preventDefault(); this.contactWhatsApp(); });
-
         // Calculate financing button
         if (calcBtn) calcBtn.addEventListener('click', () => this.calculateFinancing());
     }
@@ -520,14 +506,7 @@ class ProductPageManager {
         }
     }
 
-    changeQuantity(delta) {
-        this.quantity = Math.max(1, Math.min(this.productData.stock, this.quantity + delta));
-        this.updateQuantityDisplay();
-    }
-
-    updateQuantityDisplay() {
-        document.getElementById('quantity-input').value = this.quantity;
-    }
+    // Quantity UI removed
 
     contactWhatsApp() {
         const qty = this.quantity || 1;
@@ -552,9 +531,6 @@ class ProductPageManager {
             || '51999999999';
 
         const whatsappUrl = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
-        // Also reflect into inline anchor href so right-click works
-        const waInline = document.getElementById('whatsapp-price-btn');
-        if (waInline) waInline.href = whatsappUrl;
         window.open(whatsappUrl, '_blank');
     }
 
