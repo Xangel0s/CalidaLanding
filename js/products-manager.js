@@ -3,6 +3,8 @@ class ProductsManager {
     constructor() {
         this.products = [];
         this.filteredProducts = [];
+        this.perPage = 24;
+        this.currentPage = 1;
         this.currentFilters = {
             categoria: '',
             filtro: '',
@@ -27,6 +29,8 @@ class ProductsManager {
         this.currentFilters.categoria = urlParams.get('categoria') || '';
         this.currentFilters.filtro = urlParams.get('filtro') || '';
         this.currentFilters.busqueda = urlParams.get('q') || '';
+        const page = parseInt(urlParams.get('page') || '1', 10);
+        this.currentPage = Number.isNaN(page) || page < 1 ? 1 : page;
         
         // Actualizar UI según parámetros
         this.updateUIFromFilters();
@@ -83,14 +87,37 @@ class ProductsManager {
         });
     }
 
-    // Cargar productos (simulado - luego será desde Decap CMS)
+    // Cargar productos desde el catálogo CMS
     async loadProducts() {
         try {
             // Mostrar loading
             this.showLoading();
             
-            // Simulación de productos (después será desde archivos MD de Decap CMS)
-            this.products = this.getMockProducts();
+            // Cargar catálogo real
+            const catalog = (window.CMSProducts && typeof CMSProducts.loadCatalog === 'function')
+                ? await CMSProducts.loadCatalog()
+                : [];
+
+            // Normalizar y filtrar productos visibles
+            this.products = (catalog || [])
+                .filter(it => it && (it.visible !== false))
+                .map(it => ({
+                    slug: it.slug,
+                    title: it.title || it.slug,
+                    brand: it.brand || '',
+                    image: it.image || '/images/products/placeholder.jpg',
+                    description: it.description || '',
+                    price_regular: typeof it.price_regular === 'number' ? it.price_regular : null,
+                    price_online: typeof it.price_online === 'number' ? it.price_online : null,
+                    monthly_payment: typeof it.monthly_payment === 'number' ? it.monthly_payment : null,
+                    discount: typeof it.discount === 'number' ? it.discount : null,
+                    category: it.categoria || it.category || '',
+                    tags: Array.isArray(it.tags) ? it.tags : [],
+                    stock: typeof it.stock === 'number' ? it.stock : undefined,
+                    date: it.date || it.fecha || '1970-01-01'
+                }))
+                // Ocultar inactivos/sin stock si se especifica stock numérico
+                .filter(p => (typeof p.stock === 'number' ? p.stock > 0 : true));
             
             // Aplicar filtros iniciales
             this.applyFilters();
@@ -99,6 +126,24 @@ class ProductsManager {
             console.error('Error loading products:', error);
             this.showError();
         }
+
+    // Limpieza genérica: elimina cualquier sufijo "(n)" dentro del sidebar de filtros
+    scrubFilterCounts() {
+        try {
+            const root = document.querySelector('.filters-sidebar') || document;
+            // Vaciar spans marcados como conteos
+            root.querySelectorAll('.filter-count, .count, .badge').forEach(el => {
+                el.textContent = '';
+            });
+            // Remover "(n)" al final del texto de labels/links
+            root.querySelectorAll('label, a, span, div').forEach(el => {
+                const txt = el.textContent;
+                if (!txt) return;
+                const cleaned = txt.replace(/\s*\([^()]*\)\s*$/, '');
+                if (cleaned !== txt) el.textContent = cleaned;
+            });
+        } catch (_) { /* ignore */ }
+    }
     }
 
     // Aplicar filtros y mostrar productos
@@ -133,8 +178,16 @@ class ProductsManager {
         filtered = this.sortProducts(filtered, this.currentFilters.ordenar);
         
         this.filteredProducts = filtered;
+        // Asegurar página válida cuando cambian filtros
+        const total = this.filteredProducts.length;
+        const maxPage = Math.max(1, Math.ceil(total / this.perPage));
+        if (this.currentPage > maxPage) this.currentPage = maxPage;
+
         this.renderProducts();
         this.updateProductsCount();
+        this.updateCategoryCounts();
+        this.updateTagCounts();
+        this.scrubFilterCounts();
         this.updateURL();
     }
 
@@ -175,10 +228,12 @@ class ProductsManager {
         if (emptyState) emptyState.style.display = 'none';
         container.style.display = 'grid';
         
-        // Renderizar productos
-        container.innerHTML = this.filteredProducts.map(product => 
-            this.createProductCard(product)
-        ).join('');
+        // Paginación
+        const startIdx = (this.currentPage - 1) * this.perPage;
+        const pageItems = this.filteredProducts.slice(startIdx, startIdx + this.perPage);
+
+        // Renderizar productos de la página actual
+        container.innerHTML = pageItems.map(product => this.createProductCard(product)).join('');
     }
 
     // Crear HTML de producto
@@ -245,10 +300,97 @@ class ProductsManager {
     }
 
     updateProductsCount() {
-        const count = this.filteredProducts.length;
-        const total = this.products.length;
-        document.getElementById('productsCount').textContent = 
-            `Mostrando ${count} de ${total} productos`;
+        const totalFiltered = this.filteredProducts.length;
+        const totalAll = this.products.length;
+        const start = totalFiltered === 0 ? 0 : (this.currentPage - 1) * this.perPage + 1;
+        const end = totalFiltered === 0 ? 0 : Math.min(this.currentPage * this.perPage, totalFiltered);
+        const el = document.getElementById('productsCount');
+        if (el) el.textContent = `Mostrando ${start}-${end} de ${totalFiltered} productos`;
+        // Si existe otro elemento para total global, actualizarlo también (opcional)
+        const elTotal = document.getElementById('productsTotal');
+        if (elTotal) elTotal.textContent = `${totalAll}`;
+    }
+
+    // Actualizar conteos por categoría en el selector (si existe)
+    updateCategoryCounts() {
+        const select = document.getElementById('categoryFilter');
+        // En este modo, eliminamos números de los labels.
+        
+        // 1) Actualizar labels de <option> manteniendo su value
+        if (select) {
+            Array.from(select.options).forEach(opt => {
+                if (!opt.value) return; // opción vacía (todas)
+                const c = opt.value;
+                const base = this.getCategoryDisplayName(c);
+                opt.textContent = base;
+            });
+        }
+
+        // 2) Actualizar lista de checkboxes si existe (patrones comunes)
+        // Admite elementos <li data-category="tecnologia"> ... <span class="count"></span>
+        const listItems = document.querySelectorAll('[data-category]');
+        listItems.forEach(el => {
+            const key = (el.getAttribute('data-category') || '').trim();
+            if (!key) return;
+            // Buscar un span .count o .badge y limpiarlo
+            const countEl = el.querySelector('.count, .badge, .filter-count');
+            if (countEl) countEl.textContent = '';
+            // Reemplazar sufijo "(n)" en el texto visible
+            const lbl = el.querySelector('label, a, span') || el;
+            const baseText = (lbl.textContent || '').trim();
+            if (baseText) lbl.textContent = baseText.replace(/\s*\([^()]*\)\s*$/, '');
+        });
+
+        // 3) Input checkbox con value de categoría y label adyacente
+        const catCheckboxes = document.querySelectorAll('input[type="checkbox"][name="category"], input[type="checkbox"][data-category]');
+        catCheckboxes.forEach(cb => {
+            const key = (cb.getAttribute('data-category') || cb.value || '').trim();
+            if (!key) return;
+            let lbl = cb.closest('label');
+            if (!lbl) {
+                const id = cb.id;
+                if (id) lbl = document.querySelector(`label[for="${CSS.escape(id)}"]`);
+                if (!lbl) lbl = cb.parentElement;
+            }
+            if (!lbl) return;
+            const baseText = (lbl.textContent || '').trim();
+            const withoutCount = baseText.replace(/\s*\([^()]*\)\s*$/, '');
+            lbl.textContent = withoutCount;
+        });
+    }
+
+    // Actualizar conteos de filtros por etiqueta/promoción
+    updateTagCounts() {
+        // Reglas simples basadas en campos del catálogo
+        const rules = {
+            'ofertas': (p) => typeof p.discount === 'number' && p.discount > 0,
+            'combos': (p) => Array.isArray(p.tags) && p.tags.includes('combo'),
+            'novedades': (p) => Array.isArray(p.tags) && p.tags.includes('novedad'),
+            'reacondicionados': (p) => Array.isArray(p.tags) && p.tags.includes('reacondicionado')
+        };
+
+        // 1) Select de tags si existe
+        const tagSelect = document.getElementById('tagFilter');
+        if (tagSelect) {
+            Array.from(tagSelect.options).forEach(opt => {
+                if (!opt.value) return;
+                const key = opt.value;
+                const base = this.getFilterDisplayName(key);
+                opt.textContent = base;
+            });
+        }
+
+        // 2) Lista de checkboxes con data-filter
+        const tagItems = document.querySelectorAll('[data-filter]');
+        tagItems.forEach(el => {
+            const key = (el.getAttribute('data-filter') || '').trim();
+            if (!key) return;
+            const countEl = el.querySelector('.count, .badge, .filter-count');
+            if (countEl) countEl.textContent = '';
+            const lbl = el.querySelector('label, a, span') || el;
+            const baseText = (lbl.textContent || '').trim();
+            if (baseText) lbl.textContent = baseText.replace(/\s*\([^()]*\)\s*$/, '');
+        });
     }
 
     updateURL() {
@@ -257,6 +399,7 @@ class ProductsManager {
         if (this.currentFilters.categoria) params.set('categoria', this.currentFilters.categoria);
         if (this.currentFilters.filtro) params.set('filtro', this.currentFilters.filtro);
         if (this.currentFilters.busqueda) params.set('q', this.currentFilters.busqueda);
+        if (this.currentPage && this.currentPage > 1) params.set('page', String(this.currentPage));
         
         const newURL = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
         window.history.replaceState({}, '', newURL);
@@ -304,55 +447,7 @@ class ProductsManager {
         return names[filter] || filter;
     }
 
-    // Datos mock (después serán reemplazados por Decap CMS)
-    getMockProducts() {
-        return [
-            {
-                slug: 'televisor-lg-55ut7300psa',
-                title: 'Televisor LG 55UT7300PSA UHD/4K SMART WebOS c/Magic Remote + Audifonos Bluetooth MERTEC',
-                brand: 'LG',
-                image: 'images/productos_destacados/tv-lg.jpg',
-                description: 'Televisor LG 55" 4K UHD Smart TV con WebOS',
-                price_regular: 2939.00,
-                price_online: 1659.00,
-                monthly_payment: 62.60,
-                discount: 44,
-                category: 'televisores',
-                tags: ['destacado', 'oferta'],
-                stock: 5,
-                date: '2024-01-15'
-            },
-            {
-                slug: 'iphone-14-pro-negro',
-                title: 'CELULAR APPLE IPHONE 14 PRO ESIM 2022 6GB 128GB NEGRO (REACONDICIONADO)',
-                brand: 'APPLE',
-                image: 'images/productos_destacados/iphone-14-pro.jpg',
-                description: 'iPhone 14 Pro reacondicionado en excelente estado',
-                price_online: 3223.00,
-                monthly_payment: 197.17,
-                category: 'tecnologia',
-                tags: ['reacondicionado', 'destacado'],
-                stock: 3,
-                date: '2024-01-10'
-            },
-            {
-                slug: 'xiaomi-redmi-note-14',
-                title: 'Celular Xiaomi Redmi Note 14 6.67" 8GB 256GB Negro Medianoche',
-                brand: 'XIAOMI',
-                image: 'images/productos_destacados/xiaomi-redmi-note-14.jpg',
-                description: 'Último modelo de Xiaomi con gran rendimiento',
-                price_regular: 1729.00,
-                price_online: 889.00,
-                monthly_payment: 54.38,
-                discount: 49,
-                category: 'tecnologia',
-                tags: ['novedad', 'oferta'],
-                stock: 10,
-                date: '2024-01-20'
-            }
-            // Más productos aquí...
-        ];
-    }
+    // Eliminado: datos mock
 }
 
 // Funciones globales
