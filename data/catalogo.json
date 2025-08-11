@@ -382,6 +382,33 @@
       ],
       "image": "https://caliddape.vtexassets.com/arquivos/ids/160718-1200-auto?v=638899230894900000&width=1200&height=auto&aspect=true",
       "description": "La LENOVO V15 G4 AMN es una laptop de gran capacidad y rapidez, ideal para tareas cotidianas, trabajos profesionales y entretenimiento.\n"
+    },
+    {
+      "brand": "APPLE",
+      "destacado": false,
+      "price_online": 5640,
+      "orden": 10,
+      "show_price_online": true,
+      "show_monthly": true,
+      "slug": "celular-apple-iphone-16-pro-max-e-sim-2024-8gb-256gb-desert-titanium-1537/p",
+      "shipping": "",
+      "show_payment_cash": true,
+      "mas_vendido": true,
+      "show_shipping": true,
+      "visible": true,
+      "gallery": [
+        "https://caliddape.vtexassets.com/arquivos/ids/160137-1200-auto?v=638739286948230000&width=1200&height=auto&aspect=true",
+        "https://caliddape.vtexassets.com/arquivos/ids/160138-1200-auto?v=638739286948400000&width=1200&height=auto&aspect=true"
+      ],
+      "categoria": "tecnologia",
+      "show_payment_credit": true,
+      "monthly_payment": 345.03,
+      "title": "CELULAR APPLE IPHONE 16 PRO MAX E/SIM 2024 8GB 256GB DESERT-TITANIUM CELU1053DESERT-TITANIUM-256GB",
+      "tags": [
+        "oferta"
+      ],
+      "image": "https://caliddape.vtexassets.com/arquivos/ids/160140-1200-auto?v=638739286952700000&width=1200&height=auto&aspect=true",
+      "description": "EL IPHONE 16 PRO MAX E/SIM ES UN CELULAR DE GRAN CAPACIDAD Y RAPIDEZ, IDEAL PARA TAREAS COTIDIANAS. CON UNA BATERÍA DE BUEN RENDIMIENTO, UN DISEÑO ELEGANTE, ES PERFECTO PARA QUIENES BUSCAN ESTILO Y A UN PRECIO ACCESIBLE.\n"
     }
   ]
 }
