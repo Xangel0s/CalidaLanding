@@ -356,6 +356,32 @@
       "title": "MI PC LISTA - PC Gamer Draco Red Core I7 8th 32GB 500GB 24\" Curvo RTX3050 6GB MIPCLISTA - MI PC LISTA 2549ALT0503 2549ALT0503",
       "image": "https://caliddape.vtexassets.com/arquivos/ids/167261-1200-auto?v=638842090157900000&width=1200&height=auto&aspect=true",
       "description": "Equipo profesional de alto rendimiento, ideal para tareas pesadas como diseño, ingeniería, arquitectura y videojuegos en alta calidad al mejor costo, no te preocupes por las largas horas de uso de este PC ya que sus componentes son de la mas alta calidad del mercado.\n"
+    },
+    {
+      "brand": "LENOVO",
+      "destacado": false,
+      "price_online": 1894,
+      "orden": 9,
+      "show_price_online": true,
+      "show_monthly": true,
+      "slug": "combo-laptop-lenovo-v15-g4-amn-15-6--y-teclado-con-cable-usb-mouse-4-botones-rgb-1764/p",
+      "show_payment_cash": true,
+      "mas_vendido": true,
+      "show_shipping": true,
+      "visible": true,
+      "gallery": [
+        "https://caliddape.vtexassets.com/arquivos/ids/160717-1200-auto?v=638899230895030000&width=1200&height=auto&aspect=true",
+        "https://caliddape.vtexassets.com/arquivos/ids/160719-1200-auto?v=638899230895200000&width=1200&height=auto&aspect=true"
+      ],
+      "categoria": "tecnologia",
+      "show_payment_credit": true,
+      "monthly_payment": 71.47,
+      "title": "Combo Laptop Lenovo V15 G4 AMN 15.6\" y TECLADO CON CABLE USB+MOUSE 4 BOTONES RGB COMC051GRIS-256GBSSD",
+      "tags": [
+        "combo"
+      ],
+      "image": "https://caliddape.vtexassets.com/arquivos/ids/160718-1200-auto?v=638899230894900000&width=1200&height=auto&aspect=true",
+      "description": "La LENOVO V15 G4 AMN es una laptop de gran capacidad y rapidez, ideal para tareas cotidianas, trabajos profesionales y entretenimiento.\n"
     }
   ]
 }
