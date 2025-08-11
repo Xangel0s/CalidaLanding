@@ -407,11 +407,45 @@
 
     // Initialize carousels after content is injected
     try {
+      // Helper: wait for images in a container, then force a layout refresh on the carousel
+      const ensureCarouselLayout = (container, carouselInstance) => {
+        if (!container || !carouselInstance) return;
+        // Find the track inside this container
+        const track = container.querySelector('.best-sellers-track, #featuredProductsTrack, #bestSellersTrack');
+        const imgs = track ? Array.from(track.querySelectorAll('img')) : [];
+
+        // If no images or all complete, refresh immediately
+        const pending = imgs.filter(img => !img.complete);
+        const refresh = () => {
+          try {
+            if (typeof carouselInstance.updateItemsToShow === 'function') carouselInstance.updateItemsToShow();
+            if (typeof carouselInstance.updateView === 'function') carouselInstance.updateView();
+          } catch (_) { /* ignore */ }
+        };
+
+        if (pending.length === 0) {
+          // Do it on next frame to ensure DOM is painted
+          requestAnimationFrame(() => refresh());
+          return;
+        }
+
+        let remaining = pending.length;
+        const done = () => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            requestAnimationFrame(() => refresh());
+          }
+        };
+        pending.forEach(img => {
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        });
+      };
       // Featured carousel container
       const featuredContainer = (featuredTrack && (featuredTrack.closest('.best-sellers-carousel') || featuredTrack.parentElement?.closest('.best-sellers-carousel'))) 
         || document.getElementById('featuredProductsCarousel');
       if (featuredContainer && typeof Carousel === 'function') {
-        new Carousel(featuredContainer, {
+        const featuredCarousel = new Carousel(featuredContainer, {
           infiniteScroll: true,
           loop: true,
           autoPlay: false,
@@ -423,13 +457,15 @@
             1200: { itemsToShow: 4 }
           }
         });
+        // Ensure layout once images have loaded
+        ensureCarouselLayout(featuredContainer, featuredCarousel);
       }
 
       // Best sellers carousel container (if exists on page)
       const bestContainer = (bestTrack && (bestTrack.closest('.best-sellers-carousel') || bestTrack.parentElement?.closest('.best-sellers-carousel'))) 
         || document.getElementById('bestSellersCarousel');
       if (bestContainer && typeof Carousel === 'function') {
-        new Carousel(bestContainer, {
+        const bestCarousel = new Carousel(bestContainer, {
           infiniteScroll: true,
           loop: true,
           autoPlay: false,
@@ -441,6 +477,8 @@
             1200: { itemsToShow: 4 }
           }
         });
+        // Ensure layout once images have loaded
+        ensureCarouselLayout(bestContainer, bestCarousel);
       }
     } catch (err) {
       console.warn('No se pudo inicializar los carouseles de home:', err);
