@@ -89,37 +89,30 @@
     const sumTotal = $('#sumTotal'); if (sumTotal) sumTotal.textContent = formatPEN(subtotal); // envío por calcular
   }
 
-  // Función para enviar datos usando Formspree (método simple)
+  // Función para enviar datos a Google Sheets usando Apps Script
   async function sendToGoogleSheets(formData) {
     try {
-      // URL de Formspree
-      const formspreeUrl = 'https://formspree.io/f/xdklzjbk';
+      // URL del Google Apps Script
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
       
-      // Preparar datos para Formspree
-      const formBody = new URLSearchParams({
-        'Nombre': formData.nombre,
-        'Email': formData.email,
-        'Teléfono': formData.telefono,
-        'Productos': formData.productos,
-        'Total': formData.total,
-        'Mensaje': formData.mensaje,
-        '_subject': 'Nueva consulta de CrediCálidda - Carrito',
-        '_next': window.location.href // Evitar redirección
+      // Preparar datos para Google Sheets
+      const params = new URLSearchParams({
+        'nombre': formData.nombre,
+        'email': formData.email,
+        'telefono': formData.telefono,
+        'productos': formData.productos,
+        'total': formData.total,
+        'mensaje': formData.mensaje
       });
       
-      // Enviar datos a Formspree usando método simple
-      const response = await fetch(formspreeUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody,
-        mode: 'no-cors' // Evitar problemas de CORS
+      // Enviar datos usando método GET simple (evita CORS)
+      const response = await fetch(`${scriptUrl}?${params}`, {
+        method: 'GET',
+        mode: 'no-cors' // Esto evita problemas de CORS
       });
       
-      // Con no-cors no podemos verificar la respuesta, pero asumimos éxito
-      console.log('✅ Datos enviados a Formspree (modo no-cors)');
-      return true;
+      console.log('✅ Datos enviados a Google Sheets');
+      return true; // No podemos verificar la respuesta con no-cors, pero asumimos éxito
       
     } catch (error) {
       console.error('❌ Error de conexión:', error);
