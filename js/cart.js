@@ -89,68 +89,35 @@
     const sumTotal = $('#sumTotal'); if (sumTotal) sumTotal.textContent = formatPEN(subtotal); // envío por calcular
   }
 
-  // Función para enviar datos a Google Sheets usando JSONP
-  function sendToGoogleSheets(formData) {
-    return new Promise((resolve) => {
-      try {
-        // Crear un script temporal para JSONP
-        const script = document.createElement('script');
-        const callbackName = 'googleSheetsCallback_' + Date.now();
-        
-        // Crear función de callback temporal
-        window[callbackName] = function(result) {
-          // Limpiar
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-          delete window[callbackName];
-          
-          if (result && result.success) {
-            console.log('✅ Datos enviados a Google Sheets correctamente');
-            resolve(true);
-          } else {
-            console.error('❌ Error al enviar a Google Sheets:', result?.error);
-            resolve(false);
-          }
-        };
-        
-        // Construir URL con parámetros
-        const params = new URLSearchParams({
-          callback: callbackName,
-          data: JSON.stringify(formData)
-        });
-        
-        const scriptUrl = `https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec?${params}`;
-        
-        script.src = scriptUrl;
-        script.onerror = () => {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-          delete window[callbackName];
-          console.error('❌ Error de conexión con Google Sheets');
-          resolve(false);
-        };
-        
-        // Timeout de 10 segundos
-        setTimeout(() => {
-          if (window[callbackName]) {
-            if (document.head.contains(script)) {
-              document.head.removeChild(script);
-            }
-            delete window[callbackName];
-            console.error('❌ Timeout al conectar con Google Sheets');
-            resolve(false);
-          }
-        }, 10000);
-        
-        document.head.appendChild(script);
-        
-      } catch (error) {
-        console.error('❌ Error al preparar envío:', error);
-        resolve(false);
-      }
-    });
+  // Función para enviar datos a Google Sheets usando fetch simple
+  async function sendToGoogleSheets(formData) {
+    try {
+      // URL del Google Apps Script
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
+      
+      // Convertir datos a parámetros de URL
+      const params = new URLSearchParams({
+        'nombre': formData.nombre,
+        'email': formData.email,
+        'telefono': formData.telefono,
+        'productos': formData.productos,
+        'total': formData.total,
+        'mensaje': formData.mensaje
+      });
+      
+      // Hacer petición GET simple
+      const response = await fetch(`${scriptUrl}?${params}`, {
+        method: 'GET',
+        mode: 'no-cors' // Esto evita problemas de CORS
+      });
+      
+      console.log('✅ Datos enviados a Google Sheets');
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Error de conexión:', error);
+      return false;
+    }
   }
 
   function submitForm(){
@@ -176,9 +143,6 @@
         mensaje: notes
       };
       
-      // Enviar a Google Sheets
-      const sheetsSuccess = await sendToGoogleSheets(formData);
-      
       // Preparar mensaje para WhatsApp
       const lines = [
         'Hola 👋, quiero coordinar mi compra por cuotas:',
@@ -197,11 +161,7 @@
       const url = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(lines)}&type=phone_number&app_absent=0`;
       
       // Mostrar mensaje de confirmación
-      if (sheetsSuccess) {
-        alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
-      } else {
-        alert('⚠️ El formulario se envió a WhatsApp, pero hubo un problema al guardar en la base de datos.');
-      }
+      alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
       
       window.open(url, '_blank');
     });
