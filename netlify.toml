@@ -51,7 +51,4 @@
   to = "/productos.html"
   status = 200
   
-[[redirects]]
 
-  to = "/productos.html"
-  status = 200

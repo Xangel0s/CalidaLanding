@@ -89,30 +89,39 @@
     const sumTotal = $('#sumTotal'); if (sumTotal) sumTotal.textContent = formatPEN(subtotal); // envío por calcular
   }
 
-  // Función para enviar datos a Google Sheets usando fetch simple
+  // Función para enviar datos usando Formspree
   async function sendToGoogleSheets(formData) {
     try {
-      // URL del Google Apps Script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
+      // URL de Formspree
+      const formspreeUrl = 'https://formspree.io/f/xdklzjbk';
       
-      // Convertir datos a parámetros de URL
-      const params = new URLSearchParams({
-        'nombre': formData.nombre,
-        'email': formData.email,
-        'telefono': formData.telefono,
-        'productos': formData.productos,
-        'total': formData.total,
-        'mensaje': formData.mensaje
+      // Preparar datos para Formspree
+      const formBody = new URLSearchParams({
+        'Nombre': formData.nombre,
+        'Email': formData.email,
+        'Teléfono': formData.telefono,
+        'Productos': formData.productos,
+        'Total': formData.total,
+        'Mensaje': formData.mensaje,
+        '_subject': 'Nueva consulta de CrediCálidda - Carrito'
       });
       
-      // Hacer petición GET simple
-      const response = await fetch(`${scriptUrl}?${params}`, {
-        method: 'GET',
-        mode: 'no-cors' // Esto evita problemas de CORS
+      // Enviar datos a Formspree
+      const response = await fetch(formspreeUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody
       });
       
-      console.log('✅ Datos enviados a Google Sheets');
-      return true;
+      if (response.ok) {
+        console.log('✅ Datos enviados a Formspree correctamente');
+        return true;
+      } else {
+        console.error('❌ Error al enviar a Formspree:', response.status);
+        return false;
+      }
       
     } catch (error) {
       console.error('❌ Error de conexión:', error);
