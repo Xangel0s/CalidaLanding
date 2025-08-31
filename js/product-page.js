@@ -606,9 +606,9 @@ class ProductPageManager {
         // Try to use a global setting if exists, else fallback
         const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
             || (window.SiteSettings && window.SiteSettings.whatsapp)
-            || '51999999999';
+            || '51967156094';
 
-        const whatsappUrl = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+        const whatsappUrl = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(msg)}&type=phone_number&app_absent=0`;
         window.open(whatsappUrl, '_blank');
     }
 

@@ -952,7 +952,11 @@ function openCrediChatModal() {
 // CrediChat Actions
 function startCrediChat() {
     // Redirect to CrediChat flow or open chat widget
-    window.open('https://wa.me/51999999999?text=Hola%2C%20quiero%20saber%20más%20sobre%20CrediChat', '_blank');
+    const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
+        || (window.SiteSettings && window.SiteSettings.whatsapp)
+        || '51967156094';
+    const message = encodeURIComponent('Hola, quiero saber más sobre CrediChat');
+    window.open(`https://api.whatsapp.com/send/?phone=${number}&text=${message}&type=phone_number&app_absent=0`, '_blank');
     
     // Track event
     if (window.CredicaliddaApp) {

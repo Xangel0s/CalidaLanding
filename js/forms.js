@@ -477,10 +477,13 @@ class FormManager {
 
 // Global function to open WhatsApp (called from HTML)
 window.openWhatsApp = () => {
+    const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
+        || (window.SiteSettings && window.SiteSettings.whatsapp)
+        || '51967156094';
     const defaultMessage = encodeURIComponent(
         '¡Hola! Me interesa obtener más información sobre sus productos y servicios financieros. ¿Podrían brindarme asesoría personalizada?'
     );
-    const whatsappUrl = `https://wa.me/51999999999?text=${defaultMessage}`;
+    const whatsappUrl = `https://api.whatsapp.com/send/?phone=${number}&text=${defaultMessage}&type=phone_number&app_absent=0`;
     window.open(whatsappUrl, '_blank');
 };
 

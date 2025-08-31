@@ -111,8 +111,8 @@
 
       const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
         || (window.SiteSettings && window.SiteSettings.whatsapp)
-        || '51999999999';
-      const url = `https://wa.me/${number}?text=${encodeURIComponent(lines)}`;
+        || '51967156094';
+      const url = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(lines)}&type=phone_number&app_absent=0`;
       window.open(url, '_blank');
     });
   }

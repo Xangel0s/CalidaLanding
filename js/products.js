@@ -396,7 +396,10 @@ class ProductManager {
     
     // Generate WhatsApp message
     generateWhatsAppMessage(userData, products) {
-        const baseUrl = 'https://wa.me/51999999999';
+        const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
+            || (window.SiteSettings && window.SiteSettings.whatsapp)
+            || '51967156094';
+        const baseUrl = `https://api.whatsapp.com/send/?phone=${number}&type=phone_number&app_absent=0`;
         
         let message = `¡Hola! Me interesa obtener información sobre:\n\n`;
         
