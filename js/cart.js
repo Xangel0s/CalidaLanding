@@ -89,33 +89,68 @@
     const sumTotal = $('#sumTotal'); if (sumTotal) sumTotal.textContent = formatPEN(subtotal); // envío por calcular
   }
 
-  // Función para enviar datos a Google Sheets
-  async function sendToGoogleSheets(formData) {
-    try {
-      // URL del Google Apps Script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
-      
-      const response = await fetch(scriptUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        console.log('✅ Datos enviados a Google Sheets correctamente');
-        return true;
-      } else {
-        console.error('❌ Error al enviar a Google Sheets:', result.error);
-        return false;
+  // Función para enviar datos a Google Sheets usando JSONP
+  function sendToGoogleSheets(formData) {
+    return new Promise((resolve) => {
+      try {
+        // Crear un script temporal para JSONP
+        const script = document.createElement('script');
+        const callbackName = 'googleSheetsCallback_' + Date.now();
+        
+        // Crear función de callback temporal
+        window[callbackName] = function(result) {
+          // Limpiar
+          if (document.head.contains(script)) {
+            document.head.removeChild(script);
+          }
+          delete window[callbackName];
+          
+          if (result && result.success) {
+            console.log('✅ Datos enviados a Google Sheets correctamente');
+            resolve(true);
+          } else {
+            console.error('❌ Error al enviar a Google Sheets:', result?.error);
+            resolve(false);
+          }
+        };
+        
+        // Construir URL con parámetros
+        const params = new URLSearchParams({
+          callback: callbackName,
+          data: JSON.stringify(formData)
+        });
+        
+        const scriptUrl = `https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec?${params}`;
+        
+        script.src = scriptUrl;
+        script.onerror = () => {
+          if (document.head.contains(script)) {
+            document.head.removeChild(script);
+          }
+          delete window[callbackName];
+          console.error('❌ Error de conexión con Google Sheets');
+          resolve(false);
+        };
+        
+        // Timeout de 10 segundos
+        setTimeout(() => {
+          if (window[callbackName]) {
+            if (document.head.contains(script)) {
+              document.head.removeChild(script);
+            }
+            delete window[callbackName];
+            console.error('❌ Timeout al conectar con Google Sheets');
+            resolve(false);
+          }
+        }, 10000);
+        
+        document.head.appendChild(script);
+        
+      } catch (error) {
+        console.error('❌ Error al preparar envío:', error);
+        resolve(false);
       }
-    } catch (error) {
-      console.error('❌ Error de conexión:', error);
-      return false;
-    }
+    });
   }
 
   function submitForm(){
