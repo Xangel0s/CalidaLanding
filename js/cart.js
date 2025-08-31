@@ -164,13 +164,20 @@
         notes ? `Notas: ${notes}` : ''
       ].filter(Boolean).join('\n');
 
+      // Enviar datos a Formspree
+      const sheetsSuccess = await sendToGoogleSheets(formData);
+      
       const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
         || (window.SiteSettings && window.SiteSettings.whatsapp)
         || '51967156094';
       const url = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(lines)}&type=phone_number&app_absent=0`;
       
       // Mostrar mensaje de confirmación
-      alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
+      if (sheetsSuccess) {
+        alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
+      } else {
+        alert('⚠️ El formulario se envió a WhatsApp, pero hubo un problema al guardar en la base de datos.');
+      }
       
       window.open(url, '_blank');
     });
