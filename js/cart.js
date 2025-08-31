@@ -89,15 +89,62 @@
     const sumTotal = $('#sumTotal'); if (sumTotal) sumTotal.textContent = formatPEN(subtotal); // envío por calcular
   }
 
+  // Función para enviar datos a Google Sheets
+  async function sendToGoogleSheets(formData) {
+    try {
+      // URL del Google Apps Script
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
+      
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        console.log('✅ Datos enviados a Google Sheets correctamente');
+        return true;
+      } else {
+        console.error('❌ Error al enviar a Google Sheets:', result.error);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Error de conexión:', error);
+      return false;
+    }
+  }
+
   function submitForm(){
     const form = $('#cartForm'); if (!form) return;
-    form.addEventListener('submit', (e)=>{
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
+      
       const name = $('#cfName').value.trim();
       const phone = $('#cfPhone').value.trim();
       const email = $('#cfEmail').value.trim();
       const notes = $('#cfNotes').value.trim();
       const items = loadItems();
+      
+      // Preparar datos para Google Sheets
+      const formData = {
+        nombre: name,
+        email: email,
+        telefono: phone,
+        direccion: '', // Se puede agregar si hay campo de dirección
+        ciudad: '', // Se puede agregar si hay campo de ciudad
+        productos: items.map(it => `${it.title} x${it.qty}`).join(', '),
+        total: $('#sumTotal')?.textContent || formatPEN(0),
+        mensaje: notes
+      };
+      
+      // Enviar a Google Sheets
+      const sheetsSuccess = await sendToGoogleSheets(formData);
+      
+      // Preparar mensaje para WhatsApp
       const lines = [
         'Hola 👋, quiero coordinar mi compra por cuotas:',
         ...items.map(it => `• ${it.title} x${it.qty} - Cuota mensual: ${formatPEN(it.monthly||0)} (Cuotas: ${formatPEN(itemFirstInstallment(it))})`),
@@ -113,6 +160,14 @@
         || (window.SiteSettings && window.SiteSettings.whatsapp)
         || '51967156094';
       const url = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(lines)}&type=phone_number&app_absent=0`;
+      
+      // Mostrar mensaje de confirmación
+      if (sheetsSuccess) {
+        alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
+      } else {
+        alert('⚠️ El formulario se envió a WhatsApp, pero hubo un problema al guardar en la base de datos.');
+      }
+      
       window.open(url, '_blank');
     });
   }
