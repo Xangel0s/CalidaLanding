@@ -105,14 +105,12 @@
         'mensaje': formData.mensaje
       });
       
-      // Enviar datos usando método GET simple (evita CORS)
-      const response = await fetch(`${scriptUrl}?${params}`, {
-        method: 'GET',
-        mode: 'no-cors' // Esto evita problemas de CORS
-      });
+      // Crear una imagen invisible para hacer la petición (evita CORS)
+      const img = new Image();
+      img.src = `${scriptUrl}?${params}`;
       
-      console.log('✅ Datos enviados a Google Sheets');
-      return true; // No podemos verificar la respuesta con no-cors, pero asumimos éxito
+      console.log('✅ Datos enviados a Google Sheets via imagen');
+      return true;
       
     } catch (error) {
       console.error('❌ Error de conexión:', error);
