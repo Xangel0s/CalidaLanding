@@ -109,7 +109,11 @@
       const img = new Image();
       img.src = `${scriptUrl}?${params}`;
       
+      // Agregar logging detallado
+      console.log('📊 Datos a enviar:', formData);
+      console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
       console.log('✅ Datos enviados a Google Sheets via imagen');
+      
       return true;
       
     } catch (error) {
