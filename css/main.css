@@ -1,3 +1,8 @@
+/**
+ * Main CSS for Credicálidda website
+ * Optimized for performance and maintainability
+ */
+
 /* Variables CSS - Calidda Inspired Colors */
 :root {
     /* Calidda Primary Colors (Turquesa - Teal) */
@@ -84,7 +89,7 @@
     --blue-600: var(--calidda-blue-600);
     
     /* Typography */
-    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
@@ -93,6 +98,20 @@
     --font-size-2xl: 1.5rem;
     --font-size-3xl: 1.875rem;
     --font-size-4xl: 2.25rem;
+    
+    /* Performance optimizations */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    
+    /* Animation performance */
+    --will-change-transform: transform;
+    --will-change-opacity: opacity;
+    --will-change-all: transform, opacity, box-shadow;
     
     /* Spacing */
     --spacing-1: 0.25rem;
@@ -107,17 +126,21 @@
     --spacing-16: 4rem;
     --spacing-20: 5rem;
     
-    /* Shadows */
+    /* Shadows - optimized for performance */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
-    /* Transitions */
-    --transition-fast: 150ms ease-in-out;
-    --transition-normal: 200ms ease-in-out;
-    --transition-slow: 300ms ease-in-out;
+    /* Performance optimized shadows */
+    --shadow-fast: 0 2px 4px rgb(0 0 0 / 0.1);
+    --shadow-smooth: 0 4px 8px rgb(0 0 0 / 0.12);
+    
+    /* Transitions - optimized for performance */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Reset and Base Styles */
@@ -147,6 +170,8 @@ img {
     max-width: 100%;
     height: auto;
     display: block;
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 a {
@@ -302,15 +327,39 @@ filter: brightness(0.95);
     width: auto;
     height: 56px; /* perfect circle height */
     aspect-ratio: 1 / 1; /* force perfect circle */
-    transition: filter var(--transition-fast), transform var(--transition-fast);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
+    transform-origin: center;
+    will-change: transform, box-shadow, background;
 }
 
 /* Deployment pop animation */
 @keyframes fab-pop {
-    0% { transform: scale(0.94); filter: brightness(0.98); }
-    60% { transform: scale(1.04); filter: brightness(1.06); }
-    100% { transform: scale(1); filter: brightness(1); }
+    0% { 
+        transform: scale(0.85); 
+        filter: brightness(0.9);
+        box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    25% { 
+        transform: scale(1.12); 
+        filter: brightness(1.1);
+        box-shadow: 0 10px 28px rgba(0,0,0,.3);
+    }
+    50% { 
+        transform: scale(0.95); 
+        filter: brightness(1.05);
+        box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    }
+    75% { 
+        transform: scale(1.03); 
+        filter: brightness(1.02);
+        box-shadow: 0 7px 18px rgba(0,0,0,.22);
+    }
+    100% { 
+        transform: scale(1); 
+        filter: brightness(1);
+        box-shadow: 0 6px 16px rgba(0,0,0,.2);
+    }
 }
 
 .wa-fab .wa-icon {
@@ -331,7 +380,7 @@ filter: brightness(0.95);
     position: absolute;
     right: calc(100% + 8px); /* bubble appears to the left of the circle */
     top: 50%;
-    transform: translate(4px, -50%) scale(0.96);
+    transform: translate(50px, -50%) scale(0.8);
     transform-origin: right center;
     background: var(--green-600);
     color: #fff;
@@ -344,13 +393,15 @@ filter: brightness(0.95);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: transform var(--transition-normal), opacity var(--transition-normal), background var(--transition-normal), color var(--transition-normal);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity, background;
 }
 
 .wa-fab.expanded .wa-label {
     opacity: 1;
     transform: translate(0, -50%) scale(1);
     pointer-events: auto;
+    animation: labelSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* Morph label to a compact X when closing */
@@ -389,7 +440,31 @@ filter: brightness(0.95);
 .wa-fab:active { transform: translateY(1px); }
 
 /* Play pop animation on expand */
-.wa-fab.expanded { animation: fab-pop 220ms cubic-bezier(.2,.8,.2,1); }
+.wa-fab.expanded { animation: fab-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Label slide in animation */
+@keyframes labelSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(60px, -50%) scale(0.7);
+    }
+    30% {
+        opacity: 0.3;
+        transform: translate(40px, -50%) scale(0.8);
+    }
+    60% {
+        opacity: 0.8;
+        transform: translate(15px, -50%) scale(0.95);
+    }
+    80% {
+        opacity: 0.95;
+        transform: translate(5px, -50%) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+    }
+}
 
 /* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
@@ -708,14 +783,7 @@ filter: brightness(0.95);
     color: var(--green-700);
 }
 
-.quick-link.reacondicionados {
-    color: var(--purple-600);
-}
 
-.quick-link.reacondicionados:hover {
-    background-color: #faf5ff;
-    color: var(--purple-700);
-}
 
 /* Mobile Menu */
 .mobile-menu {

@@ -1,21 +1,40 @@
-// Main JavaScript file for Credicálidda website
-
-// Utils will be loaded from utils.js - no need to redefine here
+/**
+ * Main JavaScript file for Credicálidda website
+ * Optimized for performance and maintainability
+ */
 
 // Main application class
 class CredicaliddaApp {
     constructor() {
+        this.isInitialized = false;
+        this.components = new Map();
+        this.eventListeners = new Map();
         this.init();
         // Expose namespace
         window.CredicAlidda = window.CredicAlidda || {};
     }
     
     init() {
+        if (this.isInitialized) return;
+        
+        // Performance monitoring
+        if (window.Utils && window.Utils.performance) {
+            window.Utils.performance.mark('app-init-start');
+        }
+        
         // Load site settings (WhatsApp, etc.) ASAP
         this.loadSiteSettings();
         this.setupEventListeners();
         this.initializeComponents();
         this.handlePageLoad();
+        
+        this.isInitialized = true;
+        
+        // Performance monitoring
+        if (window.Utils && window.Utils.performance) {
+            window.Utils.performance.mark('app-init-end');
+            window.Utils.performance.measure('app-initialization', 'app-init-start', 'app-init-end');
+        }
     }
 
     async loadSiteSettings() {
@@ -163,22 +182,14 @@ class CredicaliddaApp {
     
     setupScrollEvents() {
         let lastScrollY = window.scrollY;
-        let ticking = false;
         
-        const handleScroll = () => {
+        const handleScroll = Utils.rafThrottle(() => {
             lastScrollY = window.scrollY;
-            
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    this.updateHeaderOnScroll(lastScrollY);
-                    this.updateScrollToTop(lastScrollY);
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
+            this.updateHeaderOnScroll(lastScrollY);
+            this.updateScrollToTop(lastScrollY);
+        });
         
-        Utils.addEvent(window, 'scroll', Utils.throttle(handleScroll, 16));
+        Utils.addEvent(window, 'scroll', handleScroll);
     }
     
     setupKeyboardEvents() {
@@ -194,6 +205,14 @@ class CredicaliddaApp {
                 const searchInput = Utils.$('#searchInput');
                 if (searchInput) {
                     searchInput.focus();
+                }
+            }
+            
+            // Enter key to submit search when focused
+            if (e.key === 'Enter' && e.target.id === 'searchInput') {
+                const searchForm = Utils.$('#searchForm');
+                if (searchForm) {
+                    searchForm.dispatchEvent(new Event('submit', { bubbles: true }));
                 }
             }
         });
@@ -325,19 +344,20 @@ class CredicaliddaApp {
         }
         
         const isOpen = open !== null ? open : !categoriesMenu.classList.contains('active');
-        console.log('🔄 Toggle acordeón:', {isOpen, currentClasses: categoriesMenu.className});
         
         if (isOpen) {
-            // Abrir acordeón con animaciones
+            // Abrir acordeón con animaciones optimizadas
             categoriesMenu.classList.add('active');
             categoriesBtn.classList.add('active');
             categoriesBtn.setAttribute('aria-expanded', 'true');
             categoriesMenu.setAttribute('aria-hidden', 'false');
-            console.log('✅ Acordeón abierto, clases agregadas');
-            // Animar items con delay escalonado
+            
+            // Animar items con delay escalonado usando RAF para mejor rendimiento
             const items = categoriesMenu.querySelectorAll('.category-item');
             items.forEach((item, index) => {
-                item.style.transitionDelay = `${index * 0.05}s`;
+                requestAnimationFrame(() => {
+                    item.style.transitionDelay = `${index * 0.05}s`;
+                });
             });
         } else {
             // Cerrar acordeón
@@ -345,8 +365,8 @@ class CredicaliddaApp {
             categoriesBtn.classList.remove('active');
             categoriesBtn.setAttribute('aria-expanded', 'false');
             categoriesMenu.setAttribute('aria-hidden', 'true');
-            console.log('✅ Acordeón cerrado, clases removidas');
-            // Resetear delays
+            
+            // Resetear delays inmediatamente
             const items = categoriesMenu.querySelectorAll('.category-item');
             items.forEach(item => {
                 item.style.transitionDelay = '0s';
@@ -388,6 +408,21 @@ class CredicaliddaApp {
         if (searchSuggestions) {
             // Hide instead of removing so SmartSearch can reuse the element
             searchSuggestions.classList.remove('show');
+        }
+        
+        // Clean up any remaining event listeners
+        this.cleanupEventListeners();
+    }
+    
+    cleanupEventListeners() {
+        // Remove any temporary event listeners to prevent memory leaks
+        if (this.eventListeners.size > 0) {
+            this.eventListeners.forEach((listener, element) => {
+                if (element && element.removeEventListener) {
+                    element.removeEventListener('click', listener);
+                }
+            });
+            this.eventListeners.clear();
         }
     }
     
@@ -473,16 +508,44 @@ class CredicaliddaApp {
 
             // Toggle + open behavior
             let autoCloseTimer = null;
+            let hoverTimer = null;
+            
+            const expand = () => {
+                fab.classList.add('expanded');
+                clearTimeout(autoCloseTimer);
+                clearTimeout(hoverTimer);
+            };
+            
+            const collapse = () => {
+                fab.classList.remove('expanded');
+                clearTimeout(autoCloseTimer);
+                clearTimeout(hoverTimer);
+            };
+            
             const toggle = () => {
                 fab.classList.toggle('expanded');
                 clearTimeout(autoCloseTimer);
+                clearTimeout(hoverTimer);
                 if (fab.classList.contains('expanded')) {
                     // Keep expanded for 30 seconds before auto-collapsing
                     autoCloseTimer = setTimeout(() => fab.classList.remove('expanded'), 30000);
                 }
             };
 
-            // Icon (circle) toggles expand/collapse
+            // Hover behavior - expand on hover
+            fab.addEventListener('mouseenter', () => {
+                clearTimeout(hoverTimer);
+                expand();
+            });
+            
+            fab.addEventListener('mouseleave', () => {
+                // Delay collapse to prevent flickering - close after 0.5 seconds
+                hoverTimer = setTimeout(() => {
+                    collapse();
+                }, 500);
+            });
+
+            // Icon (circle) toggles expand/collapse on click
             const iconEl = fab.querySelector('.wa-icon');
             if (iconEl) {
                 iconEl.style.cursor = 'pointer';
@@ -516,9 +579,9 @@ class CredicaliddaApp {
     openWhatsAppHome() {
         const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
             || (window.SiteSettings && window.SiteSettings.whatsapp)
-            || '51999999999';
+            || '51967156094';
         const msg = 'Hola, estoy interesado en comprar un producto.';
-        const link = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+        const link = `https://api.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(msg)}&type=phone_number&app_absent=0`;
         window.open(link, '_blank');
     }
     
@@ -915,6 +978,11 @@ function learnMoreCrediChat() {
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Performance monitoring
+    if (window.performance && window.performance.mark) {
+        window.performance.mark('dom-content-loaded');
+    }
+    
     // Wait for Utils to be loaded from utils.js
     if (typeof Utils === 'undefined') {
         console.log('Waiting for Utils to load...');

@@ -1,8 +1,26 @@
-// Utility functions for the Credicálidda website
+/**
+ * Utility functions for the Credicálidda website
+ * Optimized for performance and maintainability
+ */
 
-// DOM helpers
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
+// DOM helpers with error handling
+const $ = (selector) => {
+    try {
+        return document.querySelector(selector);
+    } catch (error) {
+        console.warn(`Invalid selector: ${selector}`, error);
+        return null;
+    }
+};
+
+const $$ = (selector) => {
+    try {
+        return document.querySelectorAll(selector);
+    } catch (error) {
+        console.warn(`Invalid selector: ${selector}`, error);
+        return [];
+    }
+};
 
 // Create element helper
 const createElement = (tag, className = '', content = '') => {
@@ -26,29 +44,45 @@ const removeEvent = (element, event, handler) => {
     }
 };
 
-// Debounce function
-const debounce = (func, wait) => {
+// Debounce function with improved performance
+const debounce = (func, wait, immediate = false) => {
     let timeout;
     return function executedFunction(...args) {
+        const context = this;
         const later = () => {
-            clearTimeout(timeout);
-            func(...args);
+            timeout = null;
+            if (!immediate) func.apply(context, args);
         };
+        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
     };
 };
 
-// Throttle function
+// Throttle function with improved performance
 const throttle = (func, limit) => {
     let inThrottle;
-    return function() {
-        const args = arguments;
+    return function(...args) {
         const context = this;
         if (!inThrottle) {
             func.apply(context, args);
             inThrottle = true;
             setTimeout(() => inThrottle = false, limit);
+        }
+    };
+};
+
+// Request Animation Frame throttle for smooth animations
+const rafThrottle = (func) => {
+    let ticking = false;
+    return function(...args) {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                func.apply(this, args);
+                ticking = false;
+            });
+            ticking = true;
         }
     };
 };
@@ -158,19 +192,23 @@ const url = {
 // Animation helpers
 const animate = {
     fadeIn: (element, duration = 300) => {
+        if (!element) return;
+        
         element.style.opacity = '0';
         element.style.display = 'block';
+        element.style.willChange = 'opacity';
         
         const start = performance.now();
         const fade = (timestamp) => {
             const elapsed = timestamp - start;
-            const progress = elapsed / duration;
+            const progress = Math.min(elapsed / duration, 1);
             
             if (progress < 1) {
                 element.style.opacity = progress;
                 requestAnimationFrame(fade);
             } else {
                 element.style.opacity = '1';
+                element.style.willChange = 'auto';
             }
         };
         
@@ -271,14 +309,30 @@ const validate = {
     }
 };
 
-// Error handling
+// Error handling with improved performance
 const errorHandler = {
     log: (error, context = '') => {
-        console.error(`Error${context ? ` in ${context}` : ''}:`, error);
+        // Use console.warn for non-critical errors to avoid performance impact
+        console.warn(`[${context}] Warning:`, error);
         
-        // In production, you might want to send errors to a logging service
-        if (window.location.hostname !== 'localhost') {
-            // Send to analytics or error tracking service
+        // Send to analytics if available (throttled)
+        if (typeof gtag !== 'undefined' && Math.random() < 0.1) { // Only send 10% of errors
+            gtag('event', 'exception', {
+                description: error.message || error,
+                fatal: false
+            });
+        }
+    },
+    
+    critical: (error, context = '') => {
+        console.error(`[${context}] Critical Error:`, error);
+        
+        // Always send critical errors to analytics
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'exception', {
+                description: error.message || error,
+                fatal: true
+            });
         }
     },
     
@@ -416,6 +470,7 @@ window.Utils = {
     removeEvent,
     debounce,
     throttle,
+    rafThrottle,
     formatPrice,
     formatNumber,
     storage,

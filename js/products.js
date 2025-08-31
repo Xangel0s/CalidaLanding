@@ -83,7 +83,7 @@ const sampleProducts = [
         category: 'Tecnología',
         subcategory: 'Celulares',
         brand: 'Apple',
-        seller: 'REACONDICIONADOS PERU S.A.C.',
+        seller: 'CALIDDA PERU S.A.C.',
         specs: {
             memoria: '128GB',
             ram: '6GB',

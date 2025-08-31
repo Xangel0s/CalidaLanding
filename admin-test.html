@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credicálidda - Panel de Pruebas (Producción)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { color: #00BCD4; margin-bottom: 10px; }
+        .header .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-top: 10px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat-card h3 { color: #333; margin-bottom: 5px; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #00BCD4; }
+        .controls { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .controls h2 { margin-bottom: 15px; color: #333; }
+        .filter-group { margin-bottom: 15px; }
+        .filter-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .filter-group select, .filter-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn { background: #00BCD4; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn:hover { background: #0097A7; }
+        .btn-secondary { background: #666; }
+        .btn-secondary:hover { background: #555; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .product-image { width: 100%; height: 200px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-title { font-weight: bold; margin-bottom: 10px; color: #333; }
+        .product-price { font-size: 18px; color: #00BCD4; font-weight: bold; margin-bottom: 5px; }
+        .product-brand { color: #666; font-size: 14px; margin-bottom: 5px; }
+        .product-category { background: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .pagination button { padding: 8px 12px; border: 1px solid #ddd; background: white; cursor: pointer; }
+        .pagination button.active { background: #00BCD4; color: white; border-color: #00BCD4; }
+        .info-box { background: #e3f2fd; color: #1976d2; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Credicálidda - Panel de Pruebas (Producción)</h1>
+            <p>Interfaz para probar productos del catálogo en producción</p>
+            <div class="warning">
+                ⚠️ <strong>Modo Producción:</strong> Este panel usa datos estáticos del catálogo JSON. 
+                Para gestión completa de productos, usa el <a href="/admin/" style="color: #856404; text-decoration: underline;">CMS oficial</a>.
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>📋 Información del Panel</h3>
+            <p><strong>Fuente de datos:</strong> Archivo estático <code>data/catalogo.json</code></p>
+            <p><strong>Funcionalidades:</strong> Visualización, filtros y búsqueda de productos existentes</p>
+            <p><strong>Limitaciones:</strong> No permite crear/editar productos (solo lectura)</p>
+        </div>
+        
+        <div id="stats" class="stats">
+            <div class="loading">Cargando estadísticas...</div>
+        </div>
+        
+        <div class="controls">
+            <h2>🎛️ Controles de Filtro</h2>
+            <div class="filter-group">
+                <label for="category">Categoría:</label>
+                <select id="category">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="brand">Marca:</label>
+                <select id="brand">
+                    <option value="">Todas las marcas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="search">Buscar:</label>
+                <input type="text" id="search" placeholder="Buscar productos...">
+            </div>
+            <div class="filter-group">
+                <label>
+                    <input type="checkbox" id="destacados"> Solo destacados
+                </label>
+            </div>
+            <div class="filter-group">
+                <label>
+                    <input type="checkbox" id="masVendidos"> Solo más vendidos
+                </label>
+            </div>
+            <button class="btn" onclick="loadProducts()">🔍 Filtrar Productos</button>
+            <button class="btn btn-secondary" onclick="resetFilters()">🔄 Resetear</button>
+            <button class="btn btn-secondary" onclick="loadStats()">📊 Actualizar Stats</button>
+            <a href="/admin/" class="btn btn-secondary">🔐 Ir al CMS</a>
+        </div>
+        
+        <div id="products" class="products">
+            <div class="loading">Cargando productos...</div>
+        </div>
+        
+        <div id="pagination" class="pagination"></div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let currentPage = 1;
+        let totalPages = 1;
+        let filteredProducts = [];
+        
+        // Cargar datos iniciales
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCatalog();
+        });
+        
+        async function loadCatalog() {
+            try {
+                const response = await fetch('/data/catalogo.json');
+                const data = await response.json();
+                allProducts = data.items || [];
+                
+                loadStats();
+                loadCategories();
+                loadBrands();
+                loadProducts();
+            } catch (error) {
+                console.error('Error cargando catálogo:', error);
+                document.getElementById('products').innerHTML = `
+                    <div class="error">
+                        Error cargando catálogo: ${error.message}<br>
+                        Asegúrate de que el archivo data/catalogo.json existe.
+                    </div>
+                `;
+            }
+        }
+        
+        function loadStats() {
+            const stats = {
+                total_products: allProducts.length,
+                visible_products: allProducts.filter(p => p.visible !== false).length,
+                destacados: allProducts.filter(p => p.destacado).length,
+                mas_vendidos: allProducts.filter(p => p.mas_vendido).length,
+                categories: [...new Set(allProducts.map(p => p.categoria).filter(Boolean))].length,
+                brands: [...new Set(allProducts.map(p => p.brand).filter(Boolean))].length
+            };
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Productos</h3>
+                    <div class="value">${stats.total_products}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Productos Visibles</h3>
+                    <div class="value">${stats.visible_products}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Destacados</h3>
+                    <div class="value">${stats.destacados}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Más Vendidos</h3>
+                    <div class="value">${stats.mas_vendidos}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Categorías</h3>
+                    <div class="value">${stats.categories}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Marcas</h3>
+                    <div class="value">${stats.brands}</div>
+                </div>
+            `;
+        }
+        
+        function loadCategories() {
+            const categories = [...new Set(allProducts.map(p => p.categoria).filter(Boolean))].sort();
+            const select = document.getElementById('category');
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                select.appendChild(option);
+            });
+        }
+        
+        function loadBrands() {
+            const brands = [...new Set(allProducts.map(p => p.brand).filter(Boolean))].sort();
+            const select = document.getElementById('brand');
+            
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.textContent = brand;
+                select.appendChild(option);
+            });
+        }
+        
+        function applyFilters() {
+            let filtered = allProducts;
+            
+            // Filtro por categoría
+            const category = document.getElementById('category').value;
+            if (category) {
+                filtered = filtered.filter(p => p.categoria === category);
+            }
+            
+            // Filtro por marca
+            const brand = document.getElementById('brand').value;
+            if (brand) {
+                filtered = filtered.filter(p => p.brand === brand);
+            }
+            
+            // Filtro por búsqueda
+            const search = document.getElementById('search').value.toLowerCase();
+            if (search) {
+                filtered = filtered.filter(p => 
+                    p.title?.toLowerCase().includes(search) ||
+                    p.description?.toLowerCase().includes(search) ||
+                    p.brand?.toLowerCase().includes(search) ||
+                    p.slug?.toLowerCase().includes(search)
+                );
+            }
+            
+            // Filtro por destacados
+            const destacados = document.getElementById('destacados').checked;
+            if (destacados) {
+                filtered = filtered.filter(p => p.destacado);
+            }
+            
+            // Filtro por más vendidos
+            const masVendidos = document.getElementById('masVendidos').checked;
+            if (masVendidos) {
+                filtered = filtered.filter(p => p.mas_vendido);
+            }
+            
+            filteredProducts = filtered;
+            return filtered;
+        }
+        
+        function loadProducts(page = 1) {
+            try {
+                document.getElementById('products').innerHTML = '<div class="loading">Cargando productos...</div>';
+                
+                const filtered = applyFilters();
+                const perPage = 12;
+                const total = filtered.length;
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const paginatedProducts = filtered.slice(start, end);
+                
+                currentPage = page;
+                totalPages = Math.ceil(total / perPage);
+                
+                renderProducts(paginatedProducts);
+                renderPagination();
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                document.getElementById('products').innerHTML = `
+                    <div class="error">Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function renderProducts(products) {
+            if (products.length === 0) {
+                document.getElementById('products').innerHTML = '<div class="loading">No se encontraron productos</div>';
+                return;
+            }
+            
+            const productsHtml = products.map(product => `
+                <div class="product-card">
+                    <img src="${product.image || '/images/placeholder-product.jpg'}" alt="${product.title}" class="product-image" onerror="this.src='/images/placeholder-product.jpg'">
+                    <div class="product-info">
+                        <div class="product-title">${product.title}</div>
+                        <div class="product-price">S/ ${product.price_online || 'N/A'}</div>
+                        <div class="product-brand">${product.brand || 'Sin marca'}</div>
+                        <div class="product-category">${product.categoria || 'Sin categoría'}</div>
+                        ${product.destacado ? '<span style="color: #ff9800;">⭐ Destacado</span>' : ''}
+                        ${product.mas_vendido ? '<span style="color: #4caf50;">🔥 Más vendido</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('products').innerHTML = productsHtml;
+        }
+        
+        function renderPagination() {
+            if (totalPages <= 1) {
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            let paginationHtml = '';
+            
+            // Botón anterior
+            if (currentPage > 1) {
+                paginationHtml += `<button onclick="loadProducts(${currentPage - 1})">← Anterior</button>`;
+            }
+            
+            // Páginas
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHtml += `<button class="active">${i}</button>`;
+                } else {
+                    paginationHtml += `<button onclick="loadProducts(${i})">${i}</button>`;
+                }
+            }
+            
+            // Botón siguiente
+            if (currentPage < totalPages) {
+                paginationHtml += `<button onclick="loadProducts(${currentPage + 1})">Siguiente →</button>`;
+            }
+            
+            document.getElementById('pagination').innerHTML = paginationHtml;
+        }
+        
+        function resetFilters() {
+            document.getElementById('category').value = '';
+            document.getElementById('brand').value = '';
+            document.getElementById('search').value = '';
+            document.getElementById('destacados').checked = false;
+            document.getElementById('masVendidos').checked = false;
+            loadProducts(1);
+        }
+        
+        // Búsqueda en tiempo real
+        let searchTimeout;
+        document.getElementById('search').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadProducts(1);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

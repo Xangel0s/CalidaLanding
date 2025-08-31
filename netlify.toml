@@ -52,6 +52,6 @@
   status = 200
   
 [[redirects]]
-  from = "/reacondicionados"
+
   to = "/productos.html"
   status = 200

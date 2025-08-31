@@ -366,7 +366,7 @@ class ProductsManager {
             'ofertas': (p) => typeof p.discount === 'number' && p.discount > 0,
             'combos': (p) => Array.isArray(p.tags) && p.tags.includes('combo'),
             'novedades': (p) => Array.isArray(p.tags) && p.tags.includes('novedad'),
-            'reacondicionados': (p) => Array.isArray(p.tags) && p.tags.includes('reacondicionado')
+    
         };
 
         // 1) Select de tags si existe
@@ -440,7 +440,7 @@ class ProductsManager {
             'ofertas': '🔥 Ofertas',
             'combos': '📦 Combos',
             'novedades': '✨ Novedades',
-            'reacondicionados': '♻️ Reacondicionados',
+
             'destacado': 'Destacados',
             'mas-vendido': 'Más Vendidos'
         };

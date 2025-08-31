@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credicálidda - Panel Intermediario</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { color: #00BCD4; margin-bottom: 10px; }
+        .header .info { background: #e3f2fd; color: #1976d2; padding: 10px; border-radius: 4px; margin-top: 10px; }
+        .tabs { display: flex; background: white; border-radius: 8px 8px 0 0; overflow: hidden; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab.active { background: #00BCD4; color: white; border-bottom-color: #0097A7; }
+        .tab:hover:not(.active) { background: #f0f0f0; }
+        .content { background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .btn { background: #00BCD4; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn:hover { background: #0097A7; }
+        .btn-secondary { background: #666; }
+        .btn-secondary:hover { background: #555; }
+        .btn-success { background: #4CAF50; }
+        .btn-success:hover { background: #45a049; }
+        .btn-warning { background: #ff9800; }
+        .btn-warning:hover { background: #f57c00; }
+        .btn-danger { background: #f44336; }
+        .btn-danger:hover { background: #d32f2f; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; }
+        .checkbox-group input[type="checkbox"] { width: auto; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .product-card { background: white; border: 2px solid #eee; border-radius: 8px; overflow: hidden; transition: all 0.3s; }
+        .product-card:hover { border-color: #00BCD4; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .product-card.editing { border-color: #ff9800; }
+        .product-image { width: 100%; height: 200px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-title { font-weight: bold; margin-bottom: 10px; color: #333; }
+        .product-price { font-size: 18px; color: #00BCD4; font-weight: bold; margin-bottom: 5px; }
+        .product-brand { color: #666; font-size: 14px; margin-bottom: 5px; }
+        .product-category { background: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; margin-bottom: 10px; }
+        .product-actions { display: flex; gap: 5px; margin-top: 10px; }
+        .product-actions button { flex: 1; padding: 5px; font-size: 12px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close { font-size: 24px; cursor: pointer; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .success { background: #e8f5e8; color: #2e7d32; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #00BCD4; }
+        .stat-card .label { color: #666; font-size: 14px; }
+        .sync-status { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .sync-indicator { width: 12px; height: 12px; border-radius: 50%; background: #4CAF50; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .sync-indicator.error { background: #f44336; }
+        .sync-indicator.warning { background: #ff9800; }
+        .info-box { background: #e3f2fd; color: #1976d2; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .warning-box { background: #fff3cd; color: #856404; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .sync-log { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 20px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+        .sync-log .entry { margin-bottom: 5px; }
+        .sync-log .timestamp { color: #666; }
+        .sync-log .success { color: #4CAF50; }
+        .sync-log .error { color: #f44336; }
+        .sync-log .warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ Credicálidda - Panel Intermediario</h1>
+            <p>Gestión visual de productos con sincronización automática</p>
+            <div class="info">
+                💡 <strong>¿Cómo funciona?</strong> Edita productos aquí y se sincronizan automáticamente con el catálogo JSON. 
+                Los cambios se reflejan inmediatamente en el CMS y en la web.
+            </div>
+        </div>
+        
+        <div class="sync-status">
+            <div class="sync-indicator" id="syncIndicator"></div>
+            <span id="syncStatus">Sincronización automática activa</span>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+            <div class="tab" onclick="showTab('products')">📦 Productos</div>
+            <div class="tab" onclick="showTab('add')">➕ Agregar Producto</div>
+            <div class="tab" onclick="showTab('sync')">🔄 Sincronización</div>
+        </div>
+        
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>📊 Dashboard</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="value" id="totalProducts">-</div>
+                        <div class="label">Total Productos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="destacados">-</div>
+                        <div class="label">Destacados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="masVendidos">-</div>
+                        <div class="label">Más Vendidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="categorias">-</div>
+                        <div class="label">Categorías</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <h3>🚀 Acciones Rápidas</h3>
+                        <button class="btn" onclick="showTab('add')">➕ Agregar Producto</button>
+                        <button class="btn btn-secondary" onclick="showTab('products')">📦 Ver Productos</button>
+                        <button class="btn btn-success" onclick="exportCatalog()">📤 Exportar Catálogo</button>
+                        <button class="btn btn-warning" onclick="forceSync()">🔄 Sincronizar</button>
+                    </div>
+                    <div>
+                        <h3>🔗 Enlaces Útiles</h3>
+                        <a href="/admin/" class="btn btn-secondary" target="_blank">🔐 CMS Oficial</a>
+                        <a href="/admin-test.html" class="btn btn-secondary" target="_blank">🧪 Panel de Pruebas</a>
+                        <a href="/" class="btn btn-secondary" target="_blank">🌐 Ver Sitio</a>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>📋 Información del Sistema</h3>
+                    <p><strong>Modo:</strong> <span id="mode">Desarrollo</span></p>
+                    <p><strong>Última sincronización:</strong> <span id="lastSync">-</span></p>
+                    <p><strong>Estado del catálogo:</strong> <span id="catalogStatus">Cargando...</span></p>
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <h2>📦 Gestión de Productos</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="searchProducts">Buscar productos:</label>
+                        <input type="text" id="searchProducts" placeholder="Buscar por título, marca, categoría...">
+                    </div>
+                    <div class="form-group">
+                        <label for="filterCategory">Filtrar por categoría:</label>
+                        <select id="filterCategory">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="productsGrid" class="products-grid">
+                    <div class="loading">Cargando productos...</div>
+                </div>
+            </div>
+            
+            <!-- Add Product Tab -->
+            <div id="add" class="tab-content">
+                <h2>➕ Agregar Nuevo Producto</h2>
+                <form id="addProductForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Título del producto *</label>
+                            <input type="text" id="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="slug">Slug (URL) *</label>
+                            <input type="text" id="slug" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="brand">Marca</label>
+                            <input type="text" id="brand">
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoría</label>
+                            <select id="categoria">
+                                <option value="">Seleccionar categoría</option>
+                                <option value="laptops">Laptops</option>
+                                <option value="smartphones">Smartphones</option>
+                                <option value="tablets">Tablets</option>
+                                <option value="accesorios">Accesorios</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price_regular">Precio regular</label>
+                            <input type="number" id="price_regular" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="price_online">Precio online</label>
+                            <input type="number" id="price_online" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea id="description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image">URL de la imagen</label>
+                        <input type="url" id="image" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="destacado">
+                            <label for="destacado">Producto destacado</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="mas_vendido">
+                            <label for="mas_vendido">Más vendido</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="visible" checked>
+                            <label for="visible">Visible en el sitio</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">💾 Guardar Producto</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Limpiar Formulario</button>
+                </form>
+            </div>
+            
+            <!-- Sync Tab -->
+            <div id="sync" class="tab-content">
+                <h2>🔄 Sincronización</h2>
+                <div class="info-box">
+                    <h3>📋 Estado de Sincronización</h3>
+                    <p><strong>Última sincronización:</strong> <span id="syncLastSync">-</span></p>
+                    <p><strong>Productos sincronizados:</strong> <span id="syncProductCount">-</span></p>
+                    <p><strong>Estado:</strong> <span id="syncStatusText">Sincronizado</span></p>
+                    <p><strong>Modo de operación:</strong> <span id="syncMode">Local</span></p>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>⚠️ Información Importante</h3>
+                    <p><strong>En desarrollo:</strong> Los cambios se guardan localmente en el navegador.</p>
+                    <p><strong>En producción:</strong> Los cambios se sincronizan automáticamente con el archivo JSON.</p>
+                    <p><strong>CMS:</strong> Para gestión completa, usa el <a href="/admin/" target="_blank">CMS oficial</a>.</p>
+                </div>
+                
+                <div class="form-row">
+                    <button class="btn btn-success" onclick="forceSync()">🔄 Forzar Sincronización</button>
+                    <button class="btn btn-warning" onclick="backupCatalog()">💾 Crear Backup</button>
+                    <button class="btn btn-secondary" onclick="importCatalog()">📥 Importar Catálogo</button>
+                    <button class="btn btn-danger" onclick="resetCatalog()">🗑️ Resetear Catálogo</button>
+                </div>
+                
+                <div class="sync-log">
+                    <h4>📝 Log de Sincronización</h4>
+                    <div id="syncMessages"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Producto</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="editProductForm">
+                <input type="hidden" id="editIndex">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTitle">Título *</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSlug">Slug *</label>
+                        <input type="text" id="editSlug" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editBrand">Marca</label>
+                        <input type="text" id="editBrand">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategoria">Categoría</label>
+                        <select id="editCategoria">
+                            <option value="">Seleccionar categoría</option>
+                            <option value="laptops">Laptops</option>
+                            <option value="smartphones">Smartphones</option>
+                            <option value="tablets">Tablets</option>
+                            <option value="accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPriceRegular">Precio regular</label>
+                        <input type="number" id="editPriceRegular" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPriceOnline">Precio online</label>
+                        <input type="number" id="editPriceOnline" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">Descripción</label>
+                    <textarea id="editDescription"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editImage">URL de la imagen</label>
+                    <input type="url" id="editImage">
+                </div>
+                
+                <div class="form-row">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editDestacado">
+                        <label for="editDestacado">Destacado</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editMasVendido">
+                        <label for="editMasVendido">Más vendido</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="editVisible">
+                        <label for="editVisible">Visible</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">❌ Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let currentTab = 'dashboard';
+        let isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        let lastSyncTime = null;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMode();
+            loadCatalog();
+            setupEventListeners();
+            updateSyncStatus();
+        });
+        
+        function updateMode() {
+            const mode = isProduction ? 'Producción' : 'Desarrollo';
+            document.getElementById('mode').textContent = mode;
+            document.getElementById('syncMode').textContent = isProduction ? 'Netlify' : 'Local';
+        }
+        
+        function setupEventListeners() {
+            // Búsqueda en tiempo real
+            document.getElementById('searchProducts').addEventListener('input', filterProducts);
+            document.getElementById('filterCategory').addEventListener('change', filterProducts);
+            
+            // Formularios
+            document.getElementById('addProductForm').addEventListener('submit', addProduct);
+            document.getElementById('editProductForm').addEventListener('submit', saveProduct);
+            
+            // Auto-generar slug
+            document.getElementById('title').addEventListener('input', function() {
+                const slug = this.value.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
+                document.getElementById('slug').value = slug;
+            });
+        }
+        
+        async function loadCatalog() {
+            try {
+                logSync('Cargando catálogo...', 'info');
+                const response = await fetch('/data/catalogo.json');
+                const data = await response.json();
+                allProducts = data.items || [];
+                
+                updateDashboard();
+                loadCategories();
+                renderProducts();
+                updateSyncStatus();
+                logSync(`Catálogo cargado exitosamente: ${allProducts.length} productos`, 'success');
+            } catch (error) {
+                console.error('Error cargando catálogo:', error);
+                showError('Error cargando catálogo: ' + error.message);
+                logSync(`Error cargando catálogo: ${error.message}`, 'error');
+                updateSyncStatus('error');
+            }
+        }
+        
+        function updateDashboard() {
+            const stats = {
+                total: allProducts.length,
+                destacados: allProducts.filter(p => p.destacado).length,
+                masVendidos: allProducts.filter(p => p.mas_vendido).length,
+                categorias: [...new Set(allProducts.map(p => p.categoria).filter(Boolean))].length
+            };
+            
+            document.getElementById('totalProducts').textContent = stats.total;
+            document.getElementById('destacados').textContent = stats.destacados;
+            document.getElementById('masVendidos').textContent = stats.masVendidos;
+            document.getElementById('categorias').textContent = stats.categorias;
+            
+            document.getElementById('lastSync').textContent = lastSyncTime ? new Date(lastSyncTime).toLocaleString() : 'Nunca';
+            document.getElementById('syncLastSync').textContent = lastSyncTime ? new Date(lastSyncTime).toLocaleString() : 'Nunca';
+            document.getElementById('syncProductCount').textContent = stats.total;
+            document.getElementById('catalogStatus').textContent = `✅ ${stats.total} productos cargados`;
+        }
+        
+        function loadCategories() {
+            const categories = [...new Set(allProducts.map(p => p.categoria).filter(Boolean))].sort();
+            const select = document.getElementById('filterCategory');
+            
+            // Limpiar opciones existentes excepto la primera
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                select.appendChild(option);
+            });
+        }
+        
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const searchTerm = document.getElementById('searchProducts').value.toLowerCase();
+            const filterCategory = document.getElementById('filterCategory').value;
+            
+            let filtered = allProducts;
+            
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.title?.toLowerCase().includes(searchTerm) ||
+                    p.brand?.toLowerCase().includes(searchTerm) ||
+                    p.categoria?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (filterCategory) {
+                filtered = filtered.filter(p => p.categoria === filterCategory);
+            }
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="loading">No se encontraron productos</div>';
+                return;
+            }
+            
+            const productsHtml = filtered.map((product, index) => `
+                <div class="product-card" data-index="${index}">
+                    <img src="${product.image || '/images/placeholder-product.jpg'}" alt="${product.title}" class="product-image" onerror="this.src='/images/placeholder-product.jpg'">
+                    <div class="product-info">
+                        <div class="product-title">${product.title}</div>
+                        <div class="product-price">S/ ${product.price_online || 'N/A'}</div>
+                        <div class="product-brand">${product.brand || 'Sin marca'}</div>
+                        <div class="product-category">${product.categoria || 'Sin categoría'}</div>
+                        ${product.destacado ? '<span style="color: #ff9800;">⭐ Destacado</span>' : ''}
+                        ${product.mas_vendido ? '<span style="color: #4caf50;">🔥 Más vendido</span>' : ''}
+                        <div class="product-actions">
+                            <button class="btn btn-secondary" onclick="editProduct(${index})">✏️ Editar</button>
+                            <button class="btn btn-warning" onclick="toggleDestacado(${index})">${product.destacado ? '⭐' : '☆'}</button>
+                            <button class="btn btn-danger" onclick="deleteProduct(${index})">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            grid.innerHTML = productsHtml;
+        }
+        
+        function filterProducts() {
+            renderProducts();
+        }
+        
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            
+            currentTab = tabName;
+            
+            if (tabName === 'products') {
+                renderProducts();
+            }
+        }
+        
+        function addProduct(e) {
+            e.preventDefault();
+            
+            const product = {
+                title: document.getElementById('title').value,
+                slug: document.getElementById('slug').value,
+                brand: document.getElementById('brand').value,
+                categoria: document.getElementById('categoria').value,
+                price_regular: parseFloat(document.getElementById('price_regular').value) || 0,
+                price_online: parseFloat(document.getElementById('price_online').value) || 0,
+                description: document.getElementById('description').value,
+                image: document.getElementById('image').value,
+                destacado: document.getElementById('destacado').checked,
+                mas_vendido: document.getElementById('mas_vendido').checked,
+                visible: document.getElementById('visible').checked,
+                created_at: new Date().toISOString()
+            };
+            
+            allProducts.push(product);
+            saveCatalog();
+            resetForm();
+            showSuccess('Producto agregado exitosamente');
+            logSync(`Producto "${product.title}" agregado`, 'success');
+        }
+        
+        function editProduct(index) {
+            const product = allProducts[index];
+            
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editTitle').value = product.title || '';
+            document.getElementById('editSlug').value = product.slug || '';
+            document.getElementById('editBrand').value = product.brand || '';
+            document.getElementById('editCategoria').value = product.categoria || '';
+            document.getElementById('editPriceRegular').value = product.price_regular || '';
+            document.getElementById('editPriceOnline').value = product.price_online || '';
+            document.getElementById('editDescription').value = product.description || '';
+            document.getElementById('editImage').value = product.image || '';
+            document.getElementById('editDestacado').checked = product.destacado || false;
+            document.getElementById('editMasVendido').checked = product.mas_vendido || false;
+            document.getElementById('editVisible').checked = product.visible !== false;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function saveProduct(e) {
+            e.preventDefault();
+            
+            const index = parseInt(document.getElementById('editIndex').value);
+            const product = allProducts[index];
+            
+            product.title = document.getElementById('editTitle').value;
+            product.slug = document.getElementById('editSlug').value;
+            product.brand = document.getElementById('editBrand').value;
+            product.categoria = document.getElementById('editCategoria').value;
+            product.price_regular = parseFloat(document.getElementById('editPriceRegular').value) || 0;
+            product.price_online = parseFloat(document.getElementById('editPriceOnline').value) || 0;
+            product.description = document.getElementById('editDescription').value;
+            product.image = document.getElementById('editImage').value;
+            product.destacado = document.getElementById('editDestacado').checked;
+            product.mas_vendido = document.getElementById('editMasVendido').checked;
+            product.visible = document.getElementById('editVisible').checked;
+            product.updated_at = new Date().toISOString();
+            
+            saveCatalog();
+            closeModal();
+            showSuccess('Producto actualizado exitosamente');
+            logSync(`Producto "${product.title}" actualizado`, 'success');
+        }
+        
+        function toggleDestacado(index) {
+            allProducts[index].destacado = !allProducts[index].destacado;
+            saveCatalog();
+            renderProducts();
+            logSync(`Destacado toggled para "${allProducts[index].title}"`, 'warning');
+        }
+        
+        function deleteProduct(index) {
+            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+                const product = allProducts[index];
+                allProducts.splice(index, 1);
+                saveCatalog();
+                renderProducts();
+                showSuccess('Producto eliminado exitosamente');
+                logSync(`Producto "${product.title}" eliminado`, 'error');
+            }
+        }
+        
+        function saveCatalog() {
+            const catalog = {
+                items: allProducts,
+                last_updated: new Date().toISOString(),
+                total_items: allProducts.length
+            };
+            
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('catalogo_intermediario', JSON.stringify(catalog));
+            
+            // En producción, aquí podrías hacer una llamada al servidor
+            if (isProduction) {
+                // Simular sincronización con servidor
+                logSync('Sincronizando con servidor...', 'info');
+                setTimeout(() => {
+                    logSync('Sincronización completada', 'success');
+                    updateSyncStatus('success');
+                }, 1000);
+            }
+            
+            lastSyncTime = new Date().toISOString();
+            updateDashboard();
+            renderProducts();
+            updateSyncStatus();
+            
+            logSync('Catálogo guardado localmente', 'success');
+        }
+        
+        function resetForm() {
+            document.getElementById('addProductForm').reset();
+        }
+        
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        function forceSync() {
+            logSync('Sincronización forzada iniciada...', 'info');
+            updateSyncStatus('warning');
+            
+            // Simular proceso de sincronización
+            setTimeout(() => {
+                lastSyncTime = new Date().toISOString();
+                updateDashboard();
+                updateSyncStatus('success');
+                logSync('Sincronización forzada completada', 'success');
+                showSuccess('Sincronización exitosa');
+            }, 2000);
+        }
+        
+        function backupCatalog() {
+            const dataStr = JSON.stringify(allProducts, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `catalogo-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            logSync('Backup creado exitosamente', 'success');
+        }
+        
+        function exportCatalog() {
+            backupCatalog();
+        }
+        
+        function importCatalog() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        allProducts = data.items || data;
+                        saveCatalog();
+                        showSuccess('Catálogo importado exitosamente');
+                        logSync('Catálogo importado exitosamente', 'success');
+                    } catch (error) {
+                        showError('Error importando catálogo: ' + error.message);
+                        logSync(`Error importando catálogo: ${error.message}`, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function resetCatalog() {
+            if (confirm('¿Estás seguro de que quieres resetear el catálogo? Esto eliminará todos los cambios locales.')) {
+                localStorage.removeItem('catalogo_intermediario');
+                loadCatalog();
+                logSync('Catálogo reseteado', 'warning');
+                showSuccess('Catálogo reseteado exitosamente');
+            }
+        }
+        
+        function updateSyncStatus(status = 'success') {
+            const indicator = document.getElementById('syncIndicator');
+            const statusText = document.getElementById('syncStatus');
+            const syncStatusText = document.getElementById('syncStatusText');
+            
+            indicator.className = 'sync-indicator';
+            
+            switch(status) {
+                case 'success':
+                    indicator.classList.add('success');
+                    statusText.textContent = 'Sincronización automática activa';
+                    syncStatusText.textContent = 'Sincronizado';
+                    break;
+                case 'error':
+                    indicator.classList.add('error');
+                    statusText.textContent = 'Error de sincronización';
+                    syncStatusText.textContent = 'Error';
+                    break;
+                case 'warning':
+                    indicator.classList.add('warning');
+                    statusText.textContent = 'Sincronizando...';
+                    syncStatusText.textContent = 'Sincronizando';
+                    break;
+            }
+        }
+        
+        function logSync(message, type = 'info') {
+            const messages = document.getElementById('syncMessages');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'entry';
+            logEntry.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="${type}">${message}</span>`;
+            messages.appendChild(logEntry);
+            messages.scrollTop = messages.scrollHeight;
+            
+            // Limitar el número de mensajes
+            while (messages.children.length > 50) {
+                messages.removeChild(messages.firstChild);
+            }
+        }
+        
+        function showSuccess(message) {
+            const success = document.createElement('div');
+            success.className = 'success';
+            success.textContent = message;
+            document.querySelector('.content').insertBefore(success, document.querySelector('.content').firstChild);
+            setTimeout(() => success.remove(), 5000);
+        }
+        
+        function showError(message) {
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            document.querySelector('.content').insertBefore(error, document.querySelector('.content').firstChild);
+            setTimeout(() => error.remove(), 5000);
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        // Auto-sincronización cada 30 segundos
+        setInterval(() => {
+            if (isProduction && allProducts.length > 0) {
+                logSync('Auto-sincronización...', 'info');
+                forceSync();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

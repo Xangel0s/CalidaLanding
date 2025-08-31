@@ -349,7 +349,7 @@
         if (promocion === 'ofertas') ok = ok && (i.discount > 0);
         if (promocion === 'combos') ok = ok && (i.tags && i.tags.includes('combo'));
         if (promocion === 'novedades') ok = ok && (i.tags && i.tags.includes('novedad'));
-        if (promocion === 'reacondicionados') ok = ok && (i.tags && i.tags.includes('reacondicionado'));
+
       }
       return ok;
     });

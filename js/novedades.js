@@ -613,7 +613,7 @@ class NovedadesManager {
                         case 'ofertas': return product.badge === 'oferta' || product.discount > 0;
                         case 'combos': return product.badge === 'combo';
                         case 'novedades': return product.badge === 'nuevo';
-                        case 'reacondicionados': return product.badge === 'reacondicionado';
+                
                         default: return false;
                     }
                 });

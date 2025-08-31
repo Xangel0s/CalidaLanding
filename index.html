@@ -8,6 +8,7 @@
     <meta name="keywords" content="creditos, tecnología, electrodomésticos, celulares, motos, televisores, marketplace calidda">
     
     <!-- Open Graph -->
+     
     <meta property="og:title" content="Credicálidda - Marketplace Oficial">
     <meta property="og:description" content="Tecnología, electrodomésticos y más para tu hogar con las mejores cuotas">
     <meta property="og:type" content="website">
@@ -18,15 +19,27 @@
     <link rel="icon" type="image/png" href="images/icono/icon.png">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="css/main.css?v=20250810-1">
-    <link rel="stylesheet" href="css/components.css?v=20250810-1">
-    <link rel="stylesheet" href="css/responsive.css?v=20250810-1">
-    <link rel="stylesheet" href="css/hero-slider.css?v=20250810-1">
-    <link rel="stylesheet" href="css/animations.css?v=20250810-1">
-    <link rel="stylesheet" href="css/smart-search.css?v=20250810-1">
+    <link rel="stylesheet" href="css/main.css?v=20250810-2">
+    <link rel="stylesheet" href="css/components.css?v=20250810-2">
+    <link rel="stylesheet" href="css/responsive.css?v=20250810-2">
+    <link rel="stylesheet" href="css/hero-slider.css?v=20250810-2">
+    <link rel="stylesheet" href="css/animations.css?v=20250810-2">
+    <link rel="stylesheet" href="css/smart-search.css?v=20250810-2">
     
-    <!-- Google Fonts -->
+    <!-- Preload critical resources -->
+    <link rel="preload" href="images/logo/calidalogo.svg" as="image" type="image/svg+xml">
+    <link rel="preload" href="js/performance-config.js" as="script">
+    <link rel="preload" href="js/utils.js" as="script">
+    <link rel="preload" href="js/main.js" as="script">
+    
+    <!-- Google Fonts with display=swap for better performance -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Meta tags for better SEO and performance -->
+    <meta name="theme-color" content="#00BCD4">
+    <meta name="msapplication-TileColor" content="#00BCD4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
     <!-- Header -->
@@ -229,7 +242,7 @@
                         <a href="novedades.html?promocion=ofertas" class="quick-link ofertas">🔥 Ofertas</a>
                         <a href="novedades.html?promocion=combos" class="quick-link combos">📦 Combos</a>
                         <a href="novedades.html?promocion=novedades" class="quick-link novedades">✨ Novedades</a>
-                        <a href="novedades.html?promocion=reacondicionados" class="quick-link reacondicionados">♻️ Reacondicionados</a>
+        
                     </div>
                 </div>
             </div>
@@ -259,7 +272,7 @@
                     <a href="novedades.html?promocion=ofertas" class="mobile-menu-link">🔥 Ofertas</a>
                     <a href="novedades.html?promocion=combos" class="mobile-menu-link">📦 Combos</a>
                     <a href="novedades.html?promocion=novedades" class="mobile-menu-link">✨ Novedades</a>
-                    <a href="novedades.html?promocion=reacondicionados" class="mobile-menu-link">♻️ Reacondicionados</a>
+                    
                 </div>
             </div>
         </div>
@@ -725,7 +738,9 @@
     </footer>
 
 
+
     <!-- JavaScript -->
+    <script src="js/performance-config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/hero-slider.js"></script>
     <script src="js/carousel.js"></script>
@@ -796,5 +811,7 @@
         }, 500);
     });
     </script>
+
+
 </body>
 </html>
