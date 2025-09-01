@@ -92,8 +92,8 @@
   // Función para enviar datos a Google Sheets usando Apps Script
   async function sendToGoogleSheets(formData) {
     try {
-      // URL del Google Apps Script
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyV1IzBaBprJEm03-0CyPjb1znJseTXMKrPWQF6FqbjtZK1qEeIwDcf2lSffqsTrgpj/exec';
+      // URL del Google Apps Script (NUEVA HOJA DE CÁLCULO)
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzAL3MqQd9yS0fYJEfUz3wdGu5gHeRtPt1j-1L_4hfYcimYjGfmUx_267Z8P56IWQ2K/exec';
       
       // Preparar datos para Google Sheets
       const params = new URLSearchParams({
