@@ -54,8 +54,13 @@ exports.handler = async (event) => {
       'mensaje': formData.mensaje || ''
     });
 
+    // Crear URL completa para debugging
+    const fullUrl = `${scriptUrl}?${params}`;
+    console.log('🔗 URL completa que se enviará:', fullUrl);
+    console.log('📝 Parámetros construidos:', params.toString());
+
     // Enviar datos a Google Sheets
-    const response = await fetch(`${scriptUrl}?${params}`, {
+    const response = await fetch(fullUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -63,6 +68,7 @@ exports.handler = async (event) => {
     });
 
     console.log('✅ Respuesta de Google Sheets:', response.status);
+    console.log('📄 Respuesta completa:', await response.text());
 
     if (response.ok) {
       return {
