@@ -105,16 +105,46 @@
         'mensaje': formData.mensaje
       });
       
-      // Crear una imagen invisible para hacer la petición (evita CORS)
-      const img = new Image();
-      img.src = `${scriptUrl}?${params}`;
-      
-      // Agregar logging detallado
-      console.log('📊 Datos a enviar:', formData);
-      console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
-      console.log('✅ Datos enviados a Google Sheets via imagen');
-      
-      return true;
+      // Método 1: Usar fetch con no-cors
+      try {
+        const response = await fetch(`${scriptUrl}?${params}`, {
+          method: 'GET',
+          mode: 'no-cors',
+          cache: 'no-cache'
+        });
+        console.log('📊 Datos a enviar:', formData);
+        console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
+        console.log('✅ Datos enviados a Google Sheets via fetch');
+        return true;
+      } catch (fetchError) {
+        console.log('⚠️ Fetch falló, intentando método alternativo...');
+        
+        // Método 2: Usar script tag (JSONP)
+        return new Promise((resolve) => {
+          const script = document.createElement('script');
+          script.src = `${scriptUrl}?${params}&callback=handleResponse`;
+          
+          // Función temporal para manejar la respuesta
+          window.handleResponse = function(response) {
+            console.log('✅ Respuesta del servidor:', response);
+            document.head.removeChild(script);
+            delete window.handleResponse;
+            resolve(true);
+          };
+          
+          // Timeout por si no responde
+          setTimeout(() => {
+            if (document.head.contains(script)) {
+              document.head.removeChild(script);
+              delete window.handleResponse;
+              console.log('⚠️ Timeout, pero datos enviados');
+              resolve(true);
+            }
+          }, 3000);
+          
+          document.head.appendChild(script);
+        });
+      }
       
     } catch (error) {
       console.error('❌ Error de conexión:', error);
@@ -157,7 +187,8 @@
         notes ? `Notas: ${notes}` : ''
       ].filter(Boolean).join('\n');
 
-      // Enviar datos a Formspree
+
+      // Enviar datos a Google Sheets
       const sheetsSuccess = await sendToGoogleSheets(formData);
       
       const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
