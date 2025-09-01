@@ -44,8 +44,8 @@ exports.handler = async (event) => {
     // URL de tu Google Apps Script
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbzAL3MqQd9yS0fYJEfUz3wdGu5gHeRtPt1j-1L_4hfYcimYjGfmUx_267Z8P56IWQ2K/exec';
 
-    // Preparar parámetros para Google Sheets
-    const params = new URLSearchParams({
+    // Preparar datos para POST request
+    const postData = new URLSearchParams({
       'nombre': formData.nombre,
       'email': formData.email,
       'telefono': formData.telefono,
@@ -54,17 +54,16 @@ exports.handler = async (event) => {
       'mensaje': formData.mensaje || ''
     });
 
-    // Crear URL completa para debugging
-    const fullUrl = `${scriptUrl}?${params}`;
-    console.log('🔗 URL completa que se enviará:', fullUrl);
-    console.log('📝 Parámetros construidos:', params.toString());
+    console.log('📝 Datos para POST:', postData.toString());
+    console.log('🔗 URL del script:', scriptUrl);
 
-    // Enviar datos a Google Sheets
-    const response = await fetch(fullUrl, {
-      method: 'GET',
+    // Enviar datos a Google Sheets usando POST
+    const response = await fetch(scriptUrl, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+      body: postData.toString()
     });
 
     console.log('✅ Respuesta de Google Sheets:', response.status);
