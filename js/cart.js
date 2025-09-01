@@ -95,17 +95,27 @@
       // URL del Google Apps Script (NUEVA HOJA DE CÁLCULO)
       const scriptUrl = 'https://script.google.com/macros/s/AKfycbzAL3MqQd9yS0fYJEfUz3wdGu5gHeRtPt1j-1L_4hfYcimYjGfmUx_267Z8P56IWQ2K/exec';
       
+      // Validar datos requeridos
+      if (!formData.nombre || !formData.email || !formData.telefono) {
+        console.error('❌ Datos requeridos faltantes:', formData);
+        return false;
+      }
+      
       // Preparar datos para Google Sheets
       const params = new URLSearchParams({
         'nombre': formData.nombre,
         'email': formData.email,
         'telefono': formData.telefono,
-        'productos': formData.productos,
-        'total': formData.total,
-        'mensaje': formData.mensaje
+        'productos': formData.productos || '',
+        'total': formData.total || '',
+        'mensaje': formData.mensaje || ''
       });
       
-      // Método 1: Usar script tag (JSONP) - Más confiable
+      // Logging detallado
+      console.log('📊 Datos a enviar:', formData);
+      console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
+      
+      // Método JSONP con mejor manejo de errores
       return new Promise((resolve) => {
         const script = document.createElement('script');
         script.src = `${scriptUrl}?${params}&callback=handleResponse`;
@@ -113,21 +123,42 @@
         // Función temporal para manejar la respuesta
         window.handleResponse = function(response) {
           console.log('✅ Respuesta del servidor:', response);
-          document.head.removeChild(script);
-          delete window.handleResponse;
+          cleanup();
           resolve(true);
         };
         
-        // Timeout por si no responde
-        setTimeout(() => {
+        // Función de limpieza
+        function cleanup() {
           if (document.head.contains(script)) {
             document.head.removeChild(script);
-            delete window.handleResponse;
-            console.log('⚠️ Timeout, pero datos enviados');
-            resolve(true);
           }
-        }, 5000);
+          delete window.handleResponse;
+        }
         
+        // Manejar errores del script
+        script.onerror = function() {
+          console.error('❌ Error cargando script');
+          cleanup();
+          resolve(false);
+        };
+        
+        // Timeout por si no responde
+        const timeoutId = setTimeout(() => {
+          console.log('⚠️ Timeout después de 10 segundos');
+          cleanup();
+          resolve(false);
+        }, 10000);
+        
+        // Función para limpiar timeout si responde
+        const originalHandleResponse = window.handleResponse;
+        window.handleResponse = function(response) {
+          clearTimeout(timeoutId);
+          console.log('✅ Respuesta del servidor:', response);
+          cleanup();
+          resolve(true);
+        };
+        
+        // Agregar script al DOM
         document.head.appendChild(script);
       });
       
@@ -174,8 +205,10 @@
 
 
       // Enviar datos a Google Sheets
+      console.log('🚀 Iniciando envío a Google Sheets...');
       const sheetsSuccess = await sendToGoogleSheets(formData);
       
+      // Preparar URL de WhatsApp
       const number = (window.CredicAlidda && window.CredicAlidda.whatsapp)
         || (window.SiteSettings && window.SiteSettings.whatsapp)
         || '51967156094';
@@ -183,11 +216,15 @@
       
       // Mostrar mensaje de confirmación
       if (sheetsSuccess) {
+        console.log('✅ Envío exitoso a Google Sheets');
         alert('✅ Formulario enviado correctamente. Se abrirá WhatsApp para coordinar tu compra.');
       } else {
+        console.log('❌ Error en envío a Google Sheets');
         alert('⚠️ El formulario se envió a WhatsApp, pero hubo un problema al guardar en la base de datos.');
       }
       
+      // Abrir WhatsApp
+      console.log('📱 Abriendo WhatsApp...');
       window.open(url, '_blank');
     });
   }
