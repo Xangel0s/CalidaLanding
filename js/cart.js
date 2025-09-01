@@ -105,46 +105,31 @@
         'mensaje': formData.mensaje
       });
       
-      // Método 1: Usar fetch con no-cors
-      try {
-        const response = await fetch(`${scriptUrl}?${params}`, {
-          method: 'GET',
-          mode: 'no-cors',
-          cache: 'no-cache'
-        });
-        console.log('📊 Datos a enviar:', formData);
-        console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
-        console.log('✅ Datos enviados a Google Sheets via fetch');
-        return true;
-      } catch (fetchError) {
-        console.log('⚠️ Fetch falló, intentando método alternativo...');
+      // Método 1: Usar script tag (JSONP) - Más confiable
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = `${scriptUrl}?${params}&callback=handleResponse`;
         
-        // Método 2: Usar script tag (JSONP)
-        return new Promise((resolve) => {
-          const script = document.createElement('script');
-          script.src = `${scriptUrl}?${params}&callback=handleResponse`;
-          
-          // Función temporal para manejar la respuesta
-          window.handleResponse = function(response) {
-            console.log('✅ Respuesta del servidor:', response);
+        // Función temporal para manejar la respuesta
+        window.handleResponse = function(response) {
+          console.log('✅ Respuesta del servidor:', response);
+          document.head.removeChild(script);
+          delete window.handleResponse;
+          resolve(true);
+        };
+        
+        // Timeout por si no responde
+        setTimeout(() => {
+          if (document.head.contains(script)) {
             document.head.removeChild(script);
             delete window.handleResponse;
+            console.log('⚠️ Timeout, pero datos enviados');
             resolve(true);
-          };
-          
-          // Timeout por si no responde
-          setTimeout(() => {
-            if (document.head.contains(script)) {
-              document.head.removeChild(script);
-              delete window.handleResponse;
-              console.log('⚠️ Timeout, pero datos enviados');
-              resolve(true);
-            }
-          }, 3000);
-          
-          document.head.appendChild(script);
-        });
-      }
+          }
+        }, 5000);
+        
+        document.head.appendChild(script);
+      });
       
     } catch (error) {
       console.error('❌ Error de conexión:', error);
