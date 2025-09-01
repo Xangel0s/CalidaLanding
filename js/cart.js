@@ -115,51 +115,29 @@
       console.log('📊 Datos a enviar:', formData);
       console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
       
-      // Método JSONP con mejor manejo de errores
+      // Método directo usando iframe (más confiable)
       return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = `${scriptUrl}?${params}&callback=handleResponse`;
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = `${scriptUrl}?${params}`;
         
-        // Función temporal para manejar la respuesta
-        window.handleResponse = function(response) {
-          console.log('✅ Respuesta del servidor:', response);
-          cleanup();
-          resolve(true);
-        };
-        
-        // Función de limpieza
-        function cleanup() {
-          if (document.head.contains(script)) {
-            document.head.removeChild(script);
-          }
-          delete window.handleResponse;
-        }
-        
-        // Manejar errores del script
-        script.onerror = function() {
-          console.error('❌ Error cargando script');
-          cleanup();
-          resolve(false);
-        };
-        
-        // Timeout por si no responde
+        // Timeout para verificar si funcionó
         const timeoutId = setTimeout(() => {
-          console.log('⚠️ Timeout después de 10 segundos');
-          cleanup();
-          resolve(false);
-        }, 10000);
-        
-        // Función para limpiar timeout si responde
-        const originalHandleResponse = window.handleResponse;
-        window.handleResponse = function(response) {
-          clearTimeout(timeoutId);
-          console.log('✅ Respuesta del servidor:', response);
-          cleanup();
+          console.log('✅ Datos enviados via iframe (timeout)');
+          document.body.removeChild(iframe);
           resolve(true);
+        }, 3000);
+        
+        // Limpiar si hay error
+        iframe.onerror = function() {
+          console.error('❌ Error en iframe');
+          clearTimeout(timeoutId);
+          document.body.removeChild(iframe);
+          resolve(false);
         };
         
-        // Agregar script al DOM
-        document.head.appendChild(script);
+        // Agregar iframe al DOM
+        document.body.appendChild(iframe);
       });
       
     } catch (error) {
