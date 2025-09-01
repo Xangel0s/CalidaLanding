@@ -92,56 +92,36 @@
   // Función para enviar datos a Google Sheets usando Apps Script
   async function sendToGoogleSheets(formData) {
     try {
-      // URL del Google Apps Script (NUEVA HOJA DE CÁLCULO)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbzAL3MqQd9yS0fYJEfUz3wdGu5gHeRtPt1j-1L_4hfYcimYjGfmUx_267Z8P56IWQ2K/exec';
-      
       // Validar datos requeridos
       if (!formData.nombre || !formData.email || !formData.telefono) {
         console.error('❌ Datos requeridos faltantes:', formData);
         return false;
       }
       
-      // Preparar datos para Google Sheets
-      const params = new URLSearchParams({
-        'nombre': formData.nombre,
-        'email': formData.email,
-        'telefono': formData.telefono,
-        'productos': formData.productos || '',
-        'total': formData.total || '',
-        'mensaje': formData.mensaje || ''
-      });
-      
       // Logging detallado
-      console.log('📊 Datos a enviar:', formData);
-      console.log('🔗 URL completa:', `${scriptUrl}?${params}`);
+      console.log('📊 Datos a enviar a Netlify Function:', formData);
       
-      // Método directo usando iframe (más confiable)
-      return new Promise((resolve) => {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = `${scriptUrl}?${params}`;
-        
-        // Timeout para verificar si funcionó
-        const timeoutId = setTimeout(() => {
-          console.log('✅ Datos enviados via iframe (timeout)');
-          document.body.removeChild(iframe);
-          resolve(true);
-        }, 3000);
-        
-        // Limpiar si hay error
-        iframe.onerror = function() {
-          console.error('❌ Error en iframe');
-          clearTimeout(timeoutId);
-          document.body.removeChild(iframe);
-          resolve(false);
-        };
-        
-        // Agregar iframe al DOM
-        document.body.appendChild(iframe);
+      // Enviar datos a Netlify Function (sin CORS)
+      const response = await fetch('/.netlify/functions/send-to-sheets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
       });
+      
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        console.log('✅ Datos enviados correctamente via Netlify Function');
+        return true;
+      } else {
+        console.error('❌ Error en Netlify Function:', result.error);
+        return false;
+      }
       
     } catch (error) {
-      console.error('❌ Error de conexión:', error);
+      console.error('❌ Error de conexión con Netlify Function:', error);
       return false;
     }
   }
@@ -179,10 +159,7 @@
         `Celular: ${phone}`,
         email ? `Email: ${email}` : '',
         notes ? `Notas: ${notes}` : ''
-      ].filter(Boolean).join('\n');
-
-
-      // Enviar datos a Google Sheets
+      ].filter(Boolean).join('\n');      // Enviar datos a Google Sheets
       console.log('🚀 Iniciando envío a Google Sheets...');
       const sheetsSuccess = await sendToGoogleSheets(formData);
       
